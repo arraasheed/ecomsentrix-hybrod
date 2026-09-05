@@ -228,11 +228,13 @@
 
 @endif
 <script>
+    window.onTurboOnce(function () {
     $(document).on('click', '.delete_option', function(event) {
         event.preventDefault(); // Prevent the default behavior of the button
 
         var id = $(this).attr('data-id');
         $('.remove_option_' + id).remove();
+    });
     });
 
 
@@ -243,7 +245,7 @@
         }
     });
 
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         if ($('.enable_product_stock').prop('checked') == true) {
             $('.stock_status').hide();
         }
@@ -259,6 +261,7 @@
         }
     });
 
+    window.onTurboOnce(function () {
     $(document).on('change', '.downloadable', function() {
         var optionValue = $(this).val();
         var container = $(this).closest('.accordion-item');
@@ -302,6 +305,7 @@
             container.find('.stock_status').removeClass('d-none');
         }
     });
+    });
 
 
     $('.manage_stock').change(function() {
@@ -316,7 +320,7 @@
     });
 
 
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         $('.accordion-item.card.attribute_option_data').each(function() {
 
             $('.download-product').each(function() {
@@ -367,7 +371,7 @@
     });
 
 
-    $(function() {
+    window.onTurboOnce(function () {
         $('body').on('click', '.delete-option-comment', function(e) {
             e.preventDefault();
             var id = $(this).attr('data-id');
@@ -403,7 +407,7 @@
         }
     });
 
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         if ($('.enable_product_stock').prop('checked') == true) {
             $('.stock_status').hide();
         }

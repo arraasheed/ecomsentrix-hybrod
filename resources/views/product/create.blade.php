@@ -477,7 +477,7 @@
 
 
   <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
       // tag
       $('.select2').select2({
         tags: true,
@@ -526,6 +526,8 @@
       //stock
       $('#options').hide();
       $('.stock_stats').show();
+      });
+      window.onTurboOnce(function () {
       $(document).on("change", "#enable_product_stock", function() {
         $('#options').prop('checked', false);
         if ($(this).prop('checked')) {
@@ -537,7 +539,9 @@
         }
 
       });
+      });
 
+      window.onTurboLoad(function () {
       // prview video
       $("#preview_type").change(function() {
         $(this).find("option:selected").each(function() {
@@ -577,6 +581,7 @@
         });
       }).change();
     });
+    window.onTurboOnce(function () {
     $(document).on("change", "#enable_custom_field", function() {
       $('#custom_value').hide();
       $('.custom_field').hide();
@@ -585,7 +590,9 @@
         $('.custom_field').show();
       }
     });
+});
     
+    window.onTurboLoad(function () {
     $('#custom_field_repeater_basic').repeater({
                 initEmpty: false,
                 defaultValues: {
@@ -603,6 +610,7 @@
                         show_toastr('Error', 'At least one field is required.', 'error');
                     }
                 }
+        });
         });
 
         // Manually add a new item when the "Add More" button is clicked
@@ -659,6 +667,7 @@
 
   <script>
     // display variant hide show
+    window.onTurboOnce(function () {
     $(document).on("change", "#enable_product_variant", function() {
       $('.product-price-div').show();
       $('.product-stock-div').show();
@@ -720,6 +729,7 @@
         });
       });
     });
+    });
 
 
 
@@ -746,6 +756,7 @@
         }
       });
     }
+    window.onTurboOnce(function () {
     $(document).on("change", ".attribute_option_data", function() {
       var inputValue = $('.attribute_option_data').val();
       if (inputValue != []) {
@@ -793,10 +804,12 @@
         add_more_choice_option($(this).val(), $(this).text());
       });
     });
+    });
   </script>
 
   {{-- Dropzones  --}}
   <script>
+    window.onTurboLoad(function () {
     var Dropzones = function() {
       var e = $('[data-toggle="dropzone1"]'),
         t = $(".dz-preview");
@@ -844,6 +857,7 @@
         }, n.html(""), e.dropzone(i)
       }))
     }()
+    });
 
     $('#submit-all').on('click', function() {
       $('#submit-all').attr('disabled', true);

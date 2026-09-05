@@ -287,6 +287,7 @@
 <script src="{{ asset('public/js/jquery-3.6.0.min.js') }}"></script>
 
 <script>
+    window.onTurboOnce(function () {
     $(document).on('click', '.delete_option', function(event) {
         event.preventDefault();
 
@@ -296,8 +297,9 @@
 
 
     });
+    });
 
-    $(function() {
+    window.onTurboOnce(function () {
         $('body').on('click', '.delete-comment', function(e) {
             e.preventDefault();
             var id = $(this).attr('data-id');
@@ -333,6 +335,7 @@
         }
     });
 
+    window.onTurboOnce(function () {
     $(document).on('change', '.downloadable', function() {
         var optionValue = $(this).val();
         var container = $(this).closest('.accordion-item');
@@ -375,9 +378,10 @@
             container.find('.stock_status').show();
         }
     });
+    });
 
 
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         $('.accordion-item.card.attribute_options_datas').each(function() {
 
             $('.download-product').each(function() {
@@ -430,7 +434,7 @@
             $('.stock_status').show();
         }
     });
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         if ($('.enable_product_stock').prop('checked') == true) {
             $('.stock_status').hide();
         } else {
