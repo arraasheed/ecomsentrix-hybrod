@@ -83,6 +83,7 @@
             html2pdf().set(opt).from(element).save();
         }
 
+        window.onTurboLoad(function () {
         // Common chart options for all charts
         var commonOptions = {
             chart: {
@@ -150,6 +151,7 @@
             labels: @json($paymentMethods->keys()->all())
         };
         new ApexCharts(document.querySelector("#paymentMethodsChart"), paymentMethodsOptions).render();
+        });
     </script>
     @endpush
 @endsection

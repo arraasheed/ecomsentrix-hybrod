@@ -26,6 +26,9 @@
 | 15 | `resources/views/reports/orderStatusReport.blade.php` | D — ৩x `onTurboLoad` (open code) | pie/bar/area ApexCharts init (open script, `@json` data) → ৩x `onTurboLoad`। `saveAsPDF()` global fn স্পর্শ করিনি। |
 | 16 | `resources/views/reports/sale_by_brand.blade.php` | A — ২x `onTurboLoad` + D — Choices init | `if ($(".multi-select"))` Choices init (open code, fresh per page) → `onTurboLoad`; ready@78 (fetchData + `.chart-data`/`.filter-apply-btn`/`#brand_id` direct binds) → `onTurboLoad`; ready@181 (export + daterangepicker) → `onTurboLoad`। |
 | 17 | `resources/views/reports/sale_by_category.blade.php` | A + D | sale_by_brand-এর হুবহু প্যাটার্ন (Choices init + ২x ready)। `#category_id`। |
+| 18 | `resources/views/reports/sale_by_product.blade.php` | A + D | Choices init (open code) → `onTurboLoad`; ২x ready (chart init + export/datepicker) → `onTurboLoad`। `#product_id`। |
+| 19 | `resources/views/reports/stock_report.blade.php` | B — `$(function)` → `onTurboLoad` | ২টি DataTable init (`#low-stock-table`, `#out-of-stock-table`) এক wrapper-এ। `removeSortingOrderFromHeader()` = global fn (datatable-js-এ), শুধু call। |
+| 20 | `resources/views/reports/top_5_reports.blade.php` | D — `onTurboLoad` (open code) | চারটি ApexCharts init (`commonOptions` + ৪টি chart), open script → এক `onTurboLoad`। `saveAsPDF()` global fn স্পর্শ করিনি। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -36,8 +39,8 @@
 
 ## টally (নিয়ম ৫ — সৎ হিসাব) — ফাইল ৩-৮ পর্যন্ত
 
-- পরিবর্তন করেছি: **17 ফাইল** (1-3, 5-17; pos/index বাদে) 
-- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + order_country/orderStatusReport-এর `saveAsPDF()` fn
+- পরিবর্তন করেছি: **20 ফাইল** (1-3, 5-20; pos/index বাদে) 
+- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5)
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
 
 ## Commits
@@ -47,4 +50,5 @@
 - `07980ed` — `wip(turbo): batch 3 files 6-8  [BULK-4]` (attribute_combinations_data, attribute_combinations_edit, product/create)
 - `7ed38d9` — `wip(turbo): batch 3 files 9-11  [BULK-4]` (product/edit, product/show, reports/bar_chart_order_report)
 - `7332c9b` — `wip(turbo): batch 3 files 12-14  [BULK-4]` (reports/index, reports/order_report, reports/order_country_Report)
-- (pending) — `wip(turbo): batch 3 files 15-17  [BULK-4]` (orderStatusReport, sale_by_brand, sale_by_category)
+- `92ff00e` — `wip(turbo): batch 3 files 15-17  [BULK-4]` (orderStatusReport, sale_by_brand, sale_by_category)
+- (pending) — `wip(turbo): batch 3 files 18-20  [BULK-4]` (sale_by_product, stock_report, top_5_reports)
