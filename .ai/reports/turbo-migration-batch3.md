@@ -50,6 +50,9 @@
 | 39 | `resources/views/email_templates/index.blade.php` | C — delegation → `onTurboOnce` | `.email-template-checkbox` AJAX delegation — `@can` block-এর *ভেতরে* wrapper বসানো, তাই permission-অফ হলেও brace ব্যালেন্সড। source-এ Blade interpolate নেই → key দরকার নেই। |
 | 40 | `resources/views/front_end/common/product/sale_counter.blade.php` | D — খোলা কোড → `onTurboLoad` | `updateTimers()` + `setInterval(updateTimers, 1000)` — timer init প্রতি পেজে। আগে grep করে যাচাই: `updateTimers` গ্লোবালি শুধু এই ফাইলেই (pre-order module-ও কল করে না) → নিরাপদে scoped। function declaration wrapper-এর ভেতরে; ভেতরের DOM lookup প্রতি রানে বর্তমান DOM পায়। ⚠️ setInterval পুরনো পেজেও চলতে থাকবে — cleanup CLAUDE-6 (`turbo-cleanup.js`) কেন্দ্রীয়ভাবে করবে। |
 | 41 | `resources/views/front_end/pages/auction_order_detail.blade.php` | C — delegation → `onTurboOnce` + key | `.delstatus` (cancel-order AJAX) delegation — block-এ `{{ route(...) }}` interpolate আছে → `onTurboOnce(fn, 'auction-order-delstatus')` (নিয়মের key প্যাটার্ন)। `saveAsPDF()` global fn + inline onclick → অস্পৃশ্য (top-level থাকা বাধ্যতামূলক); direct binds টপ-লেভেলেই থাকলো (script প্রতি render-এ re-exec হয়, page flush পুরনো binds পরিষ্কার করে — no drift, no key needed for direct binds)। |
+| 42 | `resources/views/front_end/pages/order-detail.blade.php` | C — delegation → `onTurboOnce` + key | auction-এরই টুইন কাঠামো; `.delstatus` → key `order-detail-delstatus`। `saveAsPDF()` + direct binds অস্পৃশ্য। |
+| 43 | `resources/views/front_end/sections/order_detail.blade.php` | C — delegation → `onTurboOnce` + key | একই `.delstatus` প্যাটার্ন → key `sections-order-detail-delstatus`। |
+| 44 | `resources/views/front_end/sections/order_view.blade.php` | C + D — split | `.downloadable_prodcut` delegation (`{!! route(...) !!}` interpolate) → `onTurboOnce(fn, 'order-view-downloadable')`; `const numbers = {!! json_encode(...) !!}` + forEach bind খোলা কোড → `onTurboLoad` — সাথে top-level `const`-এর Turbo-nav redeclare SyntaxError ঝুঁকিও কাটল (wrapper-এর ভেতরে function scope)। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -58,10 +61,10 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — 1-41 পর্যন্ত
+## টally (নিয়ম ৫ — সৎ হিসাব) — 1-44 পর্যন্ত
 
-- পরিবর্তন করেছি: **40 ফাইল** (1-3, 5-41; pos/index বাদে)
-- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction) + idempotent function-ভেতরের delegation
+- পরিবর্তন করেছি: **43 ফাইল** (1-3, 5-44; pos/index বাদে)
+- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction/order-detail/sections-order_detail) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
 
 ### পূর্বে migrated ফাইলে key retrofit (ব্যাখ্যা)
@@ -100,4 +103,5 @@ register হয় → handler stack। তাই:
 - `a56fda0` — `wip(turbo): batch 3 files 30-32  [BULK-4]` (users/profile, webhook/create, webhook/edit)
 - `3a6d834` — `wip(turbo): batch 3 files 33-35  [BULK-4]` (wishlist/index, woocommerce/category, woocommerce/coupon) — **শ্রেণি A সম্পন্ন**
 - `22ea62a` — `wip(turbo): batch 3 files 36-38  [BULK-4]` (addon/apps, addon/index, coupon/index) — শ্রেণি B শুরু
-- (pending) — `wip(turbo): batch 3 files 39-41  [BULK-4]` (email_templates/index, sale_counter, auction_order_detail) + wishlist key retrofit
+- `7dafff5` — `wip(turbo): batch 3 files 39-41  [BULK-4]` (email_templates/index, sale_counter, auction_order_detail) + wishlist key retrofit
+- (pending) — `wip(turbo): batch 3 files 42-44  [BULK-4]` (order-detail, sections/order_detail, sections/order_view)

@@ -323,6 +323,7 @@
 
 
         }
+        window.onTurboOnce(function () {
         $(document).on('click', '.delstatus', function() {
 
             var order_id = $(this).attr('data-id');
@@ -347,6 +348,7 @@
                 }
             });
         });
+        }, 'order-detail-delstatus');
 
         document.querySelectorAll('.downloadable_product_variant').forEach(button => {
             button.addEventListener('click', function() {

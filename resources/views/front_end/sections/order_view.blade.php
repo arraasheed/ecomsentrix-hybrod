@@ -285,6 +285,7 @@
     </div>
 </div>
 <script type="text/javascript">
+    window.onTurboOnce(function () {
     $(document).on('click', '.downloadable_prodcut', function() {
 
         var download_product = $(this).attr('data-value');
@@ -314,7 +315,9 @@
             }
         });
     });
+    }, 'order-view-downloadable');
 
+    window.onTurboLoad(function () {
     const numbers = {!! json_encode($order['product']) !!};;
     numbers.forEach(myFunction)
 
@@ -327,4 +330,5 @@
             });
         });
     }
+    });
 </script>
