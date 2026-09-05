@@ -123,7 +123,7 @@
     }
 </script>
 <script>
-    $(document).ready(function () {
+    window.onTurboLoad(function () {
         $("#category").change(function () {
             var ff = $("#category").val()
             if ($("#category").val() == "fixed product discount") {
@@ -157,7 +157,7 @@
         });
   });
 
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         $('#category').on('change', function() {
             var selectedType = $(this).val();
             if (selectedType != 'percentage') {

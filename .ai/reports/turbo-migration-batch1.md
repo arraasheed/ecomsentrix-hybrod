@@ -15,23 +15,31 @@
 | 5 | `resources/views/auth/login.blade.php` | A — `$(document).ready` → `onTurboLoad` | block at line 113 (`#form_data` submit). Line 100 block is Class D reCAPTCHA — untouched. |
 | 6 | `resources/views/cart/index.blade.php` | C — 2× ready(delegation only) → 2× `onTurboOnce` | `.bandoncart` (line 20) and `.bandoncartmess` (line 43). |
 | 7 | `resources/views/country/index.blade.php` | **none — Claude দেখবে** | 281-line mixed block (line 338): DataTable inits must live in `onTurboLoad`, but delegations at 459-464 close over `stateTable`/`cityTable` vars declared inside that same block; third delegation + function declarations sit at top level. Clean split requires scope restructuring beyond a wrapper change. |
+| 8 | `resources/views/coupon/create.blade.php` | A + C split | ready@158 (init + direct binds) → `onTurboLoad`; ready@192 (delegation `#category`) → `onTurboOnce`. |
+| 9 | `resources/views/coupon/edit.blade.php` | A — 2× `onTurboLoad` | ready@126 & ready@160 both direct binds (`$('#category').change` / `$('#category').on`), no delegation. Block @120 (top-level format hide) unlisted — untouched. |
+| 10 | `resources/views/customer/grid.blade.php` | C + A | ready@141 (delegation `.page-checkbox`) → `onTurboOnce`; ready@180 (direct binds + `applyFilter` fn) → `onTurboLoad`. `.csv` block @167 is Class B — untouched. |
+| 11 | `resources/views/customer/index.blade.php` | C + A | ready@80 (delegation `.page-checkbox`) → `onTurboOnce`; ready@120 (direct binds + `applyFilter`) → `onTurboLoad`. `.csv` block @107 is Class B — untouched. |
+| 12 | `resources/views/dashboard.blade.php` | A — 3× `onTurboLoad` | ready@465 (copy link), @481 (ApexCharts radialBar), @637 (social sharing + tab fetch + `fetchOrderDetails`) — all init/direct binds, no delegation. `.code` delegation script @603 is Class B — untouched. `@if` Blade wrapper around @464 untouched. |
 
 ## স্পর্শ করিনি — কারণ
 
-| ফাইল | কারণ |
+| ফাইল / block | কারণ |
 |---|---|
-| `resources/views/country/index.blade.php` | mixed A+B, delegation closures reference DataTable vars inside the same ready block; mechanical split would break scope — Claude দেখবে। |
+| `resources/views/country/index.blade.php` (block @338) | mixed A+B, delegation closures reference DataTable vars inside the same ready block; mechanical split would break scope — Claude দেখবে। |
 | `resources/views/AppSetting/mobile_content.blade.php` (block @1118) | not in Class A list (AppFunction/ScrollSpy) — outside scope. |
 | `resources/views/auth/login.blade.php` (block @100) | Class D third-party reCAPTCHA — forbidden. |
-| `.agents/scripts/split-prompts.cjs`, `.ai/prompts/10-BULK-2.txt` | pre-existing unrelated working-tree changes (split-prompts.cjs modified; prompt txt missing on disk) — left untouched, not included in BULK-2 commits. |
+| `customer/grid` @167, `customer/index` @107, `dashboard` @603 (`.csv`/`.code` top-level delegations) | Class B (ONCE-ONLY) — recipe: leave as-is / out of BULK-2 scope. |
+| `coupon/edit` @120 (top-level format check) | unlisted block — outside scope. |
+| `.agents/scripts/split-prompts.cjs`, `.ai/prompts/10-BULK-2.txt` | pre-existing unrelated working-tree changes — left untouched, not included in BULK-2 commits. |
 
 ## টally (নিয়ম ৫ — সৎ হিসাব)
 
-- পরিবর্তন করেছি: **6 ফাইল** (1-6)
-- স্পর্শ করিনি: **1 ফাইল** (country/index.blade.php — কারণ উপরে)
+- পরিবর্তন করেছি: **11 ফাইল** (1-6, 8-12)
+- স্পর্শ করিনি: **1 ফাইল** (country/index.blade.php — কারণ উপরে) + 5টি unlisted/Class B block
 - সন্দেহ — Claude দেখবে: **1** (country/index.blade.php split + mobile_content/AppSetting `.image_delete` cross-page collision note)
 
 ## Commits
 
 - `d9caf54` — `wip(turbo): pilot 2 files  [BULK-2]` (files 1-2)
-- (checkpoint) `wip(turbo): batch 1 files 3-7  [BULK-2]` (3-6 edited, 7 skipped → Claude)
+- `9f5edf6` — `wip(turbo): batch 1 files 3-7  [BULK-2]` (3-6 edited, 7 skipped → Claude)
+- (checkpoint 2) `wip(turbo): batch 1 files 8-12  [BULK-2]`

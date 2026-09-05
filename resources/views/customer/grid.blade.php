@@ -138,7 +138,7 @@
 
 @push('custom-script')
     <script type="text/javascript">
-        $(document).ready(function() {
+        window.onTurboOnce(function () {
             $(document).on('change', '.page-checkbox', function() {
                 var status = $(this).prop('checked') == true ? 1 : 0;
                 var customer_id = $(this).attr('id');
@@ -177,7 +177,7 @@
     </script>
 
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
 
             $('#customer_field').on('change', function() {
                 var selectedValue = $(this).val();

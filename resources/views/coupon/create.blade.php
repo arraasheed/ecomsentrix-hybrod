@@ -155,7 +155,7 @@
 
 
 <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         $('.format').hide();
         $("#category").change(function() {
             if ($("#category").val() == "fixed product discount") {
@@ -189,7 +189,7 @@
         });
     });
 
-    $(document).ready(function() {
+    window.onTurboOnce(function () {
         $(document).on('change', '#category', function() {
             var selectedType = $(this).val();
             if (selectedType != 'percentage') {
