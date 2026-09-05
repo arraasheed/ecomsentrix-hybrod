@@ -47,6 +47,9 @@
 | 36 | `resources/views/addon/apps.blade.php` | C — delegation → `onTurboOnce` | `.module_change` delegation। |
 | 37 | `resources/views/addon/index.blade.php` | C — delegation → `onTurboOnce` | একই `.module_change` delegation (addon/themes index)। |
 | 38 | `resources/views/coupon/index.blade.php` | C — ২x delegation → এক `onTurboOnce` | `.code` + `#code-generate` — দুটো এক wrapper-এ (পাইলট প্যাটার্ন)। |
+| 39 | `resources/views/email_templates/index.blade.php` | C — delegation → `onTurboOnce` | `.email-template-checkbox` AJAX delegation — `@can` block-এর *ভেতরে* wrapper বসানো, তাই permission-অফ হলেও brace ব্যালেন্সড। source-এ Blade interpolate নেই → key দরকার নেই। |
+| 40 | `resources/views/front_end/common/product/sale_counter.blade.php` | D — খোলা কোড → `onTurboLoad` | `updateTimers()` + `setInterval(updateTimers, 1000)` — timer init প্রতি পেজে। আগে grep করে যাচাই: `updateTimers` গ্লোবালি শুধু এই ফাইলেই (pre-order module-ও কল করে না) → নিরাপদে scoped। function declaration wrapper-এর ভেতরে; ভেতরের DOM lookup প্রতি রানে বর্তমান DOM পায়। ⚠️ setInterval পুরনো পেজেও চলতে থাকবে — cleanup CLAUDE-6 (`turbo-cleanup.js`) কেন্দ্রীয়ভাবে করবে। |
+| 41 | `resources/views/front_end/pages/auction_order_detail.blade.php` | C — delegation → `onTurboOnce` + key | `.delstatus` (cancel-order AJAX) delegation — block-এ `{{ route(...) }}` interpolate আছে → `onTurboOnce(fn, 'auction-order-delstatus')` (নিয়মের key প্যাটার্ন)। `saveAsPDF()` global fn + inline onclick → অস্পৃশ্য (top-level থাকা বাধ্যতামূলক); direct binds টপ-লেভেলেই থাকলো (script প্রতি render-এ re-exec হয়, page flush পুরনো binds পরিষ্কার করে — no drift, no key needed for direct binds)। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -55,11 +58,27 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — 1-38 পর্যন্ত
+## টally (নিয়ম ৫ — সৎ হিসাব) — 1-41 পর্যন্ত
 
-- পরিবর্তন করেছি: **37 ফাইল** (1-3, 5-38; pos/index বাদে)
-- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5) + idempotent function-ভেতরের delegation
+- পরিবর্তন করেছি: **40 ফাইল** (1-3, 5-41; pos/index বাদে)
+- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
+
+### পূর্বে migrated ফাইলে key retrofit (ব্যাখ্যা)
+
+CLAUDE-6 caveat (turbo-bootstrap.js:224-227) পড়ে স্পষ্ট হলো: Blade
+interpolate থাকলে dedup source-text ভিত্তিক হয় বলে প্রতি variant আলাদা
+register হয় → handler stack। তাই:
+
+- `wishlist/index.blade.php` (ফাইল ৩৩, commit `3a6d834`-এ গেছে) — ৩টি
+  wrapper-এ key যোগ: `wishlist-category-product`,
+  `wishlist-bandonwish-email`, `wishlist-wish-message` (এই batch-এর commit-এ
+  রাইড-অং)
+- `auction_order_detail` (ফাইল ৪১) — `auction-order-delstatus`
+
+⚠️ **কাজের নিয়ম আপডেট:** এখন থেকে interpolation থাকলে key বাধ্যতামূলক।
+আগের বাদ-পড়া ফাইল স্ক্যান করা দরকার হলে CLAUDE-8 browser-test এ ধরা পড়বে
+(অথবা পরে grep দিয়ে `onTurboOnce` ব্লকে `{{` খোঁজা যাবে)।
 
 ## শ্রেণি B (delegation-only, 36-73) — বাকি
 
@@ -80,4 +99,5 @@
 - `92217cb` — `wip(turbo): batch 3 files 27-29  [BULK-4]` (theme_analytic, theme_customize/customize-script, theme_customize/order)
 - `a56fda0` — `wip(turbo): batch 3 files 30-32  [BULK-4]` (users/profile, webhook/create, webhook/edit)
 - `3a6d834` — `wip(turbo): batch 3 files 33-35  [BULK-4]` (wishlist/index, woocommerce/category, woocommerce/coupon) — **শ্রেণি A সম্পন্ন**
-- (pending) — `wip(turbo): batch 3 files 36-38  [BULK-4]` (addon/apps, addon/index, coupon/index) — শ্রেণি B শুরু
+- `22ea62a` — `wip(turbo): batch 3 files 36-38  [BULK-4]` (addon/apps, addon/index, coupon/index) — শ্রেণি B শুরু
+- (pending) — `wip(turbo): batch 3 files 39-41  [BULK-4]` (email_templates/index, sale_counter, auction_order_detail) + wishlist key retrofit

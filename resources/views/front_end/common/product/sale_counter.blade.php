@@ -21,6 +21,7 @@
 
 @push('page-script')
     <script>
+        window.onTurboLoad(function () {
         // Call immediately to prevent initial delay
         updateTimers();
         // Update all timers every second
@@ -89,6 +90,7 @@
                 timer.innerHTML = timerHTML;
             });
         }
+        });
 
     </script>
 @endpush

@@ -47,7 +47,7 @@
                 });
 
             });
-            });
+            }, 'wishlist-category-product');
         </script>
         <script>
             window.onTurboOnce(function () {
@@ -75,7 +75,7 @@
                 });
 
             });
-        });
+        }, 'wishlist-bandonwish-email');
         window.onTurboOnce(function () {
         $(document).on('click', '.bandonwishmess', function(e) {
         var wish_id  = $(this).attr('data-id');
@@ -100,6 +100,6 @@
         });
 
     });
-    });
+    }, 'wishlist-wish-message');
         </script>
     @endpush
