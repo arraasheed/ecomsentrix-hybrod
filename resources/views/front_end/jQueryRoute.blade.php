@@ -332,7 +332,7 @@
 
 @if(\Request::route()->getName() == 'page.contact_us')
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             // Assuming $slug is defined somewhere in your Blade template
             var slug = "{{ $slug }}"; // Replace with actual value
             var mobile = "{{ $store->user->mobile ?? '+123 456-78-90'}}";

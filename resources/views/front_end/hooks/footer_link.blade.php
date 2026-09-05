@@ -227,7 +227,7 @@
 
 @push('page-script')
 <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         // Check if fab-options contains any children
         if ($('#fabOptions').children().length > 0) {
             $('.floating-action-menu').show();
