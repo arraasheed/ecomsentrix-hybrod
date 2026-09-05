@@ -61,6 +61,14 @@
     @endif
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/select2.min.css') }}">
     <script src="{{ asset('assets/js/plugins/select2.min.js') }}"></script>
+
+    {{--
+        Turbo Drive (CLAUDE-5). Must stay in <head>: Turbo warns when loaded from
+        <body>, and the onTurboLoad/onTurboOnce stub inside has to be defined
+        before the first inline script in <body> calls it.
+        Kill-switch: TURBO_ENABLED=false in .env.
+    --}}
+    @include('layouts.includes.turbo')
 </head>
 
 <body>

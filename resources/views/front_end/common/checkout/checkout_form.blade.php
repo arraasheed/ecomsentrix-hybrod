@@ -120,6 +120,16 @@
                             'method' => 'post',
                             'enctype' => 'multipart/form-data',
                             'id' => 'formdata',
+                            // ⛔ Same reason as front_end/pages/checkout.blade.php:25 —
+                            // payment.process redirects away to the payment
+                            // gateway, and Turbo's fetch() cannot follow a
+                            // cross-origin redirect. See the long note there.
+                            //
+                            // This partial is currently unreferenced (the
+                            // stylique checkout page has its own copy), but it
+                            // is marked anyway: whichever theme starts using it
+                            // must not silently lose payments.
+                            'data-turbo' => 'false',
                         ]) !!}
                     <div class="checkout-page-left">
                         @include('front_end.hooks.checkout_hide_field')

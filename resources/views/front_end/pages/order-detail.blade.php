@@ -27,6 +27,11 @@
             @if (module_is_active('AutomaticOrderPrinting'))
                 @stack('invoice-button')
             @else
+            {{-- No data-turbo="false" needed (CLAUDE-5): target="_blank" already
+                 exempts this link. Turbo's findLinkFromClickTarget() returns null
+                 for any target other than _self, and its prefetch selector is
+                 a[href]:not([target^=_]). Same for the WhatsApp and Google Maps
+                 links elsewhere in front_end/ — those are cross-origin too. --}}
             <a href="{{ route('shippinglabel.pdf', encrypt($order['id'])) }}"
                                             target="_blank" type="button" class="btn-primary p-2 h-10 w-10 flex items-center justify-center">
               <i class="fas fa-arrow-down"></i>
@@ -97,7 +102,14 @@
                             <td class="px-4 py-3 justify-center text-gray-600">
                               <div class="flex gap-2 justify-center">
                                 @if (!empty($download_product->downloadable_product))
-                                  <a href="{{ get_file($download_product->downloadable_product) }}" type="button" class="btn-primary p-2 h-10 w-10 flex items-center justify-center download_prod_{{ $item['product_id'] }}">
+                                  {{-- data-turbo="false" (CLAUDE-5): this anchor has no `download`
+                                       attribute, so Turbo does not auto-skip it the way it skips
+                                       its sibling below. Whether it would be intercepted depends
+                                       on the uploaded file's extension — .pdf and .zip are on
+                                       Turbo's unvisitable list, .epub or .psd are not, and those
+                                       would be swapped into the page as HTML instead of
+                                       downloaded. --}}
+                                  <a href="{{ get_file($download_product->downloadable_product) }}" data-turbo="false" type="button" class="btn-primary p-2 h-10 w-10 flex items-center justify-center download_prod_{{ $item['product_id'] }}">
                                     <i class="fas fa-arrow-down"></i>
                                   </a>
                                 @endif
