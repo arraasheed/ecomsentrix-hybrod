@@ -28,7 +28,7 @@
     @push('custom-script')
 
     <script>
-        $(document).ready(function () {
+        window.onTurboOnce(function () {
             $(document).on('change', '.flashsale-toggle', function () {
                 const flashsaleId = $(this).data('flashsale-id');
                 const isActivated = $(this).prop('checked');

@@ -175,7 +175,7 @@
 @push('page-script')
 <script>
     var isPreOrderModuleActive = {{ module_is_active('PreOrder') ? 'true' : 'false' }};
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         var urlParams = new URLSearchParams(window.location.search);
         var page = urlParams.get('page') || 1;
         var product_tag = urlParams.get('product_tag');
@@ -213,6 +213,7 @@
     });
 
 
+    window.onTurboOnce(function () {
     $(document).on('click', '#product_filter_btn', function() {
         var page = $('.page-item.active .page-link').text();
         product_page_filter(page);
@@ -222,6 +223,7 @@
         event.preventDefault();
         var page = $(this).attr('href').split('page=')[1];
         product_page_filter(page);
+    });
     });
 
 
