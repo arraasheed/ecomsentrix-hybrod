@@ -31,7 +31,10 @@ const ORDER = [
   // folder. The hand-written file names the 20 allowed files outright.
   ['BULK', 2, 'BULK-2', HAND],
   ['BULK', 3, 'BULK-3'],
-  ['BULK', 4, 'BULK-4'],
+  // BULK-3 and BULK-4 keep their slots but are hand-written for the same reason
+  // as BULK-2: the inventory mixes in packages/workdo files, and 13 standalone
+  // payment pages have no helper stub, so wrapping them breaks the page.
+  ['BULK', 4, 'BULK-4', HAND],
   ['CLAUDE', 6, 'CLAUDE-6'],
   ['CLAUDE', 7, 'CLAUDE-7'],
   ['CLAUDE', 8, 'CLAUDE-8'],
@@ -231,7 +234,7 @@ fs.mkdirSync(OUT, { recursive: true });
 // "the first 20 files of class A" from script-inventory.md, and 60 of those 300
 // blocks sit in packages/workdo/LandingPage, a forbidden folder. The hand-written
 // file names the 20 allowed files outright.
-const KEEP = new Set(['10-BULK-2.txt']);
+const KEEP = new Set(['10-BULK-2.txt', '12-BULK-4.txt']);
 for (const f of fs.readdirSync(OUT)) {
   if (f.endsWith('.txt') && !KEEP.has(f)) fs.unlinkSync(path.join(OUT, f));
 }
