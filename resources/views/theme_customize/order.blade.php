@@ -88,7 +88,7 @@
 @push('scripts')
 <script src="https://demo.workdo.io/vcardgo-saas/custom/libs/jquery-ui/jquery-ui.js"></script>
 <script>
-   $(function() {
+   window.onTurboLoad(function () {
        $(".sortable").sortable();
        $(".sortable").disableSelection();
        $(".sortable").sortable({

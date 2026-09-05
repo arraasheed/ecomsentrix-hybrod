@@ -1,7 +1,7 @@
 <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('js/repeater.js') }}"></script>
 <script>
-$(function() {
+window.onTurboLoad(function () {
     "use restrict";
     
     // Destroy any existing summernote instances in repeaters to prevent duplicates
@@ -10,6 +10,7 @@ $(function() {
             $(this).summernote('destroy');
         }
     });
+    window.onTurboOnce(function () {
     // Icon picker functionality
     $(document).on('click', '.icon-picker-button', function(e) {
         e.stopPropagation();
@@ -85,6 +86,7 @@ $(function() {
         });
     });
     
+});
     // Initialize icon previews when repeater items are loaded
     function initIconPreviews() {
         $('.icon-input').each(function() {

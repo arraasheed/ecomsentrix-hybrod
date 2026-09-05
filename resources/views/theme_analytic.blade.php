@@ -118,6 +118,7 @@
 @endsection
 @push('custom-script')
     <script>
+        window.onTurboLoad(function () {
         (function() {
             var options = {
                 chart: {
@@ -222,9 +223,10 @@
             var chart = new ApexCharts(document.querySelector("#pie-storebrowser"), options);
             chart.render();
         }
+        });
     </script>
     <script>
-       document.addEventListener('DOMContentLoaded', function () {
+       window.onTurboLoad(function () {
             // Define PurposeStyle globally
             window.PurposeStyle = function () {
                 var e = getComputedStyle(document.body);

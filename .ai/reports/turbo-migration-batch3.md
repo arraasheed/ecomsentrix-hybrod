@@ -35,6 +35,9 @@
 | 24 | `resources/views/shipping_method/free_shipping.blade.php` | A + C — split | ready (#FreeShipping change trigger init) → `onTurboLoad`; `#FreeShipping` delegation → `onTurboOnce`। |
 | 25 | `resources/views/shopify/product.blade.php` | A — ready → `onTurboLoad` | DataTable info text init। |
 | 26 | `resources/views/superadmin/dashboard.blade.php` | D — open code → `onTurboLoad` | ApexCharts area chart IIFE init (`{{ }}`/`{!! !!}` data)। |
+| 27 | `resources/views/theme_analytic.blade.php` | D — ২x `onTurboLoad` (open code) | block1: ৩টি ApexCharts init (area + 2 donut, `{!! !!}` data) → `onTurboLoad`। block2: `DOMContentLoaded` → `onTurboLoad`; `window.PurposeStyle` + `WorkedHoursChart` init ভেতরেই (page-scoped, source অক্ষত)। |
+| 28 | `resources/views/theme_customize/customize-script.blade.php` | E — split | outer `$(function)` → `onTurboLoad` (summernote destroy + `initIconPreviews` + repeater inits); `.icon-picker-button` delegation (`$(document).on`) → nested `onTurboOnce` (bootstrap flush index-loop neted registry সমর্থন করে; source-hash dedup → সেশনে একবার)। `$(document).one` handler-এর ভেতরে প্রতি invocation-এ fresh outside-click closer। |
+| 29 | `resources/views/theme_customize/order.blade.php` | B — `$(function)` → `onTurboLoad` | `$(".sortable").sortable()` init। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -45,7 +48,7 @@
 
 ## টally (নিয়ম ৫ — সৎ হিসাব) — ফাইল ৩-৮ পর্যন্ত
 
-- পরিবর্তন করেছি: **26 ফাইল** (1-3, 5-26; pos/index বাদে) 
+- পরিবর্তন করেছি: **29 ফাইল** (1-3, 5-29; pos/index বাদে) 
 - স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
 
@@ -59,4 +62,5 @@
 - `92ff00e` — `wip(turbo): batch 3 files 15-17  [BULK-4]` (orderStatusReport, sale_by_brand, sale_by_category)
 - `3dfce20` — `wip(turbo): batch 3 files 18-20  [BULK-4]` (sale_by_product, stock_report, top_5_reports)
 - `228dd37` — `wip(turbo): batch 3 files 21-23  [BULK-4]` (roles/index, setting/email_setting, setting/index)
-- (pending) — `wip(turbo): batch 3 files 24-26  [BULK-4]` (free_shipping, shopify/product, superadmin/dashboard)
+- `27f6688` — `wip(turbo): batch 3 files 24-26  [BULK-4]` (free_shipping, shopify/product, superadmin/dashboard)
+- (pending) — `wip(turbo): batch 3 files 27-29  [BULK-4]` (theme_analytic, theme_customize/customize-script, theme_customize/order)
