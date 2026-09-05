@@ -54,7 +54,7 @@
 @endsection
 @push('custom-script')
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             function fetchData(value, date) {
                 var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
@@ -222,7 +222,7 @@
         });
     </script>
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             $('.exportChartButton').click(function() {
                 $.ajax({
                     url: '{{ route('reports.export') }}',

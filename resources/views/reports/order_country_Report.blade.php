@@ -87,6 +87,7 @@
             }
         </script>
     <script>
+        window.onTurboLoad(function () {
         var options = {
             series: @json($billingData->pluck('total_orders')),
             chart: {
@@ -98,9 +99,11 @@
 
         var chart = new ApexCharts(document.querySelector("#topSellingProductsChart"), options);
         chart.render();
+        });
     </script>
 
     <script>
+        window.onTurboLoad(function () {
         var colors = ['#33FF57']; // Example color array
         var options = {
             series: [{
@@ -140,9 +143,11 @@
 
         var chart = new ApexCharts(document.querySelector("#BarchartOfStatus"), options);
         chart.render();
+        });
     </script>
 
     <script>
+        window.onTurboLoad(function () {
         var options = {
             series: [{
                 name: 'Orders',
@@ -176,11 +181,13 @@
 
         var chart = new ApexCharts(document.querySelector("#orderLineStatusChart"), options);
         chart.render();
+        });
     </script>
 
     <script src="{{ asset('assets/js/svgMap.min.js') }}"></script>
 
     <script>
+        window.onTurboLoad(function () {
         new svgMap({
             targetElementID: 'map',
             data: {
@@ -197,6 +204,7 @@
             colorMin: '#a2eeed',
             colorMax: '#19c8c7',
             flagType: 'emoji',
+        });
         });
     </script>
 @endpush
