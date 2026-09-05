@@ -311,7 +311,7 @@
     });
 
 
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         var isButtonClicked = localStorage.getItem('manageButtonClicked');
 
         if (isButtonClicked !== 'true') {
@@ -319,7 +319,8 @@
         } else {
             $('#manage-button').hide();
         }
-
+    });
+    window.onTurboOnce(function () {
         $(document).on('click', '#manage-button', function(e) {
             var refundId = $('.refund_id').val();
             var product_refund_qty = $('.product_refund_qty').val();

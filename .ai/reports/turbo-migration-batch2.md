@@ -23,12 +23,16 @@
 | 32 | `resources/views/menu/script.blade.php` | **none — Claude দেখবে** | 612-line mixed block: ready contains 1 delegation + 5× `handleSelectAll()` (each registers 2 delegations); ~14 top-level delegations; nested `document.addEventListener('DOMContentLoaded')`; Blade route interpolation throughout. All delegations MUST go once-only for a correct split — high risk of a missed one = duplicate POST (menu save/delete). Rule 2 → skip. |
 | 33 | `resources/views/module/add.blade.php` | D — `onTurboLoad` | open script, Dropzone init + direct binds (`$('#uploadType').change`, `dropzone.on`) on fresh elements. |
 | 34 | `resources/views/order/order_show.blade.php` | A — `onTurboLoad` | ready = single direct `.click()` bind on `.delivered-button-status`. Vanilla `querySelectorAll('.download-btn').forEach` bind stays top-level (re-binds per page). |
-| 35 | `resources/views/order/refund_details.blade.php` | A + E | ready@214 (setTimeout status init)→`onTurboLoad`; ready@349 (`.check-shipp` direct)→`onTurboLoad`; ready@384 split: localStorage init→`onTurboLoad`, `#refund-amount` delegation→`onTurboOnce`. `.accept-button`/`.cancel-button` direct binds stay top-level. |
+| 35 | `resources/views/order/refund_details.blade.php` | A + E | ready@214 (setTimeout status init)→`onTurboLoad`; ready@314 split: localStorage init→`onTurboLoad` + `#manage-button` delegation→`onTurboOnce`; ready@349 (`.check-shipp` direct)→`onTurboLoad`; ready@384 split: localStorage init→`onTurboLoad` + `#refund-amount` delegation→`onTurboOnce`. `.accept-button`/`.cancel-button` direct binds stay top-level. |
 | 36 | `resources/views/page/create.blade.php` | D — `onTurboLoad` | open script, `$('.modal').on('shown.bs.modal')` = Choices init on modal open. |
 | 37 | `resources/views/page/edit.blade.php` | D — `onTurboLoad` | same pattern as page/create. |
 | 38 | `resources/views/page/index.blade.php` | C — `onTurboOnce` | ready body = single `.page-toggle` delegation. |
 | 39 | `resources/views/payment/authorizenet.blade.php` | **none — Claude দেখবে** | Standalone HTML page (own `<!DOCTYPE html>`…`</html>`, no `layouts.includes.turbo` stub). `window.onTurboLoad` is undefined here → wrapping would throw "not a function" and break card validation. Page is always full-loaded, so `DOMContentLoaded` still fires — leave as-is. |
 | 40 | `resources/views/payment/khalti.blade.php` | **none — Claude দেখবে** | Standalone payment page (starts with own `<head>`), no turbo bootstrap. Same reason: `ready` fires on every full load; KhaltiCheckout init works as-is. Wrapping would break. |
+
+## ⚠️ Follow-up fix (post-final verification)
+
+While re-scanning all 20 files after the final commit, a **4th ready block** in `order/refund_details.blade.php` (line 314, manage-stock) was found — missed during the first pass because an earlier read truncated the middle of the file. It was NOT a re-wrap: the block was genuinely un-wrapped. Fixed by splitting init→`onTurboLoad` + `#manage-button` delegation→`onTurboOnce` in a follow-up commit. Tally above unaffected (same file count).
 
 ## স্পর্শ করিনি — কারণ
 
@@ -55,4 +59,5 @@
 - `8197ce4` — `wip(turbo): batch 2 files 29-31  [BULK-3]` (29,31 edited; 30 layouts/app skipped → Claude)
 - `c936391` — `wip(turbo): batch 2 files 32-34  [BULK-3]` (33,34 edited; 32 menu/script skipped → Claude)
 - `02e2153` — `wip(turbo): batch 2 files 35-37  [BULK-3]`
-- (final, pending) `refactor(turbo): migrate document.ready to turbo:load, batch 2 of 3  [BULK-3]` — ships 38 (page/index); 39-40 authorizenet/khalti skipped → Claude. Checkpoints: `42e2543` (pilot 21-22), `68cf97e` (23-25), `fae5ed1` (26-28), `8197ce4` (29-31).
+- `47c52ff` — `refactor(turbo): migrate document.ready to turbo:load, batch 2 of 3  [BULK-3]` (ships 38; 39-40 skipped → Claude)
+- (fix) `fix(turbo): wrap missed ready block in refund_details  [BULK-3]` — split ready@314 missed in first pass
