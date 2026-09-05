@@ -14,6 +14,9 @@
 | 23 | `resources/views/front_end/pages/checkout.blade.php` | E — block@288 split; **block@363 skipped — Claude দেখবে** | block 1: `ready`(loadAddressForm/handleShippingAddress/loadAdditionalNote)→`onTurboLoad`, `$(document).on("#same-address")`→`onTurboOnce`, function decls stay top-level. block 2: payfast — Blade `@if/@else/@endif` INSIDE script (auth-vs-guest `get_payfast_status`), same pattern as checkout_js (BULK-2 #16) → rule 2. |
 | 24 | `resources/views/front_end/pages/order.blade.php` | E — split | `ready`(init + order_page_filter)→`onTurboLoad`; `.pagination a` delegation→`onTurboOnce`; direct bind `#filter_order`.change + `order_page_filter` fn stay top-level (re-binds per page, no accumulation — mirrors filter.blade.php decision). |
 | 25 | `resources/views/front_end/pages/product-list.blade.php` | **none — Claude দেখবে** | Large Blade `@if($enable_skip_cart...)`..`@endif` block INSIDE the script (lines 349-419) wrapping `initSkipCartHandlers` (unclear nested fn, invocation site unknown) + bootstrap modal init + `@if($button_link)` interpolation inside fn. Rule 2 → skip. |
+| 26 | `resources/views/front_end/pages/refund_order.blade.php` | A + E | block@275 direct `#form_refund_data` submit bind → `onTurboLoad`. block@284: ready `#RefundReasonss` trigger → `onTurboLoad`; delegations `#RefundReasonss` + `#carthtml quantity` → `onTurboOnce` (one wrapper for both). |
+| 27 | `resources/views/front_end/pages/reply_support_ticket.blade.php` | A — `onTurboLoad` | summernote init block @171. Preceding tinymce/editor script (unlisted) untouched. |
+| 28 | `resources/views/front_end/pages/support_ticket_edit.blade.php` | A — `onTurboLoad` | summernote init block @128. Preceding editor script (unlisted) untouched. |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -25,11 +28,12 @@
 
 ## টally (নিয়ম ৫ — সৎ হিসাব) — current
 
-- পরিবর্তন করেছি: **4 ফাইল** (21-24)
-- স্পর্শ করিনি: **1 ফাইল** (product-list — কারণ উপরে) + checkout block 2 (Claude দেখবে)
+- পরিবর্তন করেছি: **7 ফাইল** (21-24, 26-28)
+- স্পর্শ করিনি: **1 ফাইল** (product-list) + checkout block 2 (payfast)
 - সন্দেহ — Claude দেখবে: **2** (product-list, checkout block-2/payfast)
 
 ## Commits
 
 - `42e2543` — `wip(turbo): pilot 2 files  [BULK-3]` (files 21-22)
-- (checkpoint) `wip(turbo): batch 2 files 23-25  [BULK-3]` (23-24 edited, 25 skipped → Claude)
+- `68cf97e` — `wip(turbo): batch 2 files 23-25  [BULK-3]` (23-24 edited, 25 skipped → Claude)
+- (checkpoint) `wip(turbo): batch 2 files 26-28  [BULK-3]`

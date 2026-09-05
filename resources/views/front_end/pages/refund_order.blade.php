@@ -273,7 +273,7 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         $("#form_refund_data").submit(function(e) {
             // $('#loader').fadeIn();
             $(".refund_button").attr("disabled", true);
@@ -282,10 +282,11 @@
     });
 </script>
 <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         $("#RefundReasonss").trigger('change');
     });
 
+    window.onTurboOnce(function () {
     $(document).on('change', '#RefundReasonss', function(e) {
         var conceptName = $('#RefundReasonss').find(":selected").val();
         if (conceptName == "Other") {
@@ -346,5 +347,6 @@
                 $('.grand_total').val(data.CURRENCY + sum.toFixed(2));
             }
         });
+    });
     });
 </script>
