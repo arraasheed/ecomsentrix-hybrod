@@ -24,6 +24,7 @@
 
     @push('custom-script')
         <script>
+            window.onTurboOnce(function () {
             $(document).on('change', '#category_id', function(e) {
                 var id = $(this).val();
                 var val = $('.product_id_div').attr('data_val');
@@ -46,9 +47,10 @@
                 });
 
             });
+            });
         </script>
         <script>
-            $(document).ready(function() {
+            window.onTurboOnce(function () {
 
             $(document).on('click', '.bandonwish', function(e) {
                 var wish_id  = $(this).attr('data-id');
@@ -74,6 +76,7 @@
 
             });
         });
+        window.onTurboOnce(function () {
         $(document).on('click', '.bandonwishmess', function(e) {
         var wish_id  = $(this).attr('data-id');
         var wish_id  = $(this).attr('data-id');
@@ -96,6 +99,7 @@
             }
         });
 
+    });
     });
         </script>
     @endpush

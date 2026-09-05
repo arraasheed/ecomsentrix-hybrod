@@ -3,7 +3,7 @@
 **Task:** Class A files 41+ (remaining) + Class B (delegation-only), editable scope (`resources/views/**` + `themes/**`), `packages/workdo/**` excluded.
 **Helper:** `window.onTurboLoad` / `window.onTurboOnce` from `resources/js/turbo-bootstrap.js` (CLAUDE-5).
 **Pilot passed 2026-09-05 (user, task resumption). Checkpoint = every 3 files (user decision).**
-**Status:** 🟨 IN PROGRESS — pilot (1-2) + batch 3-5.
+**Status:** 🟨 IN PROGRESS — শ্রেণি A সম্পন্ন (1-35); শ্রেণি B (36-73) বাকি।
 
 ## Log
 
@@ -41,6 +41,9 @@
 | 30 | `resources/views/users/profile.blade.php` | C + A — split | `.list-group-item` delegation → `onTurboOnce`; hash/scrollSpy init → `onTurboLoad`; `DOMContentLoaded` scroll listener → `onTurboLoad`। (plans/stripe block@3049 প্যাটার্ন) |
 | 31 | `resources/views/webhook/create.blade.php` | D — open code → `onTurboLoad` | Choices init (multi-select + text-remove)। |
 | 32 | `resources/views/webhook/edit.blade.php` | D — open code → `onTurboLoad` | একই Choices init প্যাটার্ন। |
+| 33 | `resources/views/wishlist/index.blade.php` | C — delegation → `onTurboOnce` | block1: `#category_id` delegation → `onTurboOnce`। block2: `$(document).ready`-এর ভেতরে শুধু `.bandonwish` delegation → ready-লাইন ১:১ `onTurboOnce`-এ প্রতিস্থাপন (pure delegation; `onTurboLoad` দিলে প্রতি nav-এ re-register হতো); টপ-লেভেল `.bandonmessmess` delegation → নিজস্ব `onTurboOnce`। ⚠️ source-এ `var wish_id` ডুপ্লিকেট লাইন আছে — নিয়ম ১ অনুযায়ী অক্ষত। |
+| 34 | `resources/views/woocommerce/category.blade.php` | B — `$(function)` → `onTurboLoad` | DataTable init (`#woocom-category-table`)। |
+| 35 | `resources/views/woocommerce/coupon.blade.php` | B + C — split | `$(function)` DataTable init (`#woocom-coupon-table`) → `onTurboLoad`; `.code` ও `#code-generate` delegation → ২x `onTurboOnce`। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -49,11 +52,16 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — ফাইল ৩-৮ পর্যন্ত
+## টally (নিয়ম ৫ — সৎ হিসাব) — শ্রেণি A সম্পন্ন (1-35)
 
-- পরিবর্তন করেছি: **32 ফাইল** (1-3, 5-32; pos/index বাদে) 
+- পরিবর্তন করেছি: **34 ফাইল** (1-3, 5-35; pos/index বাদে)
 - স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
+
+## শ্রেণি B (delegation-only, 36-73) — বাকি
+
+- 48 `datatable-js.blade.php` স্পর্শ করা হবে না — শুধু global function declaration (`removeSortingOrderFromHeader`), global থাকা বাধ্যতামূলক।
+- ⚠️ 50-51 `myfatoorah/includes/sectionCards|sectionForm` — standalone `myfatoorah/checkout.blade.php`-এ include হয়; সেখানে turbo helper stub পৌঁছায় না কিনা যাচাই করে দেখা হবে, সন্দেহ হলে রিপোর্টে লিখে এগোনো হবে (নিয়ম ২)।
 
 ## Commits
 
@@ -67,4 +75,5 @@
 - `228dd37` — `wip(turbo): batch 3 files 21-23  [BULK-4]` (roles/index, setting/email_setting, setting/index)
 - `27f6688` — `wip(turbo): batch 3 files 24-26  [BULK-4]` (free_shipping, shopify/product, superadmin/dashboard)
 - `92217cb` — `wip(turbo): batch 3 files 27-29  [BULK-4]` (theme_analytic, theme_customize/customize-script, theme_customize/order)
-- (pending) — `wip(turbo): batch 3 files 30-32  [BULK-4]` (users/profile, webhook/create, webhook/edit)
+- `a56fda0` — `wip(turbo): batch 3 files 30-32  [BULK-4]` (users/profile, webhook/create, webhook/edit)
+- (pending) — `wip(turbo): batch 3 files 33-35  [BULK-4]` (wishlist/index, woocommerce/category, woocommerce/coupon) — **শ্রেণি A সম্পন্ন**
