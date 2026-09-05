@@ -660,7 +660,7 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
     <script src="{{ asset('js/repeater.js') }}"></script>
     <script src="{{ asset('assets/css/summernote/summernote-bs4.js') }}"></script>
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             attribute_option_data();
             type();
 
@@ -743,6 +743,7 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
         }
 
         //stock
+        window.onTurboOnce(function () {
         $(document).on("change", "#enable_product_stock", function() {
             if ($("#enable_product_stock").prop("checked")) {
                 $("#options").show();
@@ -767,7 +768,9 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
                 $('#custom_value').show();
             }
         });
+        });
 
+        window.onTurboLoad(function () {
         $('#custom_field_repeater_basic').repeater({
                 initEmpty: false,
                 defaultValues: {
@@ -785,6 +788,7 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
                         show_toastr('Error', 'At least one field is required.', 'error');
                     }
                 }
+        });
         });
 
         // Manually add a new item when the "Add More" button is clicked
@@ -819,6 +823,7 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
             $repeaterList.append($newItem);
         });
 
+        window.onTurboOnce(function () {
         $(document).on('click', '.deleteRecord', function() {
             var id = $(this).data("id");
             $.ajax({
@@ -838,8 +843,10 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
 
             });
         });
+        });
 
         // display variant hide show
+        window.onTurboOnce(function () {
         $(document).on("change", "#enable_product_variant", function() {
             $('.product-weight').show();
             $('.product-stock-div').show();
@@ -862,7 +869,9 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
                 attribute_option_data();
             }
         });
+        });
 
+        window.onTurboLoad(function () {
         //variation option on off
         if ($('.enable_product_variant').prop('checked') == true) {
             var inputValue = $('.attribute_option_data').val();
@@ -880,8 +889,10 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
 
             }
         }
+        });
 
         //variation option on off
+        window.onTurboOnce(function () {
         $(document).on("change", "#enable_product_variant", function() {
             if ($('.enable_product_variant').prop('checked') == true) {
 
@@ -905,6 +916,7 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
                 }
             }
         });
+        });
 
         // edit attribute data
         function attribute_option_data() {
@@ -924,6 +936,7 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
             });
         }
 
+        window.onTurboOnce(function () {
         $(document).on('change', '#attribute_id', function() {
             $('#attribute_options').html("<h3 class='d-none'>Variation</h3>");
             var option = $('.attribute_option').val();
@@ -954,6 +967,7 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
                 });
             });
         });
+        });
 
         // variations form
         function update_attribute() {
@@ -973,6 +987,7 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
             });
         }
 
+        window.onTurboOnce(function () {
         $(document).on('change', '.attribute_option_data', function() {
             var b = $(this).closest('.parent-clase').find('.input-options');
             var enableVariationValue = b.data('enable-variation');
@@ -982,6 +997,9 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
             }
 
         });
+});
+
+        window.onTurboLoad(function () {
     
         var Dropzones = function() {
             var e = $('[data-toggle="dropzone1"]'),
@@ -1030,6 +1048,7 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
                 }, n.html(""), e.dropzone(i)
             }))
         }()
+        });
 
         $('#submit-all').on('click', function() {
 
