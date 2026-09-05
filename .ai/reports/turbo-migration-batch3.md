@@ -164,4 +164,4 @@ register হয় → handler stack। তাই:
 - `f8241a0` — `wip(turbo): batch 3 files 65-67  [BULK-4]` (store/create, store/index, store/list)
 - `5b1473b` — `wip(turbo): batch 3 files 68-70  [BULK-4]` (support/edit, taxes-method/create, taxes-method/edit)
 - `fcfcc28` — `wip(turbo): batch 3 files 71-73  [BULK-4]` (testimonial/index, theme_customize/index, users/user_info)
-- (final, এই commit) — `refactor(turbo): migrate document.ready to turbo:load, batch 3 of 3  [BULK-4]`
+- (final) — `f383505` — `refactor(turbo): migrate document.ready to turbo:load, batch 3 of 3  [BULK-4]`
