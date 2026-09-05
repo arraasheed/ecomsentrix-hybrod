@@ -211,7 +211,7 @@
 @endsection
 @push('custom-script')
 <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function() {
         setTimeout(() => {
             var actionPerformed = localStorage.getItem('actionPerformed');
             var initialStatus = '{{ $refund_requests["refund_status"] }}';
@@ -346,7 +346,7 @@
 
 
 
-    $(document).ready(function () {
+    window.onTurboLoad(function () {
         $('.check-shipp').click(function () {
             var trendingChecked = $('#customCheckdef1trending').is(':checked');
             var subtotalString = $('.refunded_amount').val();
@@ -381,11 +381,13 @@
 
 
 
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         var isButtonClicked = localStorage.getItem('refundedClicked');
         if(isButtonClicked) {
             $('#refund-amount').hide();
         }
+    });
+    window.onTurboOnce(function () {
         $(document).on('click', '#refund-amount', function(e) {
             var refundId = $('.refund_id').val();
             var refund_amount = $("td.refunded_amount b").text();

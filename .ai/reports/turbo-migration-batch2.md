@@ -23,6 +23,9 @@
 | 32 | `resources/views/menu/script.blade.php` | **none — Claude দেখবে** | 612-line mixed block: ready contains 1 delegation + 5× `handleSelectAll()` (each registers 2 delegations); ~14 top-level delegations; nested `document.addEventListener('DOMContentLoaded')`; Blade route interpolation throughout. All delegations MUST go once-only for a correct split — high risk of a missed one = duplicate POST (menu save/delete). Rule 2 → skip. |
 | 33 | `resources/views/module/add.blade.php` | D — `onTurboLoad` | open script, Dropzone init + direct binds (`$('#uploadType').change`, `dropzone.on`) on fresh elements. |
 | 34 | `resources/views/order/order_show.blade.php` | A — `onTurboLoad` | ready = single direct `.click()` bind on `.delivered-button-status`. Vanilla `querySelectorAll('.download-btn').forEach` bind stays top-level (re-binds per page). |
+| 35 | `resources/views/order/refund_details.blade.php` | A + E | ready@214 (setTimeout status init)→`onTurboLoad`; ready@349 (`.check-shipp` direct)→`onTurboLoad`; ready@384 split: localStorage init→`onTurboLoad`, `#refund-amount` delegation→`onTurboOnce`. `.accept-button`/`.cancel-button` direct binds stay top-level. |
+| 36 | `resources/views/page/create.blade.php` | D — `onTurboLoad` | open script, `$('.modal').on('shown.bs.modal')` = Choices init on modal open. |
+| 37 | `resources/views/page/edit.blade.php` | D — `onTurboLoad` | same pattern as page/create. |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -35,7 +38,7 @@
 
 ## টally (নিয়ম ৫ — সৎ হিসাব) — current
 
-- পরিবর্তন করেছি: **11 ফাইল** (21-24, 26-29, 31, 33, 34)
+- পরিবর্তন করেছি: **14 ফাইল** (21-24, 26-29, 31, 33-37)
 - স্পর্শ করিনি: **3 ফাইল** (product-list, layouts/app, menu/script) + checkout block 2 (payfast)
 - সন্দেহ — Claude দেখবে: **4** (product-list, checkout block-2/payfast, layouts/app, menu/script)
 
@@ -45,4 +48,5 @@
 - `68cf97e` — `wip(turbo): batch 2 files 23-25  [BULK-3]` (23-24 edited, 25 skipped → Claude)
 - `fae5ed1` — `wip(turbo): batch 2 files 26-28  [BULK-3]`
 - `8197ce4` — `wip(turbo): batch 2 files 29-31  [BULK-3]` (29,31 edited; 30 layouts/app skipped → Claude)
-- (checkpoint) `wip(turbo): batch 2 files 32-34  [BULK-3]` (33,34 edited; 32 menu/script skipped → Claude)
+- `c936391` — `wip(turbo): batch 2 files 32-34  [BULK-3]` (33,34 edited; 32 menu/script skipped → Claude)
+- (checkpoint) `wip(turbo): batch 2 files 35-37  [BULK-3]`
