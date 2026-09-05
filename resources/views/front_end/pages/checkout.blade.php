@@ -285,7 +285,7 @@
     
 <script>
     'use strict';
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         loadAddressForm("billing", ".selling_address_form");
     
         handleShippingAddress();
@@ -293,8 +293,10 @@
         loadAdditionalNote();
     });
 
+    window.onTurboOnce(function () {
     $(document).on("change", "#same-address", function() {
         handleShippingAddress();
+    });
     });
 
     function handleShippingAddress() {

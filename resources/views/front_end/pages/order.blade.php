@@ -68,7 +68,7 @@
     <script>
       var storeSlug = '{{ $slug ?? '' }}';
 
-      $(document).ready(function() {
+      window.onTurboLoad(function () {
           let urlParams = new URLSearchParams(window.location.search);
           $('#filter_order').val(urlParams.get('filter_order'));
 
@@ -76,10 +76,12 @@
           order_page_filter(initialPage);
       });
 
+      window.onTurboOnce(function () {
       $(document).on('click', '.pagination a', function(e) {
           e.preventDefault();
           let page = $(this).attr('href').split('page=')[1] || 1;
           order_page_filter(page);
+      });
       });
 
       $("#filter_order").change(function() {
