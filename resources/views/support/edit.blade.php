@@ -198,6 +198,7 @@
     </script>
     <script>
 
+        window.onTurboOnce(function () {
         $(document).on('click', '.ticket_status', function() {
             var status = $(this).attr('data-value');
             var data = {
@@ -224,6 +225,7 @@
                     show_toastr('{{ __('Success') }}', '{{ __('Ticket status updated successfully') }}', 'success');
                 }
             });
+        });
         });
     </script>
 

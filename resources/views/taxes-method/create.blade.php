@@ -55,6 +55,7 @@
 </div>
 {!! Form::close() !!}
 <script>
+    window.onTurboOnce(function () {
     $(document).on('change', '.country_change', function(e) {
         var country_id = $(this).val();
         var data = {
@@ -90,6 +91,8 @@
             }
         });
     });
+    }, 'taxes-country-change');
+    window.onTurboOnce(function () {
     $(document).on('change', '.state_chage', function(e) {
         var state_id = $(this).val();
         var data = {
@@ -120,4 +123,5 @@
             }
         });
     });
+    }, 'taxes-state-change');
 </script>
