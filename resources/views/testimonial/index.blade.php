@@ -28,6 +28,7 @@
 
 @push('custom-script')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('change', '#category_id', function(e) {
             var id = $(this).val();
             var val = $('.product_id_div').attr('data_val');
@@ -54,6 +55,7 @@
                 }
             });
 
+        });
         });
     </script>
 @endpush

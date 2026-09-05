@@ -3,7 +3,7 @@
 **Task:** Class A files 41+ (remaining) + Class B (delegation-only), editable scope (`resources/views/**` + `themes/**`), `packages/workdo/**` excluded.
 **Helper:** `window.onTurboLoad` / `window.onTurboOnce` from `resources/js/turbo-bootstrap.js` (CLAUDE-5).
 **Pilot passed 2026-09-05 (user, task resumption). Checkpoint = every 3 files (user decision).**
-**Status:** 🟨 IN PROGRESS — 70/73 শেষ; বাকি 71-73 (৩টি)।
+**Status:** ✅ DONE — 73/73 শেষ (12 ফাইল: 62-73; 4, 48, 50-51, 54 ইতিপূর্বে স্কিপ)।
 
 ## Log
 
@@ -79,6 +79,9 @@
 | 68 | `resources/views/support/edit.blade.php` | C — delegation → `onTurboOnce` + key | `.ticket_status` AJAX delegation (`{{$ticket->id}}`/`{{route}}` interpolate) → key `support-edit-ticket-status`। Block1 (`filename` + `saveAsPDF`) top-level অস্পৃশ্য — inline `onclick="saveAsPDF();"`-এর global দরকার (order ফাইলগুলোর মতো)। |
 | 69 | `resources/views/taxes-method/create.blade.php` | C — ২x delegation → ২x `onTurboOnce` + key | `.country_change` → key `taxes-country-change`; `.state_chage` → key `taxes-state-change`। |
 | 70 | `resources/views/taxes-method/edit.blade.php` | C — ২x delegation → ২x `onTurboOnce` + key | create-এর হুবহু একই script → **একই key** `taxes-country-change`/`taxes-state-change` (উভয় modal একই document handler-এ কাজ করে — দ্বিগুণ AJAX এড়ানো)। |
+| 71 | `resources/views/testimonial/index.blade.php` | C — delegation → `onTurboOnce` + key | `#category_id` AJAX delegation (`{{route}}` interpolate) → key `testimonial-index-category`। `comman_function()` কল (global, layout-এ) অক্ষত। |
+| 72 | `resources/views/theme_customize/index.blade.php` | C — delegation → `onTurboOnce` | `#theme-search` keyup delegation (interpolate নেই) — key ছাড়া। store/create-এর `#theme-search` থেকে source আলাদা (`.theme-card-lable` vs `.theme-label`) → dedup আলাদা, দুই পেজেই চলে। |
+| 73 | `resources/views/users/user_info.blade.php` | C — delegation → `onTurboOnce` + key | `.is_active` AJAX delegation (modal partial; `{{$status}}`/`{{route}}`/`{{csrf_token()}}` interpolate) → key `user-info-is-active`। Closure-র মান প্রথম open-এ আটকে থাকে — $status/route স্থির, তাই নিরাপদ। |
 
 ## স্পর্শ করিনি — কারণ
 

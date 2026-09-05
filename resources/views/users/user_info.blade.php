@@ -145,6 +145,7 @@
     </div>
 </div>
 <script>
+    window.onTurboOnce(function () {
     $(document).on("click", ".is_active", function() {
         var status = {{ $status }};
         // if (status == 0) {
@@ -206,5 +207,6 @@
 
             }
         });
+    });
     });
 </script>

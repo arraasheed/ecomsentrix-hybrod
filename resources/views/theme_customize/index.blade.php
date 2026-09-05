@@ -58,11 +58,13 @@
 
 @push('custom-script')
 <script type="text/javascript">
+    window.onTurboOnce(function () {
     $(document).on('keyup','#theme-search', function() {
         var value = $(this).val().toLowerCase();
         $('#theme-list .theme-item').filter(function() {
             $(this).toggle($(this).find('.theme-card-lable').text().toLowerCase().indexOf(value) > -1)
         });
+    });
     });
 </script>
 @endpush
