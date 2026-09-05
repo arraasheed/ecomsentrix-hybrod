@@ -69,6 +69,7 @@
 @endsection
 @push('custom-script')
     <script>
+        window.onTurboLoad(function () {
         if ($(".multi-select").length > 0) {
             $($(".multi-select")).each(function(index, element) {
                 var id = $(element).attr('id');
@@ -79,7 +80,8 @@
                 );
             });
         }
-        $(document).ready(function() {
+        });
+        window.onTurboLoad(function () {
 
             function fetchData(value, date) {
                 var csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -168,7 +170,7 @@
         });
     </script>
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             $('.exportChartButton').click(function() {
                 $.ajax({
                     url: '{{ route('category.order.export') }}',

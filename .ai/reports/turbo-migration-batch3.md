@@ -23,6 +23,9 @@
 | 12 | `resources/views/reports/index.blade.php` | A — ২x `onTurboLoad` | ২টি ready (bar chart init + `.chart-data` direct bind + export direct bind) → `onTurboLoad`। |
 | 13 | `resources/views/reports/order_report.blade.php` | A — ২x `onTurboLoad` | ২টি ready (line/bar chart init + `.chart-data`/export/daterangepicker direct binds) → `onTurboLoad`। |
 | 14 | `resources/views/reports/order_country_Report.blade.php` | D — ৪x `onTurboLoad` (open code) | pie/bar/area ApexCharts init (open script) + svgMap init → ৪x `onTurboLoad`। `saveAsPDF()` (html2pdf export) function declaration global — HTML onclick-এ ব্যবহৃত, স্পর্শ করিনি। |
+| 15 | `resources/views/reports/orderStatusReport.blade.php` | D — ৩x `onTurboLoad` (open code) | pie/bar/area ApexCharts init (open script, `@json` data) → ৩x `onTurboLoad`। `saveAsPDF()` global fn স্পর্শ করিনি। |
+| 16 | `resources/views/reports/sale_by_brand.blade.php` | A — ২x `onTurboLoad` + D — Choices init | `if ($(".multi-select"))` Choices init (open code, fresh per page) → `onTurboLoad`; ready@78 (fetchData + `.chart-data`/`.filter-apply-btn`/`#brand_id` direct binds) → `onTurboLoad`; ready@181 (export + daterangepicker) → `onTurboLoad`। |
+| 17 | `resources/views/reports/sale_by_category.blade.php` | A + D | sale_by_brand-এর হুবহু প্যাটার্ন (Choices init + ২x ready)। `#category_id`। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -33,8 +36,8 @@
 
 ## টally (নিয়ম ৫ — সৎ হিসাব) — ফাইল ৩-৮ পর্যন্ত
 
-- পরিবর্তন করেছি: **14 ফাইল** (1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
-- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + order_country-র `saveAsPDF()` fn
+- পরিবর্তন করেছি: **17 ফাইল** (1-3, 5-17; pos/index বাদে) 
+- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + order_country/orderStatusReport-এর `saveAsPDF()` fn
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
 
 ## Commits
@@ -43,4 +46,5 @@
 - `8d23826` — `wip(turbo): batch 3 files 3-5  [BULK-4]` (3 stripe block@3049, 5 attribute_combinations; 4 pos/index skipped)
 - `07980ed` — `wip(turbo): batch 3 files 6-8  [BULK-4]` (attribute_combinations_data, attribute_combinations_edit, product/create)
 - `7ed38d9` — `wip(turbo): batch 3 files 9-11  [BULK-4]` (product/edit, product/show, reports/bar_chart_order_report)
-- (pending) — `wip(turbo): batch 3 files 12-14  [BULK-4]` (reports/index, reports/order_report, reports/order_country_Report)
+- `7332c9b` — `wip(turbo): batch 3 files 12-14  [BULK-4]` (reports/index, reports/order_report, reports/order_country_Report)
+- (pending) — `wip(turbo): batch 3 files 15-17  [BULK-4]` (orderStatusReport, sale_by_brand, sale_by_category)

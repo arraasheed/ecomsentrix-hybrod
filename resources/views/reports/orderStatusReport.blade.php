@@ -69,6 +69,7 @@
         }
     </script>
     <script>
+        window.onTurboLoad(function () {
         var options = {
             series: @json(array_values($orderStatusCounts)),
             chart: {
@@ -91,9 +92,11 @@
 
         var chart = new ApexCharts(document.querySelector("#orderStatusChart"), options);
         chart.render();
+        });
     </script>
 
     <script>
+        window.onTurboLoad(function () {
         var colors = ['#33FF57']; // Example color array
         var options = {
             series: [{
@@ -133,9 +136,11 @@
 
         var chart = new ApexCharts(document.querySelector("#BarchartOfStatus"), options);
         chart.render();
+        });
     </script>
 
     <script>
+        window.onTurboLoad(function () {
         var options = {
             series: [{
                 name: 'Orders',
@@ -169,6 +174,7 @@
 
         var chart = new ApexCharts(document.querySelector("#orderLineStatusChart"), options);
         chart.render();
+        });
     </script>
 @endpush
 
