@@ -43,6 +43,7 @@
 
 <script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
 <script>
+    window.onTurboLoad(function () {
     if ($(".multi-select").length > 0) {
         $($(".multi-select")).each(function(index, element) {
             var id = $(element).attr('id');
@@ -61,4 +62,5 @@
             removeItemButton: true,
         }
     );
+    });
 </script>

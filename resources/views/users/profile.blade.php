@@ -196,6 +196,7 @@
 @endsection
 @push('custom-script')
     <script>
+            window.onTurboOnce(function () {
             $(document).on('click', '.list-group-item', function() {
                 $('.list-group-item').removeClass('active');
                 $('.list-group-item').removeClass('text-primary');
@@ -203,6 +204,9 @@
                     $(this).addClass('active').removeClass('text-primary');
                 }, 10);
             });
+            });
+
+            window.onTurboLoad(function () {
             var type = window.location.hash.substr(1);
             $('.list-group-item').removeClass('active');
             $('.list-group-item').removeClass('text-primary');
@@ -215,7 +219,8 @@
                 target: '#useradd-sidenav',
                 offset: 300
             })
-        document.addEventListener('DOMContentLoaded', function() {
+            });
+            window.onTurboLoad(function () {
             // Select all sidebar links
             const links = document.querySelectorAll('#useradd-sidenav .list-group-item');
             // Add scroll event listener
