@@ -44,6 +44,9 @@
 | 33 | `resources/views/wishlist/index.blade.php` | C — delegation → `onTurboOnce` | block1: `#category_id` delegation → `onTurboOnce`। block2: `$(document).ready`-এর ভেতরে শুধু `.bandonwish` delegation → ready-লাইন ১:১ `onTurboOnce`-এ প্রতিস্থাপন (pure delegation; `onTurboLoad` দিলে প্রতি nav-এ re-register হতো); টপ-লেভেল `.bandonmessmess` delegation → নিজস্ব `onTurboOnce`। ⚠️ source-এ `var wish_id` ডুপ্লিকেট লাইন আছে — নিয়ম ১ অনুযায়ী অক্ষত। |
 | 34 | `resources/views/woocommerce/category.blade.php` | B — `$(function)` → `onTurboLoad` | DataTable init (`#woocom-category-table`)। |
 | 35 | `resources/views/woocommerce/coupon.blade.php` | B + C — split | `$(function)` DataTable init (`#woocom-coupon-table`) → `onTurboLoad`; `.code` ও `#code-generate` delegation → ২x `onTurboOnce`। |
+| 36 | `resources/views/addon/apps.blade.php` | C — delegation → `onTurboOnce` | `.module_change` delegation। |
+| 37 | `resources/views/addon/index.blade.php` | C — delegation → `onTurboOnce` | একই `.module_change` delegation (addon/themes index)। |
+| 38 | `resources/views/coupon/index.blade.php` | C — ২x delegation → এক `onTurboOnce` | `.code` + `#code-generate` — দুটো এক wrapper-এ (পাইলট প্যাটার্ন)। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -52,9 +55,9 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — শ্রেণি A সম্পন্ন (1-35)
+## টally (নিয়ম ৫ — সৎ হিসাব) — 1-38 পর্যন্ত
 
-- পরিবর্তন করেছি: **34 ফাইল** (1-3, 5-35; pos/index বাদে)
+- পরিবর্তন করেছি: **37 ফাইল** (1-3, 5-38; pos/index বাদে)
 - স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
 
@@ -76,4 +79,5 @@
 - `27f6688` — `wip(turbo): batch 3 files 24-26  [BULK-4]` (free_shipping, shopify/product, superadmin/dashboard)
 - `92217cb` — `wip(turbo): batch 3 files 27-29  [BULK-4]` (theme_analytic, theme_customize/customize-script, theme_customize/order)
 - `a56fda0` — `wip(turbo): batch 3 files 30-32  [BULK-4]` (users/profile, webhook/create, webhook/edit)
-- (pending) — `wip(turbo): batch 3 files 33-35  [BULK-4]` (wishlist/index, woocommerce/category, woocommerce/coupon) — **শ্রেণি A সম্পন্ন**
+- `3a6d834` — `wip(turbo): batch 3 files 33-35  [BULK-4]` (wishlist/index, woocommerce/category, woocommerce/coupon) — **শ্রেণি A সম্পন্ন**
+- (pending) — `wip(turbo): batch 3 files 36-38  [BULK-4]` (addon/apps, addon/index, coupon/index) — শ্রেণি B শুরু

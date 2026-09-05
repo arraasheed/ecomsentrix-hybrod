@@ -80,9 +80,11 @@
 
 @push('custom-script')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('click','.module_change',function(){
             var id = $(this).attr('data-id');
             $('#form_'+id).submit();
+        });
         });
     </script>
 @endpush
