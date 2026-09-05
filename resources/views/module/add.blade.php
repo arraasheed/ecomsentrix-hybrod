@@ -53,6 +53,7 @@
     <script src="{{ asset('assets/js/plugins/dropzone.js') }}"></script>
 
     <script>
+        window.onTurboLoad(function () {
         Dropzone.autoDiscover = false;
         
         // Initialize Dropzone
@@ -90,6 +91,7 @@
         dropzone.on('sending', function(file, xhr, formData) {
             formData.append('_token', "{{ csrf_token() }}");
             $('#loader').fadeIn();
+        });
         });
     </script>
 @endpush

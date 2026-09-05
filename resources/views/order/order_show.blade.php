@@ -202,7 +202,7 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             $(".delivered-button-status").click(function(event) {
                 event.preventDefault();
 
