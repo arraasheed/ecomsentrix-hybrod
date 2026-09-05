@@ -58,6 +58,7 @@
 <script type="text/javascript" src="{{ asset('public/js/html2pdf.bundle.min.js') }}"></script>
 
 <script>
+    window.onTurboLoad(function () {
     feather.replace();
     var pctoggle = document.querySelector("#pct-toggler");
     if (pctoggle) {
@@ -103,9 +104,11 @@
             }
         });
     }
+    });
 
     var logoDark = "{{ isset($setting['logo_dark']) && $setting['logo_dark'] ? asset($setting['logo_dark']) : asset('storage/uploads/logo/logo-dark.png') }}";
     var logoLight = "{{ isset($setting['logo_light']) && $setting['logo_light'] ? asset($setting['logo_light']) : asset('storage/uploads/logo/logo-light.png') }}";
+    window.onTurboLoad(function () {
     var custdarklayout = document.querySelector("#cust-darklayout");
     if ($("#cust-darklayout").length > 0) {
         custdarklayout.addEventListener("click", function() {
@@ -144,7 +147,9 @@
             }
         });
     }
+    });
 
+    window.onTurboOnce(function () {
     $(document).on('click', '#cust_theme_bg',function() {
         if ($('#cust_theme_bg').is(":checked")) {
             document.querySelector(".dash-sidebar").classList.add("transprent-bg");
@@ -194,6 +199,7 @@
                     }
             }
     });
+    });
 
     function removeClassByPrefix(node, prefix) {
         for (let i = 0; i < node.classList.length; i++) {
@@ -205,6 +211,7 @@
     }
 
 
+    window.onTurboLoad(function () {
     var searchInput = document.getElementById("searchInput");
     if (searchInput) {
         searchInput.addEventListener("input", function() {
@@ -223,5 +230,6 @@
         }
     });
     }
+    });
 
 </script>

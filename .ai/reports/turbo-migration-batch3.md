@@ -3,7 +3,7 @@
 **Task:** Class A files 41+ (remaining) + Class B (delegation-only), editable scope (`resources/views/**` + `themes/**`), `packages/workdo/**` excluded.
 **Helper:** `window.onTurboLoad` / `window.onTurboOnce` from `resources/js/turbo-bootstrap.js` (CLAUDE-5).
 **Pilot passed 2026-09-05 (user, task resumption). Checkpoint = every 3 files (user decision).**
-**Status:** 🟨 IN PROGRESS — 55/73 শেষ; বাকি 56-73 (১৮টি delegation-only)।
+**Status:** 🟨 IN PROGRESS — 58/73 শেষ; বাকি 59-73 (১৫টি)।
 
 ## Log
 
@@ -64,6 +64,9 @@
 | 53 | `resources/views/order/index.blade.php` | C — ২x delegation → এক `onTurboOnce` + key | grid-এরই টুইন — key `order-index-delegations` (আলাদা key, নইলে একটার registration অন্যটাকে skip করাত)। ⚠️ top-এর stray `</div>` নিয়ম ১ অনুযায়ী অস্পৃশ্য। |
 | 54 | `resources/views/order/script.blade.php` | ⏭️ স্পর্শ করিনি — নিয়ম ২ | `window.addEventListener('load', ...)` + setTimeout auto-close সহ স্বয়ংক্রিয় print/download flow; শুধু `shippinglabel.blade.php`-এ include — window.load ইচ্ছাকৃত। না-করলেও আচরণ অক্ষত। **Claude দেখবে।** |
 | 55 | `resources/views/order/view.blade.php` | C — ৪x delegation → এক `onTurboOnce` + key | `.order_return`/`.order_status`/`#payment_status`/`#delivery_boy` (608-710 পরপর) → key `order-view-delegations`। `saveAsPDF`/`myFunction`/`copyToClipboard` fn + inline onclick ও `.download-btn` direct binds অস্পৃশ্য (global/fresh দরকার)। |
+| 56 | `resources/views/partision/add.blade.php` | D — IIFE (খোলা কোড) → `onTurboLoad` | topbar promo quote-rotator। ⚠️ partial-টি কোথাও include পাওয়া যায়নি (orphan); এতে নিজেই jQuery লোড হয়। IIFE recursive fadeOut চেইন চালু করে — প্রতি nav-এ নতুন chain, পুরনোটি detached nodes-এ চলতে থাকবে (CLAUDE-6 cleanup নোট)। |
+| 57 | `resources/views/partision/footerlink.blade.php` | D + C — split (admin layout footer) | block1: feather.replace + pctoggle bind → `onTurboLoad`; block2: `logoDark/logoLight` top-level var অস্পৃশ্য (delegation closure দরকার), custdarklayout bind → `onTurboLoad`; `#cust_theme_bg`/`#cust-darklayout` document delegations → এক `onTurboOnce` (interpolate asset path স্থির); `removeClassByPrefix` fn top-level (wrapper handler global lookup দিয়ে কল করে); block3: storeList searchInput bind → `onTurboLoad`। |
+| 58 | `resources/views/partision/sidebar.blade.php` | C — window listeners → `onTurboOnce` | `load`+`resize` দুটি addEventListener এক `onTurboOnce`-এ — প্রতি nav-এ resize listener stack এড়াতে; `removeCollapseClass`/`checkScreenWidth` fn top-level অস্পৃশ্য (layouts/app + layouts/main — উভয়ই admin layout)। ⚠️ nav-এ per-page check আর হয় না (resize-এই ঢাকবে) — CLAUDE-6/8 নোট। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -72,9 +75,9 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — 1-55 পর্যন্ত
+## টally (নিয়ম ৫ — সৎ হিসাব) — 1-58 পর্যন্ত
 
-- পরিবর্তন করেছি: **50 ফাইল** (1-3, 5-53, 55; 4, 48, 50, 51, 54 বাদে)
+- পরিবর্তন করেছি: **53 ফাইল** (1-3, 5-58; 4, 48, 50, 51, 54 বাদে)
 - স্পর্শ করিনি: **5 ফাইল** (4 pos/index — scope ভাঙবে; 48 datatable-js — global fn declaration; 50-51 myfatoorah includes — standalone checkout-only; 54 order/script — window.load print flow) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction/order-detail/sections-order_detail/order_view) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **3** (pos/index, stripe block@3105+, order/script)
 
@@ -118,4 +121,5 @@ register হয় → handler stack। তাই:
 - `888ac87` — `wip(turbo): batch 3 files 42-44  [BULK-4]` (order-detail, sections/order_detail, sections/order_view)
 - `6c4fbd9` — `wip(turbo): batch 3 files 45-47  [BULK-4]` (language/index, cookie_consent, alerts)
 - `9bb86f9` — `wip(turbo): batch 3 files 48-51  [BULK-4]` (module/index পরিবর্তিত; 48, 50, 51 স্কিপ — রো দেখো)
-- (pending) — `wip(turbo): batch 3 files 52-55  [BULK-4]` (order/grid, order/index, order/view; order/script স্কিপ — রো 54)
+- `e80a861` — `wip(turbo): batch 3 files 52-55  [BULK-4]` (order/grid, order/index, order/view; order/script স্কিপ — রো 54)
+- (pending) — `wip(turbo): batch 3 files 56-58  [BULK-4]` (partision/add, partision/footerlink, partision/sidebar)
