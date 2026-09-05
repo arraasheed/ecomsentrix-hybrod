@@ -90,9 +90,9 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — 1-64 পর্যন্ত
+## টally (নিয়ম ৫ — সৎ হিসাব) — 1-73 পর্যন্ত
 
-- পরিবর্তন করেছি: **59 ফাইল** (1-3, 5-64; 4, 48, 50, 51, 54 বাদে)
+- পরিবর্তন করেছি: **68 ফাইল** (1-73; 4, 48, 50, 51, 54 বাদে)
 - স্পর্শ করিনি: **5 ফাইল** (4 pos/index — scope ভাঙবে; 48 datatable-js — global fn declaration; 50-51 myfatoorah includes — standalone checkout-only; 54 order/script — window.load print flow) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction/order-detail/sections-order_detail/order_view) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **3** (pos/index, stripe block@3105+, order/script)
 
@@ -117,6 +117,27 @@ register হয় → handler stack। তাই:
 - 48 `datatable-js.blade.php` স্পর্শ করা হবে না — শুধু global function declaration (`removeSortingOrderFromHeader`), global থাকা বাধ্যতামূলক।
 - ✅ 50-51 `myfatoorah/includes/sectionCards|sectionForm` — যাচাই হয়েছে: শুধু standalone `myfatoorah/checkout.blade.php`-এ include → helper stub নেই, **স্পর্শ করা হয়নি** (রো 50-51 দেখো)।
 
+## চূড়ান্ত সারসংক্ষেপ — তিন batch মিলে (BULK-2 + BULK-3 + BULK-4)
+
+| Batch | তালিকার আকার | পরিবর্তিত | স্কিপ (কারণ) |
+|---|---|---|---|
+| BULK-2 (ব্যাচ ১) | ২০ slot | ১৮ | `country/index` (ready-র DataTable var-এর উপর delegation closure — mechanical split scope ভাঙবে), `checkout_js` (script-এর ভেতরে Blade `@if/@else` + payfast payment flow) |
+| BULK-3 (ব্যাচ ২) | ২০ slot | ১৫ | `product-list`, `layouts/app` (CLAUDE-6-এর জন্য সংরক্ষিত), `menu/script`, `authorizenet`, `khalti` — বিস্তারিত `.ai/reports/turbo-migration-batch2.md`-এ |
+| BULK-4 (ব্যাচ ৩) | ৭৩ ফাইল | ৬৮ | `pos/index` (৩৮০-লাইন mixed), `datatable-js` (শুধু global fn), `myfatoorah includes` ×২ (standalone-only), `order/script` (window.load print flow) |
+
+### ব্যাখ্যা
+
+- তিন batch-ই একই inventory-র আলাদা স্ক্যান, প্রতিটি ব্যাচের নিজস্ব সংখ্যায়ন (BULK-2 = ১-২০, BULK-3 = ২১-৪০, BULK-4 = ১-৭৩ বড় তালিকা)। মোট wrap: **১৮ + ১৫ + ৬৮ = ১০১টি inline-script block** `onTurboLoad`/`onTurboOnce`-এ migrate হয়েছে।
+- BULK-4-এর শুরু থেকেই ১৯টি ফাইল সচেতনভাবে বাদ ছিল: ১৩টি standalone payment পেজ (নিজস্ব `<!DOCTYPE html>`/`<head>` — helper stub পৌঁছায় না, wrap করলে `onTurboLoad is not a function`), ২টি layout ফাইল (`front_end/layouts/app` + `themes/*/app` — Turbo boot ওখানে, CLAUDE-6 করবে), ৪টি CLAUDE-6/7-সংরক্ষিত (admin `layouts/app`, `menu/script`, `product-list`, `checkout`)।
+- এখনো সচেতনভাবে বাকি: উপরের টেবিলের স্কিপ সারিগুলো + payment gateway-র ভেতরের block (stripe @3105+, payfast @363)।
+
+### Claude-কে দেখাতে হবে
+
+- **BULK-2:** `country/index`, `checkout_js` + `.image_delete` cross-page collision, `.condition_option`, `footer_link` once-ification
+- **BULK-3:** `product-list`, `checkout` block@363 (payfast), `layouts/app`, `menu/script`, `authorizenet`, `khalti`
+- **BULK-4:** `pos/index`, `plans/stripe` block@3105+, `order/script`
+- **CLAUDE-6/7:** admin `layouts/app.blade.php`, `front_end/layouts/app.blade.php`, `themes/stylique/.../app.blade.php`, `menu/script.blade.php`, `front_end/pages/product-list.blade.php`, `front_end/pages/checkout.blade.php` (payment flow)
+
 ## Commits
 
 - `3dbcb02` — `wip(turbo): pilot 2 files  [BULK-4]` (1-2 planes: create, edit)
@@ -140,7 +161,7 @@ register হয় → handler stack। তাই:
 - `5c9b69c` — `wip(turbo): batch 3 files 56-58  [BULK-4]` (partision/add, partision/footerlink, partision/sidebar)
 - `c99a490` — `wip(turbo): batch 3 files 59-61  [BULK-4]` (plan-coupon/index, plans/index, product_brand/index)
 - `4aa4d0f` — `wip(turbo): batch 3 files 62-64  [BULK-4]` (product_label/index, shippingzone/create, shippingzone/edit)
-- (pending) — `wip(turbo): batch 3 files 65-67  [BULK-4]` (store/create, store/index, store/list)
-- (pending) — `wip(turbo): batch 3 files 68-70  [BULK-4]` (support/edit, taxes-method/create, taxes-method/edit)
-- (pending) — `wip(turbo): batch 3 files 71-73  [BULK-4]` (testimonial/index, theme_customize/index, users/user_info)
-- (pending) — `refactor(turbo): migrate document.ready to turbo:load, batch 3 of 3  [BULK-4]` (final)
+- `f8241a0` — `wip(turbo): batch 3 files 65-67  [BULK-4]` (store/create, store/index, store/list)
+- `5b1473b` — `wip(turbo): batch 3 files 68-70  [BULK-4]` (support/edit, taxes-method/create, taxes-method/edit)
+- `fcfcc28` — `wip(turbo): batch 3 files 71-73  [BULK-4]` (testimonial/index, theme_customize/index, users/user_info)
+- (final, এই commit) — `refactor(turbo): migrate document.ready to turbo:load, batch 3 of 3  [BULK-4]`
