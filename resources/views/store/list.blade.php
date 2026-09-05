@@ -44,6 +44,7 @@
         show_toastr('Success', "{{ __('Link copied') }}", 'success');
     }
 
+    window.onTurboOnce(function () {
     $(document).on('change', '.active-store-index',function() {
         var status = $(this).prop('checked') == true ? 1 : 0;
         var id = $(this).data('id');
@@ -62,7 +63,9 @@
             }
         });
     });
+    }, 'store-active-status');
 
+    window.onTurboOnce(function () {
     $(document).on('keyup', '#user-search', function() {
         var searchValue = $(this).val().toLowerCase();
         
@@ -70,6 +73,7 @@
             $(this).toggle($(this).find('.card-body h4').text().toLowerCase().indexOf(searchValue) > -1 || 
                            $(this).find('.card-body small').text().toLowerCase().indexOf(searchValue) > -1);
         });
+    });
     });
 </script>
 @endpush

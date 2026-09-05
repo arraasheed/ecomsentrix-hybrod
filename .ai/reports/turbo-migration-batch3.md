@@ -3,7 +3,7 @@
 **Task:** Class A files 41+ (remaining) + Class B (delegation-only), editable scope (`resources/views/**` + `themes/**`), `packages/workdo/**` excluded.
 **Helper:** `window.onTurboLoad` / `window.onTurboOnce` from `resources/js/turbo-bootstrap.js` (CLAUDE-5).
 **Pilot passed 2026-09-05 (user, task resumption). Checkpoint = every 3 files (user decision).**
-**Status:** 🟨 IN PROGRESS — 61/73 শেষ; বাকি 62-73 (১২টি)।
+**Status:** 🟨 IN PROGRESS — 67/73 শেষ; বাকি 68-73 (৬টি)।
 
 ## Log
 
@@ -73,6 +73,9 @@
 | 62 | `resources/views/product_label/index.blade.php` | C — delegation → `onTurboOnce` + key | `.status-index` AJAX delegation — key `product-label-status`। |
 | 63 | `resources/views/shippingzone/create.blade.php` | C — delegation → `onTurboOnce` + key | `.country_change` AJAX delegation (modal partial) — key `shippingzone-create-country`। |
 | 64 | `resources/views/shippingzone/edit.blade.php` | C — delegation → `onTurboOnce` + key | একই `.country_change` প্যাটার্ন — key `shippingzone-edit-country` (create থেকে আলাদা key, উভয়ের source প্রায় এক)। |
+| 65 | `resources/views/store/create.blade.php` | C — delegation → `onTurboOnce` | `#theme-search` keyup delegation (interpolate নেই) — key ছাড়া। |
+| 66 | `resources/views/store/index.blade.php` | C — ২x delegation → ২x `onTurboOnce` | `.active-store-index` AJAX (`{{route}}` interpolate) → key `store-active-status`; `#user-search` (পিওর) → key ছাড়া। `myFunction` top-level (inline onclick দরকার)। |
+| 67 | `resources/views/store/list.blade.php` | C — ২x delegation → ২x `onTurboOnce` | store/index-এর হুবহু একই — `.active-store-index` একই key `store-active-status` (দুই পেজের source অভিন্ন → একটি handler-ই যথেষ্ট); `#user-search` key ছাড়া। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -128,7 +131,10 @@ register হয় → handler stack। তাই:
 - `6c4fbd9` — `wip(turbo): batch 3 files 45-47  [BULK-4]` (language/index, cookie_consent, alerts)
 - `9bb86f9` — `wip(turbo): batch 3 files 48-51  [BULK-4]` (module/index পরিবর্তিত; 48, 50, 51 স্কিপ — রো দেখো)
 - `e80a861` — `wip(turbo): batch 3 files 52-55  [BULK-4]` (order/grid, order/index, order/view; order/script স্কিপ — রো 54)
-- (pending) — `wip(turbo): batch 3 files 59-61  [BULK-4]` (plan-coupon/index, plans/index, product_brand/index)
-- (pending) — `wip(turbo): batch 3 files 62-64  [BULK-4]` (product_label/index, shippingzone/create, shippingzone/edit)
-- (pending) — `wip(turbo): batch 3 files 59-61  [BULK-4]` (plan-coupon/index, plans/index, product_brand/index)
-- (pending) — `wip(turbo): batch 3 files 56-58  [BULK-4]` (partision/add, partision/footerlink, partision/sidebar)
+- `5c9b69c` — `wip(turbo): batch 3 files 56-58  [BULK-4]` (partision/add, partision/footerlink, partision/sidebar)
+- `c99a490` — `wip(turbo): batch 3 files 59-61  [BULK-4]` (plan-coupon/index, plans/index, product_brand/index)
+- `4aa4d0f` — `wip(turbo): batch 3 files 62-64  [BULK-4]` (product_label/index, shippingzone/create, shippingzone/edit)
+- (pending) — `wip(turbo): batch 3 files 65-67  [BULK-4]` (store/create, store/index, store/list)
+- (pending) — `wip(turbo): batch 3 files 68-70  [BULK-4]` (support/edit, taxes-method/create, taxes-method/edit)
+- (pending) — `wip(turbo): batch 3 files 71-73  [BULK-4]` (testimonial/index, theme_customize/index, users/user_info)
+- (pending) — `refactor(turbo): migrate document.ready to turbo:load, batch 3 of 3  [BULK-4]` (final)
