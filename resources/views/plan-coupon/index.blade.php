@@ -26,6 +26,7 @@
 @endsection
 @push('custom-script')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('click', '#code-generate', function() {
             var length = 10;
             var result = '';
@@ -35,6 +36,7 @@
                 result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
             $('#auto-code').val(result);
+        });
         });
     </script>
 @endpush

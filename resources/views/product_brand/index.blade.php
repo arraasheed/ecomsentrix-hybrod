@@ -36,6 +36,7 @@
 @endsection
 @push('scripts')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('change', '.status-index', function() {
             var status = $(this).prop('checked') == true ? 1 : 0;
             var id = $(this).data('id');
@@ -79,5 +80,6 @@
                 }
             });
         });
+        }, 'product-brand-status-popular');
     </script>
 @endpush
