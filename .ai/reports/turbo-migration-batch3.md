@@ -56,6 +56,10 @@
 | 45 | `resources/views/language/index.blade.php` | C — delegation → `onTurboOnce` + key | `#disable_lang` toggle AJAX delegation — `{{route(...)}}`/`{{csrf_token()}}` interpolate → key `language-disable-toggle`। |
 | 46 | `resources/views/layouts/cookie_consent.blade.php` | D — init code → `onTurboLoad` | শুধু `initCookieConsent()+cc.run(...)` block (guard-এর ভেতরে) → `onTurboLoad`। `let language_code/languages`, `setCookie`/`getCookie` fn declaration টপ-লেভেলে অস্পৃশ্য; first-run POST তাই প্রতি nav-এ দৌড়াবে না (`onAccept` user action-নির্ভর)। |
 | 47 | `resources/views/layouts/includes/alerts.blade.php` | C — delegation → `onTurboOnce` + key | `.delete-action` → `$.confirm` delegation → key `alerts-delete-confirm` (layout include — সব admin পেজে একই source)। session-toast echo block + `const sweetAlert = Swal.mixin(...)` global টপ-লেভেলে অস্পৃশ্য (sweetAlert অন্য জায়গা থেকে ব্যবহৃত)। |
+| 48 | `resources/views/layouts/includes/datable-js` → **`datatable-js.blade.php`** | ⏭️ স্পর্শ করিনি | শুধু একটি global function declaration (`removeSortingOrderFromHeader`) — global থাকা বাধ্যতামূলক (টাস্কের সরাসরি নির্দেশনা)। |
+| 49 | `resources/views/module/index.blade.php` | C + D — split | `.module_change` delegation → `onTurboOnce`; `moduleSearch` keyup bind + module-card filter (খোলা কোড, DOM init) → `onTurboLoad`। ভেতরের কোড অক্ষত, +৪ লাইন। |
+| 50 | `resources/views/myfatoorah/includes/sectionCards.blade.php` | ⏭️ স্পর্শ করিনি | শুধু `myfatoorah/checkout.blade.php` (⛔ standalone তালিকাভুক্ত — নিজস্ব `<head>`, layout extend করে না) থেকে include হয়। সেখানে `layouts/includes/turbo.blade.php`-এর helper stub পৌঁছায় না → wrap করলে `onTurboOnce is not a function`, payment form মরে যাবে। ওই পেজে gateway form-এ `data-turbo="false"` → full page load → delegation স্বাভাবিকভাবেই কাজ করে। |
+| 51 | `resources/views/myfatoorah/includes/sectionForm.blade.php` | ⏭️ স্পর্শ করিনি | ৫০ নম্বরের মতোই — standalone checkout-only include, helper stub অনুপস্থিত। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -64,10 +68,10 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — 1-47 পর্যন্ত
+## টally (নিয়ম ৫ — সৎ হিসাব) — 1-51 পর্যন্ত
 
-- পরিবর্তন করেছি: **46 ফাইল** (1-3, 5-47; pos/index বাদে)
-- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction/order-detail/sections-order_detail) + idempotent function-ভেতরের delegation
+- পরিবর্তন করেছি: **47 ফাইল** (1-3, 5-49; pos/index, 48, 50, 51 বাদে)
+- স্পর্শ করিনি: **4 ফাইল** (pos/index — Claude দেখবে; 48 datatable-js — global fn declaration; 50-51 myfatoorah includes — standalone checkout-only) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction/order-detail/sections-order_detail) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
 
 ### পূর্বে migrated ফাইলে key retrofit (ব্যাখ্যা)
@@ -89,7 +93,7 @@ register হয় → handler stack। তাই:
 ## শ্রেণি B (delegation-only, 36-73) — বাকি
 
 - 48 `datatable-js.blade.php` স্পর্শ করা হবে না — শুধু global function declaration (`removeSortingOrderFromHeader`), global থাকা বাধ্যতামূলক।
-- ⚠️ 50-51 `myfatoorah/includes/sectionCards|sectionForm` — standalone `myfatoorah/checkout.blade.php`-এ include হয়; সেখানে turbo helper stub পৌঁছায় না কিনা যাচাই করে দেখা হবে, সন্দেহ হলে রিপোর্টে লিখে এগোনো হবে (নিয়ম ২)।
+- ✅ 50-51 `myfatoorah/includes/sectionCards|sectionForm` — যাচাই হয়েছে: শুধু standalone `myfatoorah/checkout.blade.php`-এ include → helper stub নেই, **স্পর্শ করা হয়নি** (রো 50-51 দেখো)।
 
 ## Commits
 
@@ -108,4 +112,5 @@ register হয় → handler stack। তাই:
 - `22ea62a` — `wip(turbo): batch 3 files 36-38  [BULK-4]` (addon/apps, addon/index, coupon/index) — শ্রেণি B শুরু
 - `7dafff5` — `wip(turbo): batch 3 files 39-41  [BULK-4]` (email_templates/index, sale_counter, auction_order_detail) + wishlist key retrofit
 - `888ac87` — `wip(turbo): batch 3 files 42-44  [BULK-4]` (order-detail, sections/order_detail, sections/order_view)
-- (pending) — `wip(turbo): batch 3 files 45-47  [BULK-4]` (language/index, cookie_consent, alerts)
+- `6c4fbd9` — `wip(turbo): batch 3 files 45-47  [BULK-4]` (language/index, cookie_consent, alerts)
+- (pending) — `wip(turbo): batch 3 files 48-51  [BULK-4]` (module/index পরিবর্তিত; 48, 50, 51 স্কিপ — রো দেখো)
