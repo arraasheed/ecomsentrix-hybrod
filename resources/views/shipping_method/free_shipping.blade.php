@@ -25,10 +25,11 @@
 {!! Form::close() !!}
 
 <script>
-    $(document).ready(function () {
+    window.onTurboLoad(function () {
         $("#FreeShipping").trigger('change');
     });
 
+    window.onTurboOnce(function () {
     $(document).on('change', '#FreeShipping', function()
     {
         var conceptName = $('#FreeShipping').find(":selected").val();
@@ -55,5 +56,6 @@
             $('#mini_cost').addClass('d-block');
             $('#mini_cost').removeClass('d-none');
         }
+    });
     });
 </script>

@@ -32,6 +32,9 @@
 | 21 | `resources/views/roles/index.blade.php` | C — delegation → `onTurboOnce` | ready-র delegation (`input[type=checkbox]` permission check) → `onTurboOnce`; `.show-more`/`.show-less` delegation → ২য় `onTurboOnce`। `CheckPermission` function top-level। |
 | 22 | `resources/views/setting/email_setting.blade.php` | A — ready → `onTurboLoad` | `getEmailSettingFields(emailSetting)` init। |
 | 23 | `resources/views/setting/index.blade.php` | E — split (বড়) | block1 (195-492): ready → `onTurboLoad` (PWA init + add/remove direct binds)। `.nav-link`/`#email_setting`/`.send_email`/`.test-whatsapp-massage`/`[name=storage_setting]`/`#test_email`/`.whatsapp-notification`/`.currency_note` — ৮টি delegation → ৮x `onTurboOnce`; `getSettingForm`/`sendData`/`getEmailSettingFields`/`check_theme` function top-level। block2 (494-703): `.colorPicker`/`.themes-color-change` delegation → `onTurboOnce`; `DOMContentLoaded` → `onTurboLoad`; `#pwa_store`/`#payment-search` delegation → `onTurboOnce`; `reinitializeEventListeners`/`initializePaynowListeners`/`initializePwaListeners`/`$.fn.removeClassRegex` top-level; `#tab-search` direct bind top-level (fresh per page); `.add_button`/`.remove_button` delegation `reinitializeEventListeners`-এর ভেতরে (idempotent off+on) — অক্ষত। |
+| 24 | `resources/views/shipping_method/free_shipping.blade.php` | A + C — split | ready (#FreeShipping change trigger init) → `onTurboLoad`; `#FreeShipping` delegation → `onTurboOnce`। |
+| 25 | `resources/views/shopify/product.blade.php` | A — ready → `onTurboLoad` | DataTable info text init। |
+| 26 | `resources/views/superadmin/dashboard.blade.php` | D — open code → `onTurboLoad` | ApexCharts area chart IIFE init (`{{ }}`/`{!! !!}` data)। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -42,8 +45,8 @@
 
 ## টally (নিয়ম ৫ — সৎ হিসাব) — ফাইল ৩-৮ পর্যন্ত
 
-- পরিবর্তন করেছি: **23 ফাইল** (1-3, 5-23; pos/index বাদে) 
-- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5) + ইতিমধ্যে idempotent function-ভেতরের delegation
+- পরিবর্তন করেছি: **26 ফাইল** (1-3, 5-26; pos/index বাদে) 
+- স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
 
 ## Commits
@@ -55,4 +58,5 @@
 - `7332c9b` — `wip(turbo): batch 3 files 12-14  [BULK-4]` (reports/index, reports/order_report, reports/order_country_Report)
 - `92ff00e` — `wip(turbo): batch 3 files 15-17  [BULK-4]` (orderStatusReport, sale_by_brand, sale_by_category)
 - `3dfce20` — `wip(turbo): batch 3 files 18-20  [BULK-4]` (sale_by_product, stock_report, top_5_reports)
-- (pending) — `wip(turbo): batch 3 files 21-23  [BULK-4]` (roles/index, setting/email_setting, setting/index)
+- `228dd37` — `wip(turbo): batch 3 files 21-23  [BULK-4]` (roles/index, setting/email_setting, setting/index)
+- (pending) — `wip(turbo): batch 3 files 24-26  [BULK-4]` (free_shipping, shopify/product, superadmin/dashboard)
