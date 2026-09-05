@@ -71,6 +71,7 @@
 
 
     if (typeof initCookieConsent === 'function') {
+        window.onTurboLoad(function () {
         var cc = initCookieConsent();
         cc.run({
             current_lang: 'en',
@@ -157,6 +158,7 @@
                     }
                 }
             }
+        });
         });
     }
 </script>

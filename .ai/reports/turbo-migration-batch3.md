@@ -53,6 +53,9 @@
 | 42 | `resources/views/front_end/pages/order-detail.blade.php` | C — delegation → `onTurboOnce` + key | auction-এরই টুইন কাঠামো; `.delstatus` → key `order-detail-delstatus`। `saveAsPDF()` + direct binds অস্পৃশ্য। |
 | 43 | `resources/views/front_end/sections/order_detail.blade.php` | C — delegation → `onTurboOnce` + key | একই `.delstatus` প্যাটার্ন → key `sections-order-detail-delstatus`। |
 | 44 | `resources/views/front_end/sections/order_view.blade.php` | C + D — split | `.downloadable_prodcut` delegation (`{!! route(...) !!}` interpolate) → `onTurboOnce(fn, 'order-view-downloadable')`; `const numbers = {!! json_encode(...) !!}` + forEach bind খোলা কোড → `onTurboLoad` — সাথে top-level `const`-এর Turbo-nav redeclare SyntaxError ঝুঁকিও কাটল (wrapper-এর ভেতরে function scope)। |
+| 45 | `resources/views/language/index.blade.php` | C — delegation → `onTurboOnce` + key | `#disable_lang` toggle AJAX delegation — `{{route(...)}}`/`{{csrf_token()}}` interpolate → key `language-disable-toggle`। |
+| 46 | `resources/views/layouts/cookie_consent.blade.php` | D — init code → `onTurboLoad` | শুধু `initCookieConsent()+cc.run(...)` block (guard-এর ভেতরে) → `onTurboLoad`। `let language_code/languages`, `setCookie`/`getCookie` fn declaration টপ-লেভেলে অস্পৃশ্য; first-run POST তাই প্রতি nav-এ দৌড়াবে না (`onAccept` user action-নির্ভর)। |
+| 47 | `resources/views/layouts/includes/alerts.blade.php` | C — delegation → `onTurboOnce` + key | `.delete-action` → `$.confirm` delegation → key `alerts-delete-confirm` (layout include — সব admin পেজে একই source)। session-toast echo block + `const sweetAlert = Swal.mixin(...)` global টপ-লেভেলে অস্পৃশ্য (sweetAlert অন্য জায়গা থেকে ব্যবহৃত)। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -61,9 +64,9 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — 1-44 পর্যন্ত
+## টally (নিয়ম ৫ — সৎ হিসাব) — 1-47 পর্যন্ত
 
-- পরিবর্তন করেছি: **43 ফাইল** (1-3, 5-44; pos/index বাদে)
+- পরিবর্তন করেছি: **46 ফাইল** (1-3, 5-47; pos/index বাদে)
 - স্পর্শ করিনি: **1 ফাইল** (pos/index) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction/order-detail/sections-order_detail) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
 
@@ -104,4 +107,5 @@ register হয় → handler stack। তাই:
 - `3a6d834` — `wip(turbo): batch 3 files 33-35  [BULK-4]` (wishlist/index, woocommerce/category, woocommerce/coupon) — **শ্রেণি A সম্পন্ন**
 - `22ea62a` — `wip(turbo): batch 3 files 36-38  [BULK-4]` (addon/apps, addon/index, coupon/index) — শ্রেণি B শুরু
 - `7dafff5` — `wip(turbo): batch 3 files 39-41  [BULK-4]` (email_templates/index, sale_counter, auction_order_detail) + wishlist key retrofit
-- (pending) — `wip(turbo): batch 3 files 42-44  [BULK-4]` (order-detail, sections/order_detail, sections/order_view)
+- `888ac87` — `wip(turbo): batch 3 files 42-44  [BULK-4]` (order-detail, sections/order_detail, sections/order_view)
+- (pending) — `wip(turbo): batch 3 files 45-47  [BULK-4]` (language/index, cookie_consent, alerts)
