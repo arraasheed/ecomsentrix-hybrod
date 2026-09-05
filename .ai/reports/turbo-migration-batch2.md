@@ -17,6 +17,9 @@
 | 26 | `resources/views/front_end/pages/refund_order.blade.php` | A + E | block@275 direct `#form_refund_data` submit bind → `onTurboLoad`. block@284: ready `#RefundReasonss` trigger → `onTurboLoad`; delegations `#RefundReasonss` + `#carthtml quantity` → `onTurboOnce` (one wrapper for both). |
 | 27 | `resources/views/front_end/pages/reply_support_ticket.blade.php` | A — `onTurboLoad` | summernote init block @171. Preceding tinymce/editor script (unlisted) untouched. |
 | 28 | `resources/views/front_end/pages/support_ticket_edit.blade.php` | A — `onTurboLoad` | summernote init block @128. Preceding editor script (unlisted) untouched. |
+| 29 | `resources/views/generate.blade.php` | C — 3 delegations → `onTurboOnce` | No ready wrapper. `copyText`/`copySelectedText` are global fns used by HTML onclick — stay top-level. `$('body').on('shown.bs.modal')`, `.template_name`, `#generate` wrapped in ONE `onTurboOnce`. |
+| 30 | `resources/views/layouts/app.blade.php` | **none — Claude দেখবে** | Admin layout (most sensitive). select2 init ready@310 + `setActiveTheme`. User instructed: if doubt, don't touch; CLAUDE-6 works on this file (admin DataTable/select2 re-init). Leave for CLAUDE-6 — avoids double-edit. |
+| 31 | `resources/views/marketplace/pricing.blade.php` | E — split | ready@694 (price calc init)→`onTurboLoad`; `.user_module_check` delegation→`onTurboOnce`. Script @722 (`#user_counter` keyup) unlisted → untouched. |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -24,16 +27,17 @@
 |---|---|
 | `checkout.blade.php` block@363 (payfast) | Blade `@if/@else/@endif` inside script; payment flow — rule 2 → Claude দেখবে। |
 | `product-list.blade.php` (block@146) | Blade `@if` block wrapping `initSkipCartHandlers` inside script; unclear nested function — rule 2 → Claude দেখবে। |
-| `layouts/app.blade.php` @304 | not reached yet (file 30) — will evaluate with user's warning (admin layout, most sensitive). |
+| `layouts/app.blade.php` @304 | admin layout, most sensitive; CLAUDE-6 will handle this file (user decision) → Claude দেখবে। |
 
 ## টally (নিয়ম ৫ — সৎ হিসাব) — current
 
-- পরিবর্তন করেছি: **7 ফাইল** (21-24, 26-28)
-- স্পর্শ করিনি: **1 ফাইল** (product-list) + checkout block 2 (payfast)
-- সন্দেহ — Claude দেখবে: **2** (product-list, checkout block-2/payfast)
+- পরিবর্তন করেছি: **9 ফাইল** (21-24, 26-29, 31)
+- স্পর্শ করিনি: **2 ফাইল** (product-list, layouts/app) + checkout block 2 (payfast)
+- সন্দেহ — Claude দেখবে: **3** (product-list, checkout block-2/payfast, layouts/app)
 
 ## Commits
 
 - `42e2543` — `wip(turbo): pilot 2 files  [BULK-3]` (files 21-22)
 - `68cf97e` — `wip(turbo): batch 2 files 23-25  [BULK-3]` (23-24 edited, 25 skipped → Claude)
-- (checkpoint) `wip(turbo): batch 2 files 26-28  [BULK-3]`
+- `fae5ed1` — `wip(turbo): batch 2 files 26-28  [BULK-3]`
+- (checkpoint) `wip(turbo): batch 2 files 29-31  [BULK-3]` (29,31 edited; 30 layouts/app skipped → Claude)
