@@ -31,6 +31,7 @@
 {!! Form::close() !!}
 
 <script>
+    window.onTurboOnce(function () {
     $(document).on('change', '.country_change', function(e) {
         var country_id = $(this).val();
         var data = {
@@ -66,6 +67,7 @@
                 $('select').niceSelect();
             }
         });
+        }, 'shippingzone-create-country');
     });
 
 </script>

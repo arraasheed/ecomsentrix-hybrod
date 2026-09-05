@@ -70,6 +70,9 @@
 | 59 | `resources/views/plan-coupon/index.blade.php` | C — delegation → `onTurboOnce` | `#code-generate` delegation (interpolate নেই)। |
 | 60 | `resources/views/plans/index.blade.php` | C — ২x delegation → ২x `onTurboOnce` | block1: `#trial` delegation (interpolate নেই); block2: `.is_disable` AJAX delegation (`{{route}}`/`{{csrf_token()}}` interpolate) → key `plans-index-disable`। |
 | 61 | `resources/views/product_brand/index.blade.php` | C — ২x delegation → এক `onTurboOnce` + key | `.status-index` + `.popular-index` AJAX delegation (`{{route}}` interpolate) — এক wrapper, key `product-brand-status-popular`। |
+| 62 | `resources/views/product_label/index.blade.php` | C — delegation → `onTurboOnce` + key | `.status-index` AJAX delegation — key `product-label-status`। |
+| 63 | `resources/views/shippingzone/create.blade.php` | C — delegation → `onTurboOnce` + key | `.country_change` AJAX delegation (modal partial) — key `shippingzone-create-country`। |
+| 64 | `resources/views/shippingzone/edit.blade.php` | C — delegation → `onTurboOnce` + key | একই `.country_change` প্যাটার্ন — key `shippingzone-edit-country` (create থেকে আলাদা key, উভয়ের source প্রায় এক)। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -78,9 +81,9 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — 1-61 পর্যন্ত
+## টally (নিয়ম ৫ — সৎ হিসাব) — 1-64 পর্যন্ত
 
-- পরিবর্তন করেছি: **56 ফাইল** (1-3, 5-61; 4, 48, 50, 51, 54 বাদে)
+- পরিবর্তন করেছি: **59 ফাইল** (1-3, 5-64; 4, 48, 50, 51, 54 বাদে)
 - স্পর্শ করিনি: **5 ফাইল** (4 pos/index — scope ভাঙবে; 48 datatable-js — global fn declaration; 50-51 myfatoorah includes — standalone checkout-only; 54 order/script — window.load print flow) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction/order-detail/sections-order_detail/order_view) + idempotent function-ভেতরের delegation
 - সন্দেহ — Claude দেখবে: **3** (pos/index, stripe block@3105+, order/script)
 
@@ -125,6 +128,7 @@ register হয় → handler stack। তাই:
 - `6c4fbd9` — `wip(turbo): batch 3 files 45-47  [BULK-4]` (language/index, cookie_consent, alerts)
 - `9bb86f9` — `wip(turbo): batch 3 files 48-51  [BULK-4]` (module/index পরিবর্তিত; 48, 50, 51 স্কিপ — রো দেখো)
 - `e80a861` — `wip(turbo): batch 3 files 52-55  [BULK-4]` (order/grid, order/index, order/view; order/script স্কিপ — রো 54)
-- `5c9b69c` — `wip(turbo): batch 3 files 56-58  [BULK-4]` (partision/add, partision/footerlink, partision/sidebar)
+- (pending) — `wip(turbo): batch 3 files 59-61  [BULK-4]` (plan-coupon/index, plans/index, product_brand/index)
+- (pending) — `wip(turbo): batch 3 files 62-64  [BULK-4]` (product_label/index, shippingzone/create, shippingzone/edit)
 - (pending) — `wip(turbo): batch 3 files 59-61  [BULK-4]` (plan-coupon/index, plans/index, product_brand/index)
 - (pending) — `wip(turbo): batch 3 files 56-58  [BULK-4]` (partision/add, partision/footerlink, partision/sidebar)
