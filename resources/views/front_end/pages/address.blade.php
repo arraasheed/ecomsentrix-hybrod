@@ -92,7 +92,7 @@
 
 @push('page-script')
 <script>
-    $(document).ready(function() {
+    window.onTurboOnce(function () {
         // Handle form submission
         $(document).on('submit', '#address-form', function(e) {
             e.preventDefault();
