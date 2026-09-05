@@ -605,6 +605,7 @@
 
         }
 
+        window.onTurboOnce(function () {
         $(document).on('click', '.order_return', function() {
             var product_id = $(this).attr('product-id');
             var variant_id = $(this).attr('variant-id');
@@ -708,6 +709,7 @@
                 }
             });
         });
+        }, 'order-view-delegations');
 
         function myFunction() {
             var copyText = document.getElementById("myInput");

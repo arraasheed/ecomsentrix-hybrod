@@ -3,7 +3,7 @@
 **Task:** Class A files 41+ (remaining) + Class B (delegation-only), editable scope (`resources/views/**` + `themes/**`), `packages/workdo/**` excluded.
 **Helper:** `window.onTurboLoad` / `window.onTurboOnce` from `resources/js/turbo-bootstrap.js` (CLAUDE-5).
 **Pilot passed 2026-09-05 (user, task resumption). Checkpoint = every 3 files (user decision).**
-**Status:** 🟨 IN PROGRESS — শ্রেণি A সম্পন্ন (1-35); শ্রেণি B (36-73) বাকি।
+**Status:** 🟨 IN PROGRESS — 55/73 শেষ; বাকি 56-73 (১৮টি delegation-only)।
 
 ## Log
 
@@ -60,6 +60,10 @@
 | 49 | `resources/views/module/index.blade.php` | C + D — split | `.module_change` delegation → `onTurboOnce`; `moduleSearch` keyup bind + module-card filter (খোলা কোড, DOM init) → `onTurboLoad`। ভেতরের কোড অক্ষত, +৪ লাইন। |
 | 50 | `resources/views/myfatoorah/includes/sectionCards.blade.php` | ⏭️ স্পর্শ করিনি | শুধু `myfatoorah/checkout.blade.php` (⛔ standalone তালিকাভুক্ত — নিজস্ব `<head>`, layout extend করে না) থেকে include হয়। সেখানে `layouts/includes/turbo.blade.php`-এর helper stub পৌঁছায় না → wrap করলে `onTurboOnce is not a function`, payment form মরে যাবে। ওই পেজে gateway form-এ `data-turbo="false"` → full page load → delegation স্বাভাবিকভাবেই কাজ করে। |
 | 51 | `resources/views/myfatoorah/includes/sectionForm.blade.php` | ⏭️ স্পর্শ করিনি | ৫০ নম্বরের মতোই — standalone checkout-only include, helper stub অনুপস্থিত। |
+| 52 | `resources/views/order/grid.blade.php` | C — ২x delegation → এক `onTurboOnce` + key | `.code` + `#code-generate` (coupon-এরই কপি প্যাটার্ন) — key `order-grid-delegations`। |
+| 53 | `resources/views/order/index.blade.php` | C — ২x delegation → এক `onTurboOnce` + key | grid-এরই টুইন — key `order-index-delegations` (আলাদা key, নইলে একটার registration অন্যটাকে skip করাত)। ⚠️ top-এর stray `</div>` নিয়ম ১ অনুযায়ী অস্পৃশ্য। |
+| 54 | `resources/views/order/script.blade.php` | ⏭️ স্পর্শ করিনি — নিয়ম ২ | `window.addEventListener('load', ...)` + setTimeout auto-close সহ স্বয়ংক্রিয় print/download flow; শুধু `shippinglabel.blade.php`-এ include — window.load ইচ্ছাকৃত। না-করলেও আচরণ অক্ষত। **Claude দেখবে।** |
+| 55 | `resources/views/order/view.blade.php` | C — ৪x delegation → এক `onTurboOnce` + key | `.order_return`/`.order_status`/`#payment_status`/`#delivery_boy` (608-710 পরপর) → key `order-view-delegations`। `saveAsPDF`/`myFunction`/`copyToClipboard` fn + inline onclick ও `.download-btn` direct binds অস্পৃশ্য (global/fresh দরকার)। |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -68,11 +72,11 @@
 | `plans/stripe.blade.php` block@3105+ | payment gateway flow (Stripe/Paystack/Razorpay/Khalti) — Blade `@if` script-এর ভেতরে interspersed; নিয়ম ২ → Claude দেখবে |
 | `pos/index.blade.php` block@295 | 380-লাইন mixed block, ready-র ভেতরে function declarations + delegation একই scope — mechanical split scope ভাঙবে; BULK-2 `country/index` precedent → Claude দেখবে |
 
-## টally (নিয়ম ৫ — সৎ হিসাব) — 1-51 পর্যন্ত
+## টally (নিয়ম ৫ — সৎ হিসাব) — 1-55 পর্যন্ত
 
-- পরিবর্তন করেছি: **47 ফাইল** (1-3, 5-49; pos/index, 48, 50, 51 বাদে)
-- স্পর্শ করিনি: **4 ফাইল** (pos/index — Claude দেখবে; 48 datatable-js — global fn declaration; 50-51 myfatoorah includes — standalone checkout-only) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction/order-detail/sections-order_detail) + idempotent function-ভেতরের delegation
-- সন্দেহ — Claude দেখবে: **2** (pos/index, stripe block@3105+)
+- পরিবর্তন করেছি: **50 ফাইল** (1-3, 5-53, 55; 4, 48, 50, 51, 54 বাদে)
+- স্পর্শ করিনি: **5 ফাইল** (4 pos/index — scope ভাঙবে; 48 datatable-js — global fn declaration; 50-51 myfatoorah includes — standalone checkout-only; 54 order/script — window.load print flow) + stripe-এর payment block + saveAsPDF fn (order_country/orderStatusReport/top_5/auction/order-detail/sections-order_detail/order_view) + idempotent function-ভেতরের delegation
+- সন্দেহ — Claude দেখবে: **3** (pos/index, stripe block@3105+, order/script)
 
 ### পূর্বে migrated ফাইলে key retrofit (ব্যাখ্যা)
 
@@ -113,4 +117,5 @@ register হয় → handler stack। তাই:
 - `7dafff5` — `wip(turbo): batch 3 files 39-41  [BULK-4]` (email_templates/index, sale_counter, auction_order_detail) + wishlist key retrofit
 - `888ac87` — `wip(turbo): batch 3 files 42-44  [BULK-4]` (order-detail, sections/order_detail, sections/order_view)
 - `6c4fbd9` — `wip(turbo): batch 3 files 45-47  [BULK-4]` (language/index, cookie_consent, alerts)
-- (pending) — `wip(turbo): batch 3 files 48-51  [BULK-4]` (module/index পরিবর্তিত; 48, 50, 51 স্কিপ — রো দেখো)
+- `9bb86f9` — `wip(turbo): batch 3 files 48-51  [BULK-4]` (module/index পরিবর্তিত; 48, 50, 51 স্কিপ — রো দেখো)
+- (pending) — `wip(turbo): batch 3 files 52-55  [BULK-4]` (order/grid, order/index, order/view; order/script স্কিপ — রো 54)
