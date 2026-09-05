@@ -17,7 +17,7 @@
 @endsection
 @push('custom-script')
 <script>
-    $(document).ready(function() {
+    window.onTurboOnce(function () {
 
     $(document).on('click', '.bandoncart', function(e) {
         var cart_id  = $(this).attr('data-id');
@@ -40,7 +40,7 @@
 
     });
 });
-$(document).ready(function() {
+window.onTurboOnce(function () {
 
 $(document).on('click', '.bandoncartmess', function(e) {
     var cart_id  = $(this).attr('data-id');

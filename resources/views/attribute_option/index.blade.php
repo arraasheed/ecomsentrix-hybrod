@@ -73,7 +73,7 @@
 @push('custom-script')
     <script src="{{asset('public/js/jquery-ui.min.js')}}"></script>
     <script>
-        $(function () {
+        window.onTurboLoad(function () {
             $(".sortable").sortable();
             $(".sortable").disableSelection();
             $(".sortable").sortable({
