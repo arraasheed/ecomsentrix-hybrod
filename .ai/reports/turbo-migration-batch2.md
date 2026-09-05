@@ -3,7 +3,7 @@
 **Task:** files 21-40 of Class A (REINIT-NEEDED), editable scope (`resources/views/**` + `themes/**`), `packages/workdo/**` excluded.
 **Helper:** `window.onTurboLoad` / `window.onTurboOnce` from `resources/js/turbo-bootstrap.js` (CLAUDE-5).
 **Pilot passed 2026-09-05 (user). Checkpoint = every 3 files (user decision; BULK-2 prompt text contradicts itself between ধাপ ২ নিয়ম ৪ and checkpoint section).**
-**Status:** 🟨 IN PROGRESS.
+**Status:** ✅ DONE — all 20 slots (21-40) processed; 15 edited, 5 skipped with reasons.
 
 ## Log
 
@@ -26,6 +26,9 @@
 | 35 | `resources/views/order/refund_details.blade.php` | A + E | ready@214 (setTimeout status init)→`onTurboLoad`; ready@349 (`.check-shipp` direct)→`onTurboLoad`; ready@384 split: localStorage init→`onTurboLoad`, `#refund-amount` delegation→`onTurboOnce`. `.accept-button`/`.cancel-button` direct binds stay top-level. |
 | 36 | `resources/views/page/create.blade.php` | D — `onTurboLoad` | open script, `$('.modal').on('shown.bs.modal')` = Choices init on modal open. |
 | 37 | `resources/views/page/edit.blade.php` | D — `onTurboLoad` | same pattern as page/create. |
+| 38 | `resources/views/page/index.blade.php` | C — `onTurboOnce` | ready body = single `.page-toggle` delegation. |
+| 39 | `resources/views/payment/authorizenet.blade.php` | **none — Claude দেখবে** | Standalone HTML page (own `<!DOCTYPE html>`…`</html>`, no `layouts.includes.turbo` stub). `window.onTurboLoad` is undefined here → wrapping would throw "not a function" and break card validation. Page is always full-loaded, so `DOMContentLoaded` still fires — leave as-is. |
+| 40 | `resources/views/payment/khalti.blade.php` | **none — Claude দেখবে** | Standalone payment page (starts with own `<head>`), no turbo bootstrap. Same reason: `ready` fires on every full load; KhaltiCheckout init works as-is. Wrapping would break. |
 
 ## স্পর্শ করিনি — কারণ
 
@@ -35,12 +38,14 @@
 | `product-list.blade.php` (block@146) | Blade `@if` block wrapping `initSkipCartHandlers` inside script; unclear nested function — rule 2 → Claude দেখবে। |
 | `layouts/app.blade.php` @304 | admin layout, most sensitive; CLAUDE-6 will handle this file (user decision) → Claude দেখবে। |
 | `menu/script.blade.php` (block@2) | 612-line mixed block, nested DOMContentLoaded, ~16 delegations all needing once-only — high risk → Claude দেখবে। |
+| `payment/authorizenet.blade.php` @92 | standalone page, no `onTurboLoad` stub → wrapping breaks; not Turbo-navigated → Claude দেখবে। |
+| `payment/khalti.blade.php` @14 | standalone payment page, same reason → Claude দেখবে। |
 
 ## টally (নিয়ম ৫ — সৎ হিসাব) — current
 
-- পরিবর্তন করেছি: **14 ফাইল** (21-24, 26-29, 31, 33-37)
-- স্পর্শ করিনি: **3 ফাইল** (product-list, layouts/app, menu/script) + checkout block 2 (payfast)
-- সন্দেহ — Claude দেখবে: **4** (product-list, checkout block-2/payfast, layouts/app, menu/script)
+- পরিবর্তন করেছি: **15 ফাইল** (21-24, 26-29, 31, 33-38)
+- স্পর্শ করিনি: **5 ফাইল** (product-list, layouts/app, menu/script, authorizenet, khalti) + checkout block 2 (payfast)
+- সন্দেহ — Claude দেখবে: **6** (product-list, checkout block-2/payfast, layouts/app, menu/script, authorizenet, khalti)
 
 ## Commits
 
@@ -49,4 +54,5 @@
 - `fae5ed1` — `wip(turbo): batch 2 files 26-28  [BULK-3]`
 - `8197ce4` — `wip(turbo): batch 2 files 29-31  [BULK-3]` (29,31 edited; 30 layouts/app skipped → Claude)
 - `c936391` — `wip(turbo): batch 2 files 32-34  [BULK-3]` (33,34 edited; 32 menu/script skipped → Claude)
-- (checkpoint) `wip(turbo): batch 2 files 35-37  [BULK-3]`
+- `02e2153` — `wip(turbo): batch 2 files 35-37  [BULK-3]`
+- (final, pending) `refactor(turbo): migrate document.ready to turbo:load, batch 2 of 3  [BULK-3]` — ships 38 (page/index); 39-40 authorizenet/khalti skipped → Claude. Checkpoints: `42e2543` (pilot 21-22), `68cf97e` (23-25), `fae5ed1` (26-28), `8197ce4` (29-31).
