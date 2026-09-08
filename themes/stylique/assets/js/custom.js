@@ -18,15 +18,42 @@ tailwind.config = {
 };
 
 
-document.addEventListener("DOMContentLoaded", function () {
+// ── Turbo Drive: everything below runs once per page ────────────────────────
+//
+// CLAUDE-6. This file used to run its 29 top-level `const` declarations in the
+// global scope. Turbo re-executes every <script> in the body after a page swap,
+// and a second `const searchToggle` in the same scope is a SyntaxError — which
+// aborted the rest of the file. Measured after one navigation: 0 of 8 sliders
+// initialised, cart drawer, search popup, language dropdown and mobile menu all
+// dead. `data-turbo-eval="false"` does not help; the attribute is not preserved
+// across the head merge (tested).
+//
+// The fix is scope, not sequence: one IIFE means the declarations are function
+// local, so re-execution is harmless. `boot()` then re-runs the page setup
+// against the new DOM.
+//
+// Kill-switch: none needed. With TURBO_ENABLED=false the else-branch below is
+// taken and this behaves exactly as the original DOMContentLoaded version.
+//
+// ⚠️ greentic and techzonix have their own copy of this file, still unwrapped.
+// They are safe today because their layouts do not load Turbo. Whoever enables
+// Turbo for those themes has to bring this wrapper along.
+(function () {
+  function boot() {
+
+  // Was a DOMContentLoaded listener, which fires only on the first page under
+  // Turbo. Inlined into boot() so it runs per page. The null guard is new and
+  // required: this element only exists on pages with the category bar, and
+  // without it every other page threw a TypeError here.
   const categoriesWrap = document.querySelector(".categories-wrap .btn");
   const categoryDropdown = document.querySelector(".category-dropdown");
 
-  categoriesWrap.addEventListener("click", function (e) {
-    e.preventDefault();
-    categoryDropdown.classList.toggle("open");
-  });
-});
+  if (categoriesWrap && categoryDropdown) {
+    categoriesWrap.addEventListener("click", function (e) {
+      e.preventDefault();
+      categoryDropdown.classList.toggle("open");
+    });
+  }
 
 
 
@@ -35,16 +62,24 @@ const searchToggle = document.getElementById('search-toggle');
 const searchPopup = document.getElementById('search-popup-container');
 const closeSearch = document.getElementById('close-search');
 
-searchToggle.addEventListener('click', () => {
-  searchPopup.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('search-input').focus();
-});
+// Guards added with the IIFE wrapper. boot() is a single function, so an
+// unguarded null here would abort every initialiser below it — the same failure
+// the wrapper exists to prevent, just with a TypeError instead of a SyntaxError.
+if (searchToggle && searchPopup) {
+  searchToggle.addEventListener('click', () => {
+    searchPopup.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    const input = document.getElementById('search-input');
+    if (input) input.focus();
+  });
+}
 
-closeSearch.addEventListener('click', () => {
-  searchPopup.classList.add('hidden');
-  document.body.style.overflow = '';
-});
+if (closeSearch && searchPopup) {
+  closeSearch.addEventListener('click', () => {
+    searchPopup.classList.add('hidden');
+    document.body.style.overflow = '';
+  });
+}
 
 
 // Cart Toggle
@@ -55,14 +90,18 @@ const continueShopping = document.getElementById('continue-shopping');
 const cartToggle = document.getElementById('cart-toggle');
 
 const toggleCart = (show) => {
-  cartPanel.classList.toggle('open', show);
-  cartOverlay.classList.toggle('open', show);
+  if (cartPanel) cartPanel.classList.toggle('open', show);
+  if (cartOverlay) cartOverlay.classList.toggle('open', show);
   document.body.style.overflow = show ? 'hidden' : '';
 };
 
-if (cartPanel || cartOverlay || cartToggle) {
+// Was `if (cartPanel || cartOverlay || cartToggle)` — an OR guard in front of
+// code that dereferences two of the three. Narrowed to what it actually uses.
+if (cartToggle) {
   cartToggle.addEventListener('click', () => toggleCart(true));
+}
 
+if (cartOverlay) {
   cartOverlay.addEventListener('click', (e) => {
     if (e.target === cartOverlay) toggleCart(false);
   });
@@ -122,15 +161,17 @@ dropdownButtons.forEach((button) => {
       // Toggle current dropdown
       menu.classList.toggle("hidden");
     });
-
-    // Optional: close dropdown if clicking outside
-    document.addEventListener("click", function (event) {
-      if (!menu.contains(event.target) && !button.contains(event.target)) {
-        menu.classList.add("hidden");
-      }
-    });
   }
 });
+
+// Close-on-outside-click, lifted out of the forEach above.
+//
+// It used to add one `document` click listener per dropdown button, each closing
+// over its own menu. Those are bound to document, not to the swapped body, so
+// Turbo could not clean them up: 4 buttons × 10 navigations = 40 listeners, each
+// holding a detached menu node alive. Now it is one listener that reads the DOM
+// when it fires, registered once per session — same behaviour, no accumulation.
+closeDropdownsOnOutsideClick();
 
 // Mobile Menu
 const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
@@ -138,18 +179,25 @@ const mobileMenu = document.getElementById('mobile-menu');
 const closeMobileMenu = document.getElementById('close-mobile-menu');
 const overlay = document.querySelector('.overlay');
 
-mobileMenuToggle?.addEventListener('click', () => {
-  mobileMenu.classList.remove('hidden');
-  overlay.classList.add('open');
-  document.body.classList.add('no-scroll');
-  setTimeout(() => mobileMenu.classList.add('show'), 10);
-});
-
+// closeMenu was a top-level function declaration; it is now local to boot(),
+// which is fine because nothing outside this file calls it (grepped across
+// resources/views and themes: zero references).
 function closeMenu() {
-  mobileMenu.classList.remove('show');
-  overlay.classList.remove('open');
+  if (mobileMenu) {
+    mobileMenu.classList.remove('show');
+    setTimeout(() => mobileMenu.classList.add('hidden'), 300);
+  }
+  if (overlay) overlay.classList.remove('open');
   document.body.classList.remove('no-scroll');
-  setTimeout(() => mobileMenu.classList.add('hidden'), 300);
+}
+
+if (mobileMenuToggle && mobileMenu) {
+  mobileMenuToggle.addEventListener('click', () => {
+    mobileMenu.classList.remove('hidden');
+    if (overlay) overlay.classList.add('open');
+    document.body.classList.add('no-scroll');
+    setTimeout(() => mobileMenu.classList.add('show'), 10);
+  });
 }
 
 closeMobileMenu?.addEventListener('click', closeMenu);
@@ -159,8 +207,8 @@ document.querySelectorAll('.mobile-dropdown-toggle').forEach(toggle => {
   toggle.addEventListener('click', function () {
     const dropdown = this.nextElementSibling;
     const icon = this.querySelector('.fa-chevron-down');
-    dropdown.classList.toggle('show');
-    icon.classList.toggle('rotate-180');
+    if (dropdown) dropdown.classList.toggle('show');
+    if (icon) icon.classList.toggle('rotate-180');
   });
 });
 
@@ -168,6 +216,15 @@ document.querySelectorAll('.mobile-dropdown-toggle').forEach(toggle => {
 const tabBtn = document.querySelectorAll(".tab-button");
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabContents = document.querySelectorAll(".tab-content");
+
+// Declared here rather than inside the rtl/ltr branches below.
+//
+// It was `const featuredProductsSlider = new Swiper(...)` inside an if-block,
+// so it was block-scoped to that branch and the reference at "tabName === all"
+// (~40 lines down) always threw ReferenceError. A pre-existing bug, not one the
+// Turbo work introduced, but the IIFE made it easy to fix properly: hoisting the
+// binding here is what the tab handler was written to expect.
+let featuredProductsSlider = null;
 tabButtons.forEach((button) => {
   button.addEventListener("click", () => {
     // Remove active class from all buttons and tab contents
@@ -267,7 +324,7 @@ else {
 
 // Featured Products Slider
 if (document.documentElement.dir === 'rtl') {
-  const featuredProductsSlider = new Swiper(".featured-products", {
+  featuredProductsSlider = new Swiper(".featured-products", {
     slidesPerView: 1,
     spaceBetween: 15,
     loop: false,
@@ -289,7 +346,7 @@ if (document.documentElement.dir === 'rtl') {
     },
   });
 } else {
-  const featuredProductsSlider = new Swiper(".featured-products", {
+  featuredProductsSlider = new Swiper(".featured-products", {
     slidesPerView: 1,
     spaceBetween: 15,
     loop: false,
@@ -647,4 +704,64 @@ function handleResize() {
     closeFilter(); // Close if resizing to desktop
   }
 }
-window.addEventListener('resize', handleResize);
+
+// Was `window.addEventListener('resize', handleResize)` at the top level. Under
+// Turbo that binds a new closure per page onto window, which Turbo never clears,
+// so ten navigations meant ten handlers each holding a stale filterPanel.
+// Registered once per session instead; it re-reads the DOM when it fires.
+if (window.onTurboOnce) {
+  window.onTurboOnce(function () {
+    window.addEventListener('resize', function () {
+      // Late lookup on purpose: the closed-over filterPanel belongs to whichever
+      // page registered this, and that page is gone.
+      const panel = document.getElementById('mobile-filter');
+      const filterOverlayNow = document.getElementById('filter-overlay');
+      if (window.innerWidth >= 1024 && panel && filterOverlayNow) {
+        panel.classList.add('-translate-x-full');
+        filterOverlayNow.classList.remove('open');
+        document.body.classList.remove('no-scroll');
+      }
+    });
+  }, 'stylique-filter-resize');
+} else {
+  // Turbo off (TURBO_ENABLED=false), or this file loaded outside the storefront
+  // layout: no navigation, so there is nothing to accumulate.
+  window.addEventListener('resize', handleResize);
+}
+
+  } // ── end boot() ──────────────────────────────────────────────────────────
+
+// Close-on-outside-click for [data-dropdown-toggle] menus. Session-scoped, so
+// it survives body swaps without being re-registered — see the call in boot().
+function closeDropdownsOnOutsideClick() {
+  if (window.__STYLIQUE_DROPDOWN_BOUND__) return;
+  window.__STYLIQUE_DROPDOWN_BOUND__ = true;
+
+  document.addEventListener('click', function (event) {
+    document.querySelectorAll('[data-dropdown-menu]').forEach((menu) => {
+      const id = menu.getAttribute('data-dropdown-menu');
+      const button = document.querySelector(`[data-dropdown-toggle='${id}']`);
+      const insideMenu = menu.contains(event.target);
+      const onButton = button && button.contains(event.target);
+      if (!insideMenu && !onButton) menu.classList.add('hidden');
+    });
+  });
+}
+
+// ── Entry point ─────────────────────────────────────────────────────────────
+//
+// onTurboLoad runs boot() for this page and again after every Turbo navigation,
+// never twice for the same page. The stub in layouts/includes/turbo.blade.php
+// defines it before any body script runs, so it is available even though the
+// Vite module that implements it is deferred.
+//
+// The fallback keeps this file working anywhere Turbo is not present — the
+// greentic and techzonix layouts, and TURBO_ENABLED=false.
+if (window.onTurboLoad) {
+  window.onTurboLoad(boot);
+} else if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot, { once: true });
+} else {
+  boot();
+}
+})();

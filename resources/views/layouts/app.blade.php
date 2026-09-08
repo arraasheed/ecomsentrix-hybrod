@@ -76,6 +76,16 @@
     <meta name="base-url" content="{{ URL::to('/') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{--
+        Turbo Drive (CLAUDE-6). Must stay in <head>: Turbo warns when started from
+        <body>, and the onTurboLoad/onTurboOnce stub inside has to be defined
+        before the first inline script in <body> calls it — 57 admin views do.
+
+        Kill-switches: TURBO_ADMIN_ENABLED=false (admin only) or
+        TURBO_ENABLED=false (everything), then `php artisan view:clear`.
+    --}}
+    @include('layouts.includes.turbo', ['entry' => 'admin'])
+
     <meta name="title" content="{{ isset($SuperadminData['metatitle']) ? $SuperadminData['metatitle'] : 'EcommerceGo' }}">
     <meta name="keywords" content="{{ isset($SuperadminData['metakeyword']) ? $SuperadminData['metakeyword'] : 'EcommerceGo, Store with Multi theme and Multi Store' }}">
     <meta name="description" content="{{ isset($SuperadminData['metadesc']) ? $SuperadminData['metadesc'] : 'Discover the efficiency of EcommerceGo, a user-friendly web application by Workdo.io.'}}">
@@ -307,9 +317,24 @@
             document.documentElement.style.setProperty('--active-theme-border', `var(--bs-${themeColor}-border)`);
         }
         setActiveTheme("{{$themeColor}}");
-        $(document).ready(function(){
-            if ($('.select2').length > 0) {
-                $('.select2').select2({
+        {{--
+            $(document).ready → onTurboLoad (CLAUDE-6). ready() fires once per
+            document, so from the second Turbo page onward select2 was never
+            initialised anywhere in the admin — every .select2 <select> rendered as
+            a bare dropdown.
+
+            The `.length > 0` guard was not enough on its own: select2 leaves its
+            class on the element, so a second run finds it again and builds a
+            duplicate container. `:not(.select2-hidden-accessible)` is the marker
+            select2 itself sets, so already-initialised elements are skipped.
+            turbo-cleanup.js destroys them on turbo:before-cache, so the cached
+            snapshot holds plain <select> markup and this initialiser gets a clean
+            DOM on the way back.
+        --}}
+        window.onTurboLoad(function () {
+            var $select2 = $('.select2:not(.select2-hidden-accessible)');
+            if ($select2.length > 0) {
+                $select2.select2({
                     tags: true,
                     createTag: function (params) {
                       var term = $.trim(params.term);
@@ -379,17 +404,33 @@
 
         comman_function();
     }
-    $(document).on('click', '.note-btn', function () {
-        var ariaLabel = $(this).attr('aria-label');
-        if (ariaLabel === 'Link (CTRL+K)' || ariaLabel === 'Edit') {
-            $('body').addClass('note-link-unlink-sample');
-        }
-    });
-    $(document).on('click', '.close, .note-link-btn', function () {
-        $('body').removeClass('note-link-unlink-sample');
-    });
+    {{--
+        Delegation moved into onTurboOnce (CLAUDE-6). These two are bound to
+        `document`, which Turbo never replaces, so re-executing this block on every
+        navigation stacked another pair each time. turbo-dedupe.blade.php would have
+        caught it, but an explicit registration is clearer and does not depend on the
+        guard being installed.
+    --}}
+    window.onTurboOnce(function () {
+        $(document).on('click', '.note-btn', function () {
+            var ariaLabel = $(this).attr('aria-label');
+            if (ariaLabel === 'Link (CTRL+K)' || ariaLabel === 'Edit') {
+                $('body').addClass('note-link-unlink-sample');
+            }
+        });
+        $(document).on('click', '.close, .note-link-btn', function () {
+            $('body').removeClass('note-link-unlink-sample');
+        });
+    }, 'admin-summernote-link-modal');
 
-    $('#sideBarsearch').on('keyup', function () {
+    {{--
+        Sidebar search: bound directly to #sideBarsearch, which lives in
+        partision/sidebar.blade.php — inside the body Turbo swaps. So this needs
+        onTurboLoad (re-bind per page), not onTurboOnce, and .off() first in case the
+        same element survives a preview render.
+    --}}
+    window.onTurboLoad(function () {
+    $('#sideBarsearch').off('keyup.sidebarSearch').on('keyup.sidebarSearch', function () {
         let value = $(this).val().toLowerCase().trim();
 
         if (value === "") {
@@ -430,6 +471,7 @@
             }
         });
     });
+    }); {{-- end onTurboLoad (sidebar search) --}}
 </script>
     @if (Session::has('success'))
         <script>

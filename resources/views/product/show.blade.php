@@ -627,6 +627,8 @@
 @endsection
 
 @push('custom-script')
+    {{-- No data-turbo-eval here on purpose — page-specific libraries. Reasoning in
+         product/create.blade.php. --}}
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('js/repeater.js') }}"></script>
     <script src="{{ asset('assets/css/summernote/summernote-bs4.js') }}"></script>

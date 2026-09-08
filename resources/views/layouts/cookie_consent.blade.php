@@ -5,45 +5,67 @@
 <script src="{{ asset('js/cookieconsent.js') }}"></script>
 
 <script>
-    let language_code = document.documentElement.getAttribute('lang');
-    let languages = {};
+    {{--
+        Wrapped in an IIFE and switched from `let` to `var` (CLAUDE-6).
 
-    languages[language_code] = {
-        consent_modal: {
-            title: 'hello',
-            description: 'description',
-            primary_btn: {
-                text: 'primary_btn text',
-                role: 'accept_all'
+        These two were top-level `let` declarations. Turbo re-executes every body
+        script after a page swap, and a second top-level `let language_code` in the
+        same scope is a SyntaxError — thrown from inside Turbo's replaceWith():
+
+            SyntaxError: Failed to execute 'replaceWith' on 'Element':
+            Identifier 'language_code' has already been declared
+                at vt.renderElement (turbo…js)
+
+        Reproduced on every admin navigation. Worse than the usual case, because
+        the throw happens during the body swap itself rather than in page code.
+
+        Nothing reads either variable outside this block: `languages` is built here
+        and never passed to initCookieConsent (the second script below defines its
+        own `languages` inline, at line ~110). Grepped for cross-file use — the
+        other `languages` hits are unrelated locals in other views. So keeping them
+        function-local changes no behaviour.
+    --}}
+    (function () {
+        var language_code = document.documentElement.getAttribute('lang');
+        var languages = {};
+
+        languages[language_code] = {
+            consent_modal: {
+                title: 'hello',
+                description: 'description',
+                primary_btn: {
+                    text: 'primary_btn text',
+                    role: 'accept_all'
+                },
+                secondary_btn: {
+                    text: 'secondary_btn text',
+                    role: 'accept_necessary'
+                }
             },
-            secondary_btn: {
-                text: 'secondary_btn text',
-                role: 'accept_necessary'
-            }
-        },
-        settings_modal: {
-            title: 'settings_modal',
-            save_settings_btn: 'save_settings_btn',
-            accept_all_btn: 'accept_all_btn',
-            reject_all_btn: 'reject_all_btn',
-            close_btn_label: 'close_btn_label',
-            blocks: [{
-                    title: 'block title',
-                    description: 'block description'
-                },
+            settings_modal: {
+                title: 'settings_modal',
+                save_settings_btn: 'save_settings_btn',
+                accept_all_btn: 'accept_all_btn',
+                reject_all_btn: 'reject_all_btn',
+                close_btn_label: 'close_btn_label',
+                blocks: [{
+                        title: 'block title',
+                        description: 'block description'
+                    },
 
-                {
-                    title: 'title',
-                    description: 'description',
-                    toggle: {
-                        value: 'necessary',
-                        enabled: true,
-                        readonly: false
-                    }
-                },
-            ]
-        }
-    };
+                    {
+                        title: 'title',
+                        description: 'description',
+                        toggle: {
+                            value: 'necessary',
+                            enabled: true,
+                            readonly: false
+                        }
+                    },
+                ]
+            }
+        };
+    })();
 </script>
 <script>
     function setCookie(cname, cvalue, exdays) {

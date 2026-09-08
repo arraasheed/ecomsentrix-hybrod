@@ -207,14 +207,21 @@
 @push('custom-script')
     <script src="https://rawgit.com/unconditional/jquery-table2excel/master/src/jquery.table2excel.js"></script>
     <script>
-        const d = new Date();
-        let seconds = d.getSeconds();
-        $('.csv').on('click', function() {
-            $('.ignore').remove();
-            $("#pc-dt-export").table2excel({
-                filename: 'Order_' + seconds
-            });
-            window.location.reload();
-        })
+        {{-- CLAUDE-6: top-level `const d` threw "Identifier 'd' has already been
+             declared" on every Turbo navigation. `.csv` is bound directly here
+             rather than delegated, so this needs onTurboLoad (re-bind per page),
+             not onTurboOnce. --}}
+        window.onTurboLoad(function () {
+            const d = new Date();
+            let seconds = d.getSeconds();
+
+            $('.csv').off('click.table2excel').on('click.table2excel', function() {
+                $('.ignore').remove();
+                $("#pc-dt-export").table2excel({
+                    filename: 'Order_' + seconds
+                });
+                window.location.reload();
+            })
+        });
     </script>
 @endpush

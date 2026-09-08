@@ -321,7 +321,28 @@ document.addEventListener('turbo:before-render', () => {
 });
 
 document.addEventListener('turbo:before-cache', () => cleanup('before-cache'));
-document.addEventListener('turbo:load', () => flush('turbo:load'));
+
+// turbo:load fires as soon as the incoming body is attached — before any external
+// <script src> inside it has loaded. So a page whose onTurboLoad callback needs a
+// page-specific library (repeater.js on product/create, table2excel on
+// customer/index) used to run too early and throw "$(...).repeater is not a
+// function", once per session per page.
+//
+// turbo-script-order.js knows which body scripts are still outstanding, so the flush
+// waits for them when there are any and runs immediately when there are none. The
+// optional-chaining guard keeps this file independent: turbo-cleanup and
+// turbo-script-order are separate imports, and with only turbo-bootstrap loaded the
+// behaviour is exactly what it was before.
+document.addEventListener('turbo:load', () => {
+    const gate = window.__turboScriptOrder;
+
+    if (gate && typeof gate.whenScriptsSettled === 'function') {
+        gate.whenScriptsSettled(() => flush('turbo:load'));
+    } else {
+        flush('turbo:load');
+    }
+});
+
 window.addEventListener('pagehide', () => cleanup('pagehide'));
 
 // First page. Every trigger below is registered; the flush guard makes all but

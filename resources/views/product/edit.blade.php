@@ -656,6 +656,9 @@ $low_stock_threshold = \App\Models\Utility::GetValueByName('low_stock_threshold'
 @endsection
 
     @push('custom-script')
+    {{-- No data-turbo-eval here on purpose: these are page-specific libraries, so
+         suppressing execution means they never load at all on a Turbo visit and
+         $.fn.repeater is undefined. Reasoning in product/create.blade.php. --}}
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('js/repeater.js') }}"></script>
     <script src="{{ asset('assets/css/summernote/summernote-bs4.js') }}"></script>

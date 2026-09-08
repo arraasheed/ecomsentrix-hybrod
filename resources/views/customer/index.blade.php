@@ -105,15 +105,34 @@
     </script>
     <script src="{{ asset('js/jquery.table2excel.js') }}"></script>
     <script>
-        const d = new Date();
-        let seconds = d.getSeconds();
-        $(document).on('click', '.csv', function() {
-            $('.ignore').remove();
-            $("#customer-table").table2excel({
-                filename: "Customer_" + seconds
-            });
-            window.location.reload();
-        })
+        {{--
+            CLAUDE-6. Two problems in four lines:
+
+            1. `const d` / `let seconds` were top-level. Turbo re-executes body
+               scripts, and a second top-level `const d` in the same scope throws
+               "Identifier 'd' has already been declared" — from inside Turbo's
+               replaceWith(), which aborts the body swap. Observed on every
+               navigation through this page.
+            2. `$(document).on('click', '.csv')` re-registered per navigation, so
+               the export ran once per visit ever made to the page.
+
+            Both fixed by one onTurboOnce: the declarations become function-local,
+            and the delegation binds once per session. `seconds` is read inside the
+            handler, so computing it at registration time (as before) keeps the
+            original behaviour.
+        --}}
+        window.onTurboOnce(function () {
+            const d = new Date();
+            let seconds = d.getSeconds();
+
+            $(document).on('click', '.csv', function() {
+                $('.ignore').remove();
+                $("#customer-table").table2excel({
+                    filename: "Customer_" + seconds
+                });
+                window.location.reload();
+            })
+        }, 'customer-index-csv-export');
     </script>
 
     <script>

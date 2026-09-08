@@ -165,15 +165,21 @@
     </script>
     <script src="{{ asset('js/jquery.table2excel.js') }}"></script>
     <script>
-        const d = new Date();
-        let seconds = d.getSeconds();
-        $(document).on('click', '.csv', function() {
-            $('.ignore').remove();
-            $("#customer-table").table2excel({
-                filename: "Customer_" + seconds
-            });
-            window.location.reload();
-        })
+        {{-- CLAUDE-6: top-level `const d` threw "Identifier 'd' has already been
+             declared" on every Turbo navigation, and the .csv delegation doubled
+             per visit. Same fix as customer/index.blade.php. --}}
+        window.onTurboOnce(function () {
+            const d = new Date();
+            let seconds = d.getSeconds();
+
+            $(document).on('click', '.csv', function() {
+                $('.ignore').remove();
+                $("#customer-table").table2excel({
+                    filename: "Customer_" + seconds
+                });
+                window.location.reload();
+            })
+        }, 'customer-grid-csv-export');
     </script>
 
     <script>

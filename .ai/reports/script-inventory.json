@@ -1,6 +1,6 @@
 {
- "generated": "2026-09-04T21:37:22.441Z",
- "total": 300,
+ "generated": "2026-09-05T22:56:23.025Z",
+ "total": 301,
  "rows": [
   {
    "file": "packages/workdo/LandingPage/src/Resources/views/custom_page/create.blade.php",
@@ -309,7 +309,7 @@
   {
    "file": "resources/views/addon/create.blade.php",
    "line": 40,
-   "lines": 30,
+   "lines": 32,
    "cls": "A",
    "widgets": [
     "Dropzone"
@@ -321,36 +321,6 @@
    "stackPush": false
   },
   {
-   "file": "resources/views/AppSetting/index.blade.php",
-   "line": 667,
-   "lines": 38,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/AppSetting/mobile_content.blade.php",
-   "line": 1134,
-   "lines": 24,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/attribute_option/index.blade.php",
    "line": 75,
    "lines": 29,
@@ -359,39 +329,9 @@
     "sortable"
    ],
    "reasons": [
-    "initialises sortable",
-    "document.ready wrapper"
+    "initialises sortable"
    ],
    "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/auth/login.blade.php",
-   "line": 113,
-   "lines": 9,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/cart/index.blade.php",
-   "line": 19,
-   "lines": 54,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
    "stackPush": false
   },
   {
@@ -412,109 +352,6 @@
    "stackPush": false
   },
   {
-   "file": "resources/views/coupon/create.blade.php",
-   "line": 157,
-   "lines": 52,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/coupon/edit.blade.php",
-   "line": 125,
-   "lines": 49,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/customer/grid.blade.php",
-   "line": 140,
-   "lines": 26,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/customer/grid.blade.php",
-   "line": 179,
-   "lines": 93,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/customer/index.blade.php",
-   "line": 79,
-   "lines": 27,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/customer/index.blade.php",
-   "line": 119,
-   "lines": 93,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/dashboard.blade.php",
-   "line": 464,
-   "lines": 13,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/dashboard.blade.php",
    "line": 478,
    "lines": 125,
@@ -524,22 +361,6 @@
    ],
    "reasons": [
     "initialises ApexCharts",
-    "document.ready wrapper",
-    "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/dashboard.blade.php",
-   "line": 625,
-   "lines": 79,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
     "declares global function"
    ],
    "mixed": false,
@@ -548,31 +369,14 @@
   {
    "file": "resources/views/flash-sale/create.blade.php",
    "line": 107,
-   "lines": 127,
+   "lines": 131,
    "cls": "A",
    "widgets": [
     "choices.js"
    ],
    "reasons": [
     "initialises choices.js",
-    "document.ready wrapper",
     "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/flash-sale/create.blade.php",
-   "line": 234,
-   "lines": 32,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "declares global function"
    ],
    "mixed": true,
    "stackPush": false
@@ -580,14 +384,13 @@
   {
    "file": "resources/views/flash-sale/edit.blade.php",
    "line": 213,
-   "lines": 106,
+   "lines": 108,
    "cls": "A",
    "widgets": [
     "choices.js"
    ],
    "reasons": [
     "initialises choices.js",
-    "document.ready wrapper",
     "delegated $(document).on()"
    ],
    "mixed": true,
@@ -595,8 +398,8 @@
   },
   {
    "file": "resources/views/flash-sale/edit.blade.php",
-   "line": 319,
-   "lines": 12,
+   "line": 321,
+   "lines": 14,
    "cls": "A",
    "widgets": [
     "choices.js"
@@ -605,37 +408,6 @@
     "initialises choices.js"
    ],
    "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/flash-sale/edit.blade.php",
-   "line": 331,
-   "lines": 46,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "declares global function"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/flash-sale/index.blade.php",
-   "line": 30,
-   "lines": 30,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
    "stackPush": false
   },
   {
@@ -655,51 +427,6 @@
    "stackPush": false
   },
   {
-   "file": "resources/views/front_end/common/product/filter.blade.php",
-   "line": 176,
-   "lines": 150,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "declares global function"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/front_end/hooks/footer_link.blade.php",
-   "line": 229,
-   "lines": 76,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/front_end/jQueryRoute.blade.php",
-   "line": 334,
-   "lines": 24,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/front_end/pages/add_tickets.blade.php",
    "line": 94,
    "lines": 7,
@@ -708,8 +435,7 @@
     "summernote"
    ],
    "reasons": [
-    "initialises summernote",
-    "document.ready wrapper"
+    "initialises summernote"
    ],
    "mixed": false,
    "stackPush": false
@@ -723,63 +449,15 @@
     "select2"
    ],
    "reasons": [
-    "initialises select2",
-    "document.ready wrapper"
+    "initialises select2"
    ],
    "mixed": false,
    "stackPush": false
   },
   {
-   "file": "resources/views/front_end/pages/address.blade.php",
-   "line": 94,
-   "lines": 175,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/front_end/pages/checkout.blade.php",
-   "line": 273,
-   "lines": 73,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "declares global function"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/front_end/pages/checkout.blade.php",
-   "line": 350,
+   "line": 365,
    "lines": 69,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "declares global function"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/front_end/pages/order.blade.php",
-   "line": 68,
-   "lines": 47,
    "cls": "A",
    "widgets": [
     "(DOM-bound ready block)"
@@ -810,35 +488,6 @@
    "stackPush": false
   },
   {
-   "file": "resources/views/front_end/pages/refund_order.blade.php",
-   "line": 275,
-   "lines": 9,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/front_end/pages/refund_order.blade.php",
-   "line": 284,
-   "lines": 67,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/front_end/pages/reply_support_ticket.blade.php",
    "line": 171,
    "lines": 7,
@@ -847,8 +496,7 @@
     "summernote"
    ],
    "reasons": [
-    "initialises summernote",
-    "document.ready wrapper"
+    "initialises summernote"
    ],
    "mixed": false,
    "stackPush": false
@@ -862,8 +510,7 @@
     "summernote"
    ],
    "reasons": [
-    "initialises summernote",
-    "document.ready wrapper"
+    "initialises summernote"
    ],
    "mixed": false,
    "stackPush": false
@@ -871,7 +518,7 @@
   {
    "file": "resources/views/generate.blade.php",
    "line": 95,
-   "lines": 104,
+   "lines": 106,
    "cls": "A",
    "widgets": [
     "bootstrap modal"
@@ -901,21 +548,6 @@
    "stackPush": false
   },
   {
-   "file": "resources/views/marketplace/pricing.blade.php",
-   "line": 693,
-   "lines": 29,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": true
-  },
-  {
    "file": "resources/views/menu/script.blade.php",
    "line": 2,
    "lines": 612,
@@ -936,7 +568,7 @@
   {
    "file": "resources/views/module/add.blade.php",
    "line": 55,
-   "lines": 40,
+   "lines": 42,
    "cls": "A",
    "widgets": [
     "Dropzone"
@@ -956,31 +588,15 @@
     "bootstrap modal"
    ],
    "reasons": [
-    "initialises bootstrap modal",
-    "document.ready wrapper"
+    "initialises bootstrap modal"
    ],
    "mixed": false,
    "stackPush": false
   },
   {
-   "file": "resources/views/order/refund_details.blade.php",
-   "line": 213,
-   "lines": 208,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/page/create.blade.php",
    "line": 68,
-   "lines": 15,
+   "lines": 17,
    "cls": "A",
    "widgets": [
     "choices.js"
@@ -994,7 +610,7 @@
   {
    "file": "resources/views/page/edit.blade.php",
    "line": 68,
-   "lines": 15,
+   "lines": 17,
    "cls": "A",
    "widgets": [
     "choices.js"
@@ -1003,21 +619,6 @@
     "initialises choices.js"
    ],
    "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/page/index.blade.php",
-   "line": 29,
-   "lines": 26,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
    "stackPush": false
   },
   {
@@ -1082,22 +683,6 @@
    "stackPush": false
   },
   {
-   "file": "resources/views/plans/create.blade.php",
-   "line": 271,
-   "lines": 36,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "window/document addEventListener"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/plans/cybersourcerequest.blade.php",
    "line": 164,
    "lines": 44,
@@ -1111,22 +696,6 @@
     "declares global function"
    ],
    "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/plans/edit.blade.php",
-   "line": 262,
-   "lines": 36,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "window/document addEventListener"
-   ],
-   "mixed": true,
    "stackPush": false
   },
   {
@@ -1161,23 +730,7 @@
   },
   {
    "file": "resources/views/plans/stripe.blade.php",
-   "line": 3049,
-   "lines": 49,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "window/document addEventListener"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/plans/stripe.blade.php",
-   "line": 3099,
+   "line": 3105,
    "lines": 109,
    "cls": "A",
    "widgets": [
@@ -1226,61 +779,15 @@
    "stackPush": false
   },
   {
-   "file": "resources/views/product/attribute_combinations_data.blade.php",
-   "line": 230,
-   "lines": 183,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/product/attribute_combinations_edit.blade.php",
-   "line": 289,
-   "lines": 153,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/product/attribute_combinations.blade.php",
-   "line": 166,
-   "lines": 81,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/product/create.blade.php",
    "line": 479,
-   "lines": 179,
+   "lines": 187,
    "cls": "A",
    "widgets": [
     "select2"
    ],
    "reasons": [
     "initialises select2",
-    "document.ready wrapper",
     "delegated $(document).on()"
    ],
    "mixed": true,
@@ -1288,8 +795,8 @@
   },
   {
    "file": "resources/views/product/create.blade.php",
-   "line": 660,
-   "lines": 137,
+   "line": 668,
+   "lines": 141,
    "cls": "A",
    "widgets": [
     "choices.js"
@@ -1304,8 +811,8 @@
   },
   {
    "file": "resources/views/product/create.blade.php",
-   "line": 799,
-   "lines": 179,
+   "line": 811,
+   "lines": 181,
    "cls": "A",
    "widgets": [
     "summernote",
@@ -1320,7 +827,7 @@
   {
    "file": "resources/views/product/edit.blade.php",
    "line": 662,
-   "lines": 503,
+   "lines": 522,
    "cls": "A",
    "widgets": [
     "select2",
@@ -1329,7 +836,6 @@
    ],
    "reasons": [
     "initialises select2, Dropzone, choices.js",
-    "document.ready wrapper",
     "delegated $(document).on()",
     "declares global function"
    ],
@@ -1339,31 +845,15 @@
   {
    "file": "resources/views/product/show.blade.php",
    "line": 633,
-   "lines": 87,
+   "lines": 88,
    "cls": "A",
    "widgets": [
     "select2"
    ],
    "reasons": [
     "initialises select2",
-    "document.ready wrapper",
     "delegated $(document).on()",
     "declares global function"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/product/show.blade.php",
-   "line": 779,
-   "lines": 21,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
    ],
    "mixed": true,
    "stackPush": false
@@ -1378,22 +868,7 @@
    ],
    "reasons": [
     "initialises ApexCharts",
-    "document.ready wrapper",
     "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/reports/bar_chart_order_report.blade.php",
-   "line": 256,
-   "lines": 45,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
    ],
    "mixed": false,
    "stackPush": false
@@ -1408,22 +883,7 @@
    ],
    "reasons": [
     "initialises ApexCharts",
-    "document.ready wrapper",
     "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/reports/index.blade.php",
-   "line": 224,
-   "lines": 33,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
    ],
    "mixed": false,
    "stackPush": false
@@ -1431,7 +891,7 @@
   {
    "file": "resources/views/reports/order_country_Report.blade.php",
    "line": 89,
-   "lines": 13,
+   "lines": 15,
    "cls": "A",
    "widgets": [
     "ApexCharts"
@@ -1444,8 +904,8 @@
   },
   {
    "file": "resources/views/reports/order_country_Report.blade.php",
-   "line": 103,
-   "lines": 41,
+   "line": 105,
+   "lines": 43,
    "cls": "A",
    "widgets": [
     "ApexCharts"
@@ -1458,8 +918,8 @@
   },
   {
    "file": "resources/views/reports/order_country_Report.blade.php",
-   "line": 145,
-   "lines": 35,
+   "line": 149,
+   "lines": 37,
    "cls": "A",
    "widgets": [
     "ApexCharts"
@@ -1480,22 +940,7 @@
    ],
    "reasons": [
     "initialises ApexCharts",
-    "document.ready wrapper",
     "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/reports/order_report.blade.php",
-   "line": 243,
-   "lines": 49,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
    ],
    "mixed": false,
    "stackPush": false
@@ -1503,7 +948,7 @@
   {
    "file": "resources/views/reports/orderStatusReport.blade.php",
    "line": 71,
-   "lines": 24,
+   "lines": 26,
    "cls": "A",
    "widgets": [
     "ApexCharts"
@@ -1516,8 +961,8 @@
   },
   {
    "file": "resources/views/reports/orderStatusReport.blade.php",
-   "line": 96,
-   "lines": 41,
+   "line": 98,
+   "lines": 43,
    "cls": "A",
    "widgets": [
     "ApexCharts"
@@ -1530,8 +975,8 @@
   },
   {
    "file": "resources/views/reports/orderStatusReport.blade.php",
-   "line": 138,
-   "lines": 35,
+   "line": 142,
+   "lines": 37,
    "cls": "A",
    "widgets": [
     "ApexCharts"
@@ -1545,7 +990,7 @@
   {
    "file": "resources/views/reports/sale_by_brand.blade.php",
    "line": 67,
-   "lines": 113,
+   "lines": 115,
    "cls": "A",
    "widgets": [
     "ApexCharts",
@@ -1553,22 +998,7 @@
    ],
    "reasons": [
     "initialises ApexCharts, choices.js",
-    "document.ready wrapper",
     "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/reports/sale_by_brand.blade.php",
-   "line": 180,
-   "lines": 52,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
    ],
    "mixed": false,
    "stackPush": false
@@ -1576,7 +1006,7 @@
   {
    "file": "resources/views/reports/sale_by_category.blade.php",
    "line": 71,
-   "lines": 99,
+   "lines": 101,
    "cls": "A",
    "widgets": [
     "ApexCharts",
@@ -1584,22 +1014,7 @@
    ],
    "reasons": [
     "initialises ApexCharts, choices.js",
-    "document.ready wrapper",
     "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/reports/sale_by_category.blade.php",
-   "line": 170,
-   "lines": 52,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
    ],
    "mixed": false,
    "stackPush": false
@@ -1607,7 +1022,7 @@
   {
    "file": "resources/views/reports/sale_by_product.blade.php",
    "line": 73,
-   "lines": 103,
+   "lines": 105,
    "cls": "A",
    "widgets": [
     "ApexCharts",
@@ -1615,22 +1030,7 @@
    ],
    "reasons": [
     "initialises ApexCharts, choices.js",
-    "document.ready wrapper",
     "declares global function"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/reports/sale_by_product.blade.php",
-   "line": 176,
-   "lines": 45,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
    ],
    "mixed": false,
    "stackPush": false
@@ -1644,8 +1044,7 @@
     "DataTable"
    ],
    "reasons": [
-    "initialises DataTable",
-    "document.ready wrapper"
+    "initialises DataTable"
    ],
    "mixed": false,
    "stackPush": false
@@ -1653,7 +1052,7 @@
   {
    "file": "resources/views/reports/top_5_reports.blade.php",
    "line": 73,
-   "lines": 81,
+   "lines": 83,
    "cls": "A",
    "widgets": [
     "ApexCharts"
@@ -1666,46 +1065,15 @@
    "stackPush": false
   },
   {
-   "file": "resources/views/roles/index.blade.php",
-   "line": 30,
-   "lines": 83,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "declares global function"
-   ],
-   "mixed": true,
-   "stackPush": true
-  },
-  {
-   "file": "resources/views/setting/email_setting.blade.php",
-   "line": 51,
-   "lines": 8,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/setting/index.blade.php",
    "line": 196,
-   "lines": 280,
+   "lines": 297,
    "cls": "A",
    "widgets": [
     "bootstrap modal"
    ],
    "reasons": [
     "initialises bootstrap modal",
-    "document.ready wrapper",
     "delegated $(document).on()",
     "declares global function"
    ],
@@ -1714,8 +1082,8 @@
   },
   {
    "file": "resources/views/setting/index.blade.php",
-   "line": 477,
-   "lines": 204,
+   "line": 494,
+   "lines": 212,
    "cls": "A",
    "widgets": [
     "select2",
@@ -1724,47 +1092,16 @@
    ],
    "reasons": [
     "initialises select2, tooltip/popover, switchButton",
-    "document.ready wrapper",
     "delegated $(document).on()",
-    "window/document addEventListener",
     "declares global function"
    ],
    "mixed": true,
    "stackPush": false
   },
   {
-   "file": "resources/views/shipping_method/free_shipping.blade.php",
-   "line": 27,
-   "lines": 33,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
-   "file": "resources/views/shopify/product.blade.php",
-   "line": 82,
-   "lines": 7,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper"
-   ],
-   "mixed": false,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/superadmin/dashboard.blade.php",
    "line": 161,
-   "lines": 47,
+   "lines": 48,
    "cls": "A",
    "widgets": [
     "ApexCharts"
@@ -1778,7 +1115,7 @@
   {
    "file": "resources/views/theme_analytic.blade.php",
    "line": 120,
-   "lines": 106,
+   "lines": 108,
    "cls": "A",
    "widgets": [
     "ApexCharts"
@@ -1791,7 +1128,7 @@
   },
   {
    "file": "resources/views/theme_analytic.blade.php",
-   "line": 226,
+   "line": 228,
    "lines": 146,
    "cls": "A",
    "widgets": [
@@ -1799,25 +1136,22 @@
    ],
    "reasons": [
     "initialises ApexCharts",
-    "document.ready wrapper",
     "assigns window.*",
-    "window/document addEventListener",
     "declares global function"
    ],
-   "mixed": true,
+   "mixed": false,
    "stackPush": false
   },
   {
    "file": "resources/views/theme_customize/customize-script.blade.php",
    "line": 3,
-   "lines": 326,
+   "lines": 328,
    "cls": "A",
    "widgets": [
     "summernote"
    ],
    "reasons": [
     "initialises summernote",
-    "document.ready wrapper",
     "delegated $(document).on()",
     "declares global function"
    ],
@@ -1833,32 +1167,15 @@
     "sortable"
    ],
    "reasons": [
-    "initialises sortable",
-    "document.ready wrapper"
+    "initialises sortable"
    ],
    "mixed": false,
    "stackPush": true
   },
   {
-   "file": "resources/views/users/profile.blade.php",
-   "line": 198,
-   "lines": 48,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()",
-    "window/document addEventListener"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/webhook/create.blade.php",
    "line": 43,
-   "lines": 20,
+   "lines": 22,
    "cls": "A",
    "widgets": [
     "choices.js"
@@ -1872,7 +1189,7 @@
   {
    "file": "resources/views/webhook/edit.blade.php",
    "line": 45,
-   "lines": 20,
+   "lines": 22,
    "cls": "A",
    "widgets": [
     "choices.js"
@@ -1884,21 +1201,6 @@
    "stackPush": false
   },
   {
-   "file": "resources/views/wishlist/index.blade.php",
-   "line": 50,
-   "lines": 51,
-   "cls": "A",
-   "widgets": [
-    "(DOM-bound ready block)"
-   ],
-   "reasons": [
-    "document.ready wrapper",
-    "delegated $(document).on()"
-   ],
-   "mixed": true,
-   "stackPush": false
-  },
-  {
    "file": "resources/views/woocommerce/category.blade.php",
    "line": 80,
    "lines": 82,
@@ -1907,8 +1209,7 @@
     "DataTable"
    ],
    "reasons": [
-    "initialises DataTable",
-    "document.ready wrapper"
+    "initialises DataTable"
    ],
    "mixed": false,
    "stackPush": false
@@ -1916,14 +1217,13 @@
   {
    "file": "resources/views/woocommerce/coupon.blade.php",
    "line": 84,
-   "lines": 126,
+   "lines": 130,
    "cls": "A",
    "widgets": [
     "DataTable"
    ],
    "reasons": [
     "initialises DataTable",
-    "document.ready wrapper",
     "delegated $(document).on()"
    ],
    "mixed": true,
@@ -2157,7 +1457,7 @@
   {
    "file": "resources/views/addon/apps.blade.php",
    "line": 82,
-   "lines": 6,
+   "lines": 8,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2169,7 +1469,7 @@
   {
    "file": "resources/views/addon/index.blade.php",
    "line": 158,
-   "lines": 6,
+   "lines": 8,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2192,6 +1492,18 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/AppSetting/index.blade.php",
+   "line": 667,
+   "lines": 38,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/AppSetting/mobile_content.blade.php",
    "line": 1118,
    "lines": 14,
@@ -2205,9 +1517,57 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/AppSetting/mobile_content.blade.php",
+   "line": 1134,
+   "lines": 24,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/cart/index.blade.php",
+   "line": 19,
+   "lines": 54,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/coupon/create.blade.php",
+   "line": 157,
+   "lines": 52,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/coupon/index.blade.php",
    "line": 37,
-   "lines": 22,
+   "lines": 24,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/customer/grid.blade.php",
+   "line": 140,
+   "lines": 26,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2229,6 +1589,31 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/customer/grid.blade.php",
+   "line": 179,
+   "lines": 93,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "declares global function",
+    "function declarations only"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/customer/index.blade.php",
+   "line": 79,
+   "lines": 27,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/customer/index.blade.php",
    "line": 107,
    "lines": 11,
@@ -2241,6 +1626,19 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/customer/index.blade.php",
+   "line": 119,
+   "lines": 93,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "declares global function",
+    "function declarations only"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/dashboard.blade.php",
    "line": 603,
    "lines": 22,
@@ -2248,6 +1646,19 @@
    "widgets": [],
    "reasons": [
     "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/dashboard.blade.php",
+   "line": 625,
+   "lines": 79,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "declares global function",
+    "function declarations only"
    ],
    "mixed": false,
    "stackPush": false
@@ -2268,7 +1679,7 @@
   {
    "file": "resources/views/email_templates/index.blade.php",
    "line": 15,
-   "lines": 34,
+   "lines": 36,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2278,9 +1689,73 @@
    "stackPush": true
   },
   {
+   "file": "resources/views/flash-sale/create.blade.php",
+   "line": 238,
+   "lines": 34,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()",
+    "declares global function"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/flash-sale/edit.blade.php",
+   "line": 335,
+   "lines": 48,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()",
+    "declares global function"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/flash-sale/index.blade.php",
+   "line": 30,
+   "lines": 30,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/front_end/common/product/filter.blade.php",
+   "line": 176,
+   "lines": 152,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()",
+    "declares global function"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/front_end/common/product/sale_counter.blade.php",
    "line": 23,
-   "lines": 71,
+   "lines": 73,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "declares global function",
+    "function declarations only"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/front_end/hooks/footer_link.blade.php",
+   "line": 229,
+   "lines": 76,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2366,9 +1841,21 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/front_end/pages/address.blade.php",
+   "line": 94,
+   "lines": 175,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/front_end/pages/auction_order_detail.blade.php",
    "line": 300,
-   "lines": 63,
+   "lines": 65,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2379,14 +1866,52 @@
    "stackPush": true
   },
   {
-   "file": "resources/views/front_end/pages/order-detail.blade.php",
-   "line": 288,
-   "lines": 63,
+   "file": "resources/views/front_end/pages/checkout.blade.php",
+   "line": 286,
+   "lines": 75,
    "cls": "B",
    "widgets": [],
    "reasons": [
     "delegated $(document).on()",
     "declares global function"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/front_end/pages/order-detail.blade.php",
+   "line": 300,
+   "lines": 65,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()",
+    "declares global function"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/front_end/pages/order.blade.php",
+   "line": 68,
+   "lines": 49,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()",
+    "declares global function"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/front_end/pages/refund_order.blade.php",
+   "line": 284,
+   "lines": 69,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
    ],
    "mixed": false,
    "stackPush": false
@@ -2418,7 +1943,7 @@
   {
    "file": "resources/views/front_end/sections/order_detail.blade.php",
    "line": 386,
-   "lines": 63,
+   "lines": 65,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2431,7 +1956,7 @@
   {
    "file": "resources/views/front_end/sections/order_view.blade.php",
    "line": 287,
-   "lines": 44,
+   "lines": 48,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2444,7 +1969,7 @@
   {
    "file": "resources/views/language/index.blade.php",
    "line": 204,
-   "lines": 26,
+   "lines": 28,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2469,7 +1994,7 @@
   {
    "file": "resources/views/layouts/cookie_consent.blade.php",
    "line": 48,
-   "lines": 115,
+   "lines": 117,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2482,7 +2007,7 @@
   {
    "file": "resources/views/layouts/includes/alerts.blade.php",
    "line": 27,
-   "lines": 15,
+   "lines": 17,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2519,7 +2044,19 @@
   },
   {
    "file": "resources/views/marketplace/pricing.blade.php",
-   "line": 722,
+   "line": 693,
+   "lines": 31,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": true
+  },
+  {
+   "file": "resources/views/marketplace/pricing.blade.php",
+   "line": 724,
    "lines": 24,
    "cls": "B",
    "widgets": [],
@@ -2531,7 +2068,7 @@
   },
   {
    "file": "resources/views/marketplace/pricing.blade.php",
-   "line": 746,
+   "line": 748,
    "lines": 153,
    "cls": "B",
    "widgets": [],
@@ -2544,7 +2081,7 @@
   },
   {
    "file": "resources/views/marketplace/pricing.blade.php",
-   "line": 899,
+   "line": 901,
    "lines": 58,
    "cls": "B",
    "widgets": [],
@@ -2556,7 +2093,7 @@
   },
   {
    "file": "resources/views/marketplace/pricing.blade.php",
-   "line": 957,
+   "line": 959,
    "lines": 38,
    "cls": "B",
    "widgets": [],
@@ -2568,7 +2105,7 @@
   },
   {
    "file": "resources/views/marketplace/pricing.blade.php",
-   "line": 995,
+   "line": 997,
    "lines": 22,
    "cls": "B",
    "widgets": [],
@@ -2607,7 +2144,7 @@
   {
    "file": "resources/views/module/index.blade.php",
    "line": 573,
-   "lines": 35,
+   "lines": 39,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2658,7 +2195,7 @@
   {
    "file": "resources/views/order/grid.blade.php",
    "line": 128,
-   "lines": 47,
+   "lines": 49,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2670,7 +2207,7 @@
   {
    "file": "resources/views/order/index.blade.php",
    "line": 29,
-   "lines": 47,
+   "lines": 49,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2693,6 +2230,18 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/order/refund_details.blade.php",
+   "line": 213,
+   "lines": 211,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/order/script.blade.php",
    "line": 3,
    "lines": 18,
@@ -2708,7 +2257,7 @@
   {
    "file": "resources/views/order/view.blade.php",
    "line": 582,
-   "lines": 163,
+   "lines": 165,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2720,9 +2269,21 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/page/index.blade.php",
+   "line": 29,
+   "lines": 26,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/partision/add.blade.php",
    "line": 32,
-   "lines": 20,
+   "lines": 22,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2735,7 +2296,7 @@
   {
    "file": "resources/views/partision/footerlink.blade.php",
    "line": 60,
-   "lines": 168,
+   "lines": 176,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2748,7 +2309,7 @@
   {
    "file": "resources/views/partision/sidebar.blade.php",
    "line": 45,
-   "lines": 17,
+   "lines": 19,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2761,7 +2322,31 @@
   {
    "file": "resources/views/plan-coupon/index.blade.php",
    "line": 28,
-   "lines": 12,
+   "lines": 14,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/plans/create.blade.php",
+   "line": 271,
+   "lines": 40,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/plans/edit.blade.php",
+   "line": 262,
+   "lines": 40,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2773,7 +2358,7 @@
   {
    "file": "resources/views/plans/index.blade.php",
    "line": 327,
-   "lines": 12,
+   "lines": 14,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2784,8 +2369,8 @@
   },
   {
    "file": "resources/views/plans/index.blade.php",
-   "line": 340,
-   "lines": 25,
+   "line": 342,
+   "lines": 27,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2796,7 +2381,20 @@
   },
   {
    "file": "resources/views/plans/stripe.blade.php",
-   "line": 3343,
+   "line": 3049,
+   "lines": 55,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()",
+    "window/document addEventListener"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/plans/stripe.blade.php",
+   "line": 3349,
    "lines": 51,
    "cls": "B",
    "widgets": [],
@@ -2808,7 +2406,7 @@
   },
   {
    "file": "resources/views/plans/stripe.blade.php",
-   "line": 3398,
+   "line": 3404,
    "lines": 63,
    "cls": "B",
    "widgets": [],
@@ -2820,7 +2418,7 @@
   },
   {
    "file": "resources/views/plans/stripe.blade.php",
-   "line": 3462,
+   "line": 3468,
    "lines": 43,
    "cls": "B",
    "widgets": [],
@@ -2835,7 +2433,7 @@
   {
    "file": "resources/views/product_brand/index.blade.php",
    "line": 38,
-   "lines": 45,
+   "lines": 47,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2847,7 +2445,7 @@
   {
    "file": "resources/views/product_label/index.blade.php",
    "line": 38,
-   "lines": 23,
+   "lines": 25,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2857,14 +2455,62 @@
    "stackPush": true
   },
   {
+   "file": "resources/views/product/attribute_combinations_data.blade.php",
+   "line": 230,
+   "lines": 187,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/product/attribute_combinations_edit.blade.php",
+   "line": 289,
+   "lines": 157,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/product/attribute_combinations.blade.php",
+   "line": 166,
+   "lines": 85,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/product/show.blade.php",
-   "line": 720,
-   "lines": 57,
+   "line": 721,
+   "lines": 59,
    "cls": "B",
    "widgets": [],
    "reasons": [
     "declares global function",
     "function declarations only"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/product/show.blade.php",
+   "line": 782,
+   "lines": 22,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
    ],
    "mixed": false,
    "stackPush": false
@@ -2896,9 +2542,34 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/roles/index.blade.php",
+   "line": 30,
+   "lines": 85,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()",
+    "declares global function"
+   ],
+   "mixed": false,
+   "stackPush": true
+  },
+  {
+   "file": "resources/views/shipping_method/free_shipping.blade.php",
+   "line": 27,
+   "lines": 35,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/shippingzone/create.blade.php",
    "line": 33,
-   "lines": 39,
+   "lines": 41,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2910,7 +2581,7 @@
   {
    "file": "resources/views/shippingzone/edit.blade.php",
    "line": 45,
-   "lines": 39,
+   "lines": 41,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2922,7 +2593,7 @@
   {
    "file": "resources/views/store/create.blade.php",
    "line": 103,
-   "lines": 8,
+   "lines": 10,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2934,7 +2605,7 @@
   {
    "file": "resources/views/store/index.blade.php",
    "line": 217,
-   "lines": 37,
+   "lines": 41,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2947,7 +2618,7 @@
   {
    "file": "resources/views/store/list.blade.php",
    "line": 38,
-   "lines": 37,
+   "lines": 41,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2973,7 +2644,7 @@
   {
    "file": "resources/views/support/edit.blade.php",
    "line": 199,
-   "lines": 30,
+   "lines": 32,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2985,7 +2656,7 @@
   {
    "file": "resources/views/taxes-method/create.blade.php",
    "line": 57,
-   "lines": 67,
+   "lines": 71,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -2997,7 +2668,7 @@
   {
    "file": "resources/views/taxes-method/edit.blade.php",
    "line": 58,
-   "lines": 67,
+   "lines": 71,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -3009,7 +2680,7 @@
   {
    "file": "resources/views/testimonial/index.blade.php",
    "line": 30,
-   "lines": 29,
+   "lines": 31,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -3021,7 +2692,7 @@
   {
    "file": "resources/views/theme_customize/index.blade.php",
    "line": 60,
-   "lines": 8,
+   "lines": 10,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -3031,9 +2702,22 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/users/profile.blade.php",
+   "line": 198,
+   "lines": 53,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()",
+    "window/document addEventListener"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/users/user_info.blade.php",
    "line": 147,
-   "lines": 64,
+   "lines": 66,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -3045,7 +2729,19 @@
   {
    "file": "resources/views/wishlist/index.blade.php",
    "line": 26,
-   "lines": 24,
+   "lines": 26,
+   "cls": "B",
+   "widgets": [],
+   "reasons": [
+    "delegated $(document).on()"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/wishlist/index.blade.php",
+   "line": 52,
+   "lines": 53,
    "cls": "B",
    "widgets": [],
    "reasons": [
@@ -3069,7 +2765,7 @@
   },
   {
    "file": "themes/stylique/views/front_end/layouts/app.blade.php",
-   "line": 105,
+   "line": 113,
    "lines": 15,
    "cls": "B",
    "widgets": [],
@@ -3275,7 +2971,7 @@
   },
   {
    "file": "themes/stylique/views/front_end/layouts/app.blade.php",
-   "line": 89,
+   "line": 97,
    "lines": 5,
    "cls": "C",
    "widgets": [],
@@ -3287,7 +2983,7 @@
   },
   {
    "file": "themes/stylique/views/front_end/layouts/app.blade.php",
-   "line": 97,
+   "line": 105,
    "lines": 5,
    "cls": "C",
    "widgets": [],
@@ -3449,7 +3145,7 @@
   },
   {
    "file": "resources/views/marketplace/pricing.blade.php",
-   "line": 1022,
+   "line": 1024,
    "lines": 11,
    "cls": "D",
    "widgets": [
@@ -3477,7 +3173,7 @@
   },
   {
    "file": "resources/views/plans/stripe.blade.php",
-   "line": 3208,
+   "line": 3214,
    "lines": 129,
    "cls": "D",
    "widgets": [
@@ -3730,6 +3426,18 @@
    "stackPush": true
   },
   {
+   "file": "resources/views/auth/login.blade.php",
+   "line": 113,
+   "lines": 9,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/components/datatable.blade.php",
    "line": 20,
    "lines": 24,
@@ -3755,9 +3463,33 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/coupon/edit.blade.php",
+   "line": 125,
+   "lines": 49,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/coupon/show.blade.php",
    "line": 22,
    "lines": 18,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/dashboard.blade.php",
+   "line": 464,
+   "lines": 13,
    "cls": "E",
    "widgets": [],
    "reasons": [
@@ -3804,6 +3536,18 @@
   },
   {
    "file": "resources/views/front_end/jQueryRoute.blade.php",
+   "line": 334,
+   "lines": 24,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/front_end/jQueryRoute.blade.php",
    "line": 361,
    "lines": 34,
    "cls": "E",
@@ -3831,6 +3575,18 @@
    "file": "resources/views/front_end/pages/order-complete.blade.php",
    "line": 85,
    "lines": 18,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/front_end/pages/refund_order.blade.php",
+   "line": 275,
+   "lines": 9,
    "cls": "E",
    "widgets": [],
    "reasons": [
@@ -3889,12 +3645,24 @@
   },
   {
    "file": "resources/views/layouts/includes/alerts.blade.php",
-   "line": 42,
+   "line": 44,
    "lines": 16,
    "cls": "E",
    "widgets": [],
    "reasons": [
     "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/layouts/includes/turbo.blade.php",
+   "line": 25,
+   "lines": 35,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "assigns window.*"
    ],
    "mixed": false,
    "stackPush": false
@@ -4044,9 +3812,81 @@
    "stackPush": false
   },
   {
+   "file": "resources/views/reports/bar_chart_order_report.blade.php",
+   "line": 256,
+   "lines": 45,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/reports/index.blade.php",
+   "line": 224,
+   "lines": 33,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
    "file": "resources/views/reports/order_country_Report.blade.php",
-   "line": 183,
-   "lines": 19,
+   "line": 189,
+   "lines": 21,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/reports/order_report.blade.php",
+   "line": 243,
+   "lines": 49,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/reports/sale_by_brand.blade.php",
+   "line": 182,
+   "lines": 52,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/reports/sale_by_category.blade.php",
+   "line": 172,
+   "lines": 52,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/reports/sale_by_product.blade.php",
+   "line": 178,
+   "lines": 45,
    "cls": "E",
    "widgets": [],
    "reasons": [
@@ -4063,6 +3903,30 @@
    "widgets": [],
    "reasons": [
     "document.ready wrapper"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/setting/email_setting.blade.php",
+   "line": 51,
+   "lines": 8,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
+   ],
+   "mixed": false,
+   "stackPush": false
+  },
+  {
+   "file": "resources/views/shopify/product.blade.php",
+   "line": 82,
+   "lines": 7,
+   "cls": "E",
+   "widgets": [],
+   "reasons": [
+    "no rule matched"
    ],
    "mixed": false,
    "stackPush": false

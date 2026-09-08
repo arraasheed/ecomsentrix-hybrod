@@ -336,7 +336,36 @@
     @include('layouts.includes.datatable-js')
     @if (\Auth::user()->type == 'super admin')
         <script type="text/javascript">
-            $(function () {
+            {{--
+                $(function () { … }) → onTurboLoad (CLAUDE-6).
+
+                This page builds three server-side DataTables by hand (country, state,
+                city) rather than through <x-datatable>, so the central fix in
+                components/datatable.blade.php does not cover it.
+
+                jQuery's ready fires once per document. Under Turbo that meant the
+                tables were built on the cold page and never again — arriving here by
+                navigation left three bare <table> elements with no search, paging or
+                ajax. And on the way back to a cached snapshot the DataTables markup
+                was restored without its instances, so a re-run would have thrown
+                "Cannot reinitialise DataTable".
+
+                Both halves are handled: turbo-cleanup.js destroys every instance on
+                turbo:before-cache, and the isDataTable() guard below is a second line
+                of defence in case a snapshot is restored without the sweep having run
+                (a preview render that never completed, for instance).
+            --}}
+            window.onTurboLoad(function () {
+                // Defensive: destroy anything left over before rebuilding. destroy()
+                // also strips the `dataTable` class, which is what stops
+                // public/js/custom.js from wrapping these in simple-datatables.
+                ['#country-table', '#state-data-table', '#city-table'].forEach(function (selector) {
+                    if ($.fn.dataTable.isDataTable(selector)) {
+                        $(selector).DataTable().destroy();
+                        $(selector).find('tbody').empty();
+                    }
+                });
+
                 $('#country-table').DataTable({
                     processing: true,
                     serverSide: true,
@@ -456,19 +485,28 @@
                 });
 
                 // Listen for changes in the state filter and reload the DataTable
-                $(document).on('change', '#state_filter', function() {
+                //
+                // Left inside onTurboLoad on purpose (CLAUDE-6): these two close over
+                // `cityTable` and `stateTable`, the instances built just above, so they
+                // have to be re-bound each time those are rebuilt. Bound to document
+                // rather than to the select, so .off() with a namespace first —
+                // otherwise each visit would stack another reload per change event.
+                $(document).off('change.countryFilters', '#state_filter').on('change.countryFilters', '#state_filter', function() {
                     cityTable.ajax.reload();
                 });
-                $(document).on('change', '#country_filter', function() {
+                $(document).off('change.countryFilters', '#country_filter').on('change.countryFilters', '#country_filter', function() {
                     stateTable.ajax.reload();
                 });
 
             });
 
-            $(document).on('change', '#city_country_id', function() {
-                var country_id = $(this).val();
-                getState(country_id);
-            });
+            {{-- Session-scoped: this one only needs the DOM, not the table instances. --}}
+            window.onTurboOnce(function () {
+                $(document).on('change', '#city_country_id', function() {
+                    var country_id = $(this).val();
+                    getState(country_id);
+                });
+            }, 'country-city-state-cascade');
 
             function getState(country_id) {
                 var data = {

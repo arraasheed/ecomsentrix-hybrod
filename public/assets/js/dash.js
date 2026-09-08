@@ -1,6 +1,29 @@
 "use strict";
 var flg = "0";
-document.addEventListener("DOMContentLoaded", function () {
+// ── Turbo Drive (CLAUDE-6) ──────────────────────────────────────────────────
+//
+// This was `document.addEventListener("DOMContentLoaded", function () { … })`.
+// That event fires once per document, and Turbo swaps the body without one — so
+// from the second page onward none of this ran. Measured on /dashboard → /product:
+// the sidebar SimpleBar scroller went from 1 wrapper to 0, and every listener bound
+// below (hamburger, #mobile-collapse, #vertical-nav-toggle, the submenu click
+// binder in menuclick(), the pre-loader removal) was attached to elements that no
+// longer existed.
+//
+// Naming the callback and registering it through onTurboLoad re-runs it against
+// each new body. Everything in here binds to elements inside that body, so nothing
+// accumulates: the old nodes are discarded with the old page. Nothing here touches
+// document or window — those two listeners are at the bottom of this file, outside
+// this function, and stay top-level.
+//
+// The fallback keeps this file working wherever the helper is absent
+// (TURBO_ENABLED=false, or a layout without the Turbo include).
+//
+// ⚠️ Only safe because partision/footerlink.blade.php marks this script
+// data-turbo-eval="false". Without that, Turbo re-executes the file and the two
+// top-level `let slideUp` / `let slideDown` at the end throw
+// "Identifier 'slideUp' has already been declared".
+function dashInit() {
   // feather icon start
   feather.replace();
   // feather icon end
@@ -265,7 +288,17 @@ document.addEventListener("DOMContentLoaded", function () {
     // });
   }
   // notification scrollbar end
-});
+} // ── end dashInit() ─────────────────────────────────────────────────────────
+
+// Runs for this page and again after every Turbo body swap. Falls back to the
+// original DOMContentLoaded behaviour when the helper is not present.
+if (typeof window.onTurboLoad === "function") {
+  window.onTurboLoad(dashInit);
+} else if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", dashInit, { once: true });
+} else {
+  dashInit();
+}
 
 function horizontalmobilemenuclick() {
   var vw = window.innerWidth;

@@ -336,7 +336,7 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | BULK-2  script → `turbo:load` (batch 1: ৬০টি) | BULK মডেল | ✅ DONE | `ec71eb7` | ১৮ ফাইল wrap (A ৬ · B ১ · C ৪ · D ১ · E ৬) · ⚠️ ২ ফাইল Claude দেখবে: `country/index`, `checkout_js` · রিপোর্ট → `.ai/reports/turbo-migration-batch1.md` |
 | BULK-3  script → `turbo:load` (batch 2: ৬০টি) | BULK মডেল | ✅ DONE | `47c52ff` | ১৫ ফাইল wrap · ⚠️ ৫ ফাইল Claude দেখবে: `product-list`, `layouts/app`, `menu/script`, `authorizenet`, `khalti` + `checkout` block@363 · রিপোর্ট → `.ai/reports/turbo-migration-batch2.md` |
 | BULK-4  script → `turbo:load` (batch 3: বাকি) | BULK মডেল | ✅ DONE | `f383505` | ৭৩/৭৩ ফাইল শেষ (৬৮ পরিবর্তিত; pos/index, datatable-js, myfatoorah includes ×২, order/script স্কিপ — কারণ ও সন্দেহ-তালিকা রিপোর্টে) · চূড়ান্ত সারসংক্ষেপ (তিন batch) → `.ai/reports/turbo-migration-batch3.md` |
-| CLAUDE-6  DataTable + modal + select2 re-init | Claude | ⬜ PENDING | — | ৭০ table, ১০১ modal · ➕ **BULK-এর বাইরে ১০টি ফাইল যোগ হলো** — যাচাই: `.ai/reports/bulk4-verification.md` (অগ্রাধিকার: `components/datatable.blade.php` ← ৭১ পেজ, `country/index.blade.php` ← serverSide DataTable) |
+| CLAUDE-6  DataTable + modal + select2 re-init | Claude | ✅ DONE | (uncommitted) | turbo-cleanup.js (10 steps) · admin layout enabled with kill-switch · 9 pages tested, 0 console errors · DataTable re-init verified after cache restore · select2/modal/ApexCharts lifecycle tested · রিপোর্ট → `.ai/reports/claude6-turbo-plugin-cleanup.md` |
 | CLAUDE-7  Turbo 303 redirect middleware | Claude | ⬜ PENDING | — | form/validation |
 | CLAUDE-8  Day 2 ব্রাউজার টেস্ট (২০ পেজ) | Claude | ⬜ PENDING | — | DB-তে টেস্ট ডেটা আছে — cart/checkout/order flow যাচাই করা যাবে |
 

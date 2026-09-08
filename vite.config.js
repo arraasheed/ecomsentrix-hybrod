@@ -48,6 +48,16 @@ export default defineConfig({
                     // costs nothing: @vite() emits a modulepreload link, so it
                     // is fetched in parallel with the entry, not after it.
                     if (id.includes('turbo-bootstrap')) return 'turbo-bootstrap';
+
+                    // Same for the plugin teardown (CLAUDE-6). Without this line
+                    // Rollup folded turbo-cleanup.js into the store entry and
+                    // made admin.js import it, so the admin fetched
+                    // "store-*.js" and its manifest entry listed
+                    // resources/js/store.js as a dependency.
+                    if (id.includes('turbo-cleanup')) return 'turbo-cleanup';
+
+                    // Shared by both entries as well (CLAUDE-6).
+                    if (id.includes('turbo-script-order')) return 'turbo-script-order';
                 },
             },
         },

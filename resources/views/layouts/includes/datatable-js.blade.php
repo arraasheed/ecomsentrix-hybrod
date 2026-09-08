@@ -15,7 +15,10 @@
             });
 
             // Ensure class is removed every time sorting is triggered on any DataTable
-            $('table').on('order.dt', function() {
+            // Namespaced + .off() first (CLAUDE-6): callers invoke this from
+            // DataTables' initComplete and drawCallback, so every redraw of a
+            // server-side table used to bind another order.dt handler.
+            $('table').off('order.dt.removeSorting').on('order.dt.removeSorting', function() {
                 $(this).find('th').each(function() {
                     if (($(this).hasClass('sorting_desc') || $(this).hasClass('sorting_asc')) && $(this).find('input[type="checkbox"]').length) {
                         $(this).removeClass('sorting sorting_asc sorting_desc');
