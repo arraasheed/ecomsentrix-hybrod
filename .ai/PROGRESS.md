@@ -347,8 +347,8 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | টাস্ক | মডেল | অবস্থা | কমিট | নোট |
 |---|---|---|---|---|
 | CLAUDE-9   Redis + OPcache + optimize | Claude | ✅ DONE | `868433c` | Predis ^2.2 added · `.env` → Redis (cache/session/queue) · `.env.example` updated · kill-switches still using `env()` (pending config refactor before `config:cache`) · OPcache status: system-level, user must configure php.ini · রিপোর্ট → `.ai/reports/claude9-redis-config.md` |
-| CLAUDE-10  Workbox SW (P4 fix) | Claude | ⬜ PENDING | — | Replace broken `serviceWorker.js` with proper caching strategy |
-| CLAUDE-11  Per-store manifest generator | Claude | ⬜ PENDING | — | |
+| CLAUDE-10  Workbox SW (P4 fix) | Claude | ✅ DONE | `41974f4` | Old broken SW replaced · NetworkFirst for HTML (always fresh), CacheFirst for hashed assets · Secure routes (login/checkout/cart/account) → NetworkOnly · kill-switch: PWA_ENABLED=false unregisters SW · রিপোর্ট → `.ai/reports/claude10-pwa-caching.md` |
+| CLAUDE-11  Per-store manifest generator | Claude | ⬜ PENDING | — | Module-based solution (`packages/workdo/PwaManifest/`) |
 | BULK-5  Offline page + install prompt UI | BULK মডেল | ⬜ PENDING | — | |
 | CLAUDE-12  Day 3 PWA টেস্ট (install + offline) | Claude | ⬜ PENDING | — | |
 
