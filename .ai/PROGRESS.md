@@ -175,9 +175,9 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 
 ## 📊 সামগ্রিক অবস্থা
 
-**বর্তমান পর্যায়:** ✅ **Day 2 সম্পূর্ণ — merged to master, tag `day2-complete`**
-**সর্বশেষ আপডেট:** CLAUDE-8 (Day 2 final test: 6 storefront + 2 admin pages, checkout form ✅, all Turbo navigation ✅, merge ✅)
-**সক্রিয় branch:** `master` (Day 2 merged)
+**বর্তমান পর্যায়:** 🟨 **Day 3 চলছে — CLAUDE-9 সম্পূর্ণ, CLAUDE-10 প্রস্তুত**
+**সর্বশেষ আপডেট:** CLAUDE-9 (Redis enabled: cache/session/queue drivers, predis added, kill-switches pending config refactor)
+**সক্রিয় branch:** `day3/pwa-workbox`
 
 **Day 1 ক্রম:** ~~GEMINI-1~~ → ~~GEMINI-2~~ → ~~CLAUDE-1~~ → ~~CLAUDE-2~~ → ~~BULK-1~~ → ~~CLAUDE-3~~ → ~~CLAUDE-4~~ ✅ **শেষ**
 
@@ -346,8 +346,8 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 
 | টাস্ক | মডেল | অবস্থা | কমিট | নোট |
 |---|---|---|---|---|
-| CLAUDE-9   Redis + OPcache + optimize | Claude | ⬜ PENDING | — | |
-| CLAUDE-10  Workbox SW (P4 fix) | Claude | ⬜ PENDING | — | ভাঙা SW প্রতিস্থাপন |
+| CLAUDE-9   Redis + OPcache + optimize | Claude | ✅ DONE | `868433c` | Predis ^2.2 added · `.env` → Redis (cache/session/queue) · `.env.example` updated · kill-switches still using `env()` (pending config refactor before `config:cache`) · OPcache status: system-level, user must configure php.ini · রিপোর্ট → `.ai/reports/claude9-redis-config.md` |
+| CLAUDE-10  Workbox SW (P4 fix) | Claude | ⬜ PENDING | — | Replace broken `serviceWorker.js` with proper caching strategy |
 | CLAUDE-11  Per-store manifest generator | Claude | ⬜ PENDING | — | |
 | BULK-5  Offline page + install prompt UI | BULK মডেল | ⬜ PENDING | — | |
 | CLAUDE-12  Day 3 PWA টেস্ট (install + offline) | Claude | ⬜ PENDING | — | |
