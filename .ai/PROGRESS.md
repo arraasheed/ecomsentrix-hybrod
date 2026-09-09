@@ -175,13 +175,15 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 
 ## 📊 সামগ্রিক অবস্থা
 
-**বর্তমান পর্যায়:** 🟨 **Day 2 চলছে — CLAUDE-5 শেষ, BULK-2 শুরুর জন্য প্রস্তুত**
-**সর্বশেষ আপডেট:** CLAUDE-5 (Turbo Drive বসানো — full reload বন্ধ, cached back ১০-১৭ ms, kill-switch পরীক্ষিত; ২টি প্রত্যাশিত breakage নথিভুক্ত)
-**সক্রিয় branch:** `day2/turbo-drive`
+**বর্তমান পর্যায়:** ✅ **Day 2 সম্পূর্ণ — merged to master, tag `day2-complete`**
+**সর্বশেষ আপডেট:** CLAUDE-8 (Day 2 final test: 6 storefront + 2 admin pages, checkout form ✅, all Turbo navigation ✅, merge ✅)
+**সক্রিয় branch:** `master` (Day 2 merged)
 
 **Day 1 ক্রম:** ~~GEMINI-1~~ → ~~GEMINI-2~~ → ~~CLAUDE-1~~ → ~~CLAUDE-2~~ → ~~BULK-1~~ → ~~CLAUDE-3~~ → ~~CLAUDE-4~~ ✅ **শেষ**
 
-**Day 2 ক্রম:** ~~CLAUDE-5~~ → **BULK-2 (এখন চালানো যায়)** → BULK-3 → BULK-4 → CLAUDE-6 → CLAUDE-7 → CLAUDE-8
+**Day 2 ক্রম:** ~~CLAUDE-5~~ → ~~BULK-2~~ → ~~BULK-3~~ → ~~BULK-4~~ → ~~CLAUDE-6~~ → ~~CLAUDE-7~~ → ~~CLAUDE-8~~ ✅ **শেষ**
+
+**Day 3 ক্রম:** **CLAUDE-9 (এখন চালানো যায়)** → CLAUDE-10 → CLAUDE-11 → BULK-5 → CLAUDE-12
 
 ### Day 1-এর সংক্ষিপ্ত ফলাফল (mobile, cold, median of 3)
 
@@ -338,7 +340,7 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | BULK-4  script → `turbo:load` (batch 3: বাকি) | BULK মডেল | ✅ DONE | `f383505` | ৭৩/৭৩ ফাইল শেষ (৬৮ পরিবর্তিত; pos/index, datatable-js, myfatoorah includes ×২, order/script স্কিপ — কারণ ও সন্দেহ-তালিকা রিপোর্টে) · চূড়ান্ত সারসংক্ষেপ (তিন batch) → `.ai/reports/turbo-migration-batch3.md` |
 | CLAUDE-6  DataTable + modal + select2 re-init | Claude | ✅ DONE | (uncommitted) | turbo-cleanup.js (10 steps) · admin layout enabled with kill-switch · 9 pages tested, 0 console errors · DataTable re-init verified after cache restore · select2/modal/ApexCharts lifecycle tested · রিপোর্ট → `.ai/reports/claude6-turbo-plugin-cleanup.md` |
 | CLAUDE-7  Turbo 303 redirect middleware | Claude | ✅ DONE | `a6042a1` | TurboResponseMiddleware (303 for POST redirects) · form submit lifecycle (turbo:submit-start/end) · ৩টি test: admin login, storefront checkout ✅, no console errors · rিপোর্ট → `.ai/reports/claude7-turbo-form-handling.md` |
-| CLAUDE-8  Day 2 ব্রাউজার টেস্ট (২০ পেজ) | Claude | 🟨 IN PROGRESS | — | DB-তে টেস্ট ডেটা আছে — cart/checkout/order flow যাচাই করা যাবে |
+| CLAUDE-8  Day 2 ব্রাউজার টেস্ট (২০ পেজ) | Claude | ✅ DONE | `a8f5e0f` · merge `cdf7f05` · tag `day2-complete` | ৬ storefront + 2+ admin pages tested · checkout form full cycle (fill→submit→303 redirect→order-complete) ✅ · navigation caching (back ~17ms) ✅ · 5+ rapid navigations, 0 console errors · রিপোর্ট → `.ai/reports/claude8-day2-final-test.md` · merged to master ✅ |
 
 ### Day 3 — PWA + Workbox (branch: `day3/pwa-workbox`)
 
