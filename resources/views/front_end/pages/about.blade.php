@@ -120,26 +120,37 @@
 @push('page-script')
     
 <script>
-    // counter js
-    const counters1 = document.querySelectorAll('.counter');
-    counters1.forEach(counter => {
-        const updateCount = () => {
-            const target = +counter.getAttribute('data-target');
-            const speed = 500;
-            const increment = target / speed;
-            let count = +counter.innerText;
+    {{--
+        CLAUDE-6: `const counters1` was top-level. Turbo re-executes body scripts,
+        so the second visit to this page threw "Identifier 'counters1' has already
+        been declared" from inside Turbo's body swap.
 
-            if (count < target) {
-                counter.innerText = Math.ceil(count + increment);
-                setTimeout(updateCount, 10);
-            } else {
-                // Final adjustment
-                counter.innerText = target >= 1000 ? target.toLocaleString() : target;
-                    counter.innerText += '+';
-            }
-        };
+        onTurboLoad also fixes a real bug: the counters animate on load, and with a
+        plain top-level script they only ever animated on the first page view. Now
+        they run each time the page is entered.
+    --}}
+    window.onTurboLoad(function () {
+        // counter js
+        const counters1 = document.querySelectorAll('.counter');
+        counters1.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-target');
+                const speed = 500;
+                const increment = target / speed;
+                let count = +counter.innerText;
 
-        updateCount();
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + increment);
+                    setTimeout(updateCount, 10);
+                } else {
+                    // Final adjustment
+                    counter.innerText = target >= 1000 ? target.toLocaleString() : target;
+                        counter.innerText += '+';
+                }
+            };
+
+            updateCount();
+        });
     });
 </script>
 @endpush

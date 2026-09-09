@@ -38,6 +38,7 @@
     <script src="{{ asset('public/assets/js/plugins/dropzone.js') }}"></script>
 
     <script>
+        window.onTurboLoad(function () {
         // Dropzone has been added as a global variable.
         Dropzone.autoDiscover = false;
         var dropzone = new Dropzone('#demo-upload', {
@@ -65,6 +66,7 @@
         });
         dropzone.on('sending', function(file, xhr, formData) {
             formData.append('_token', "{{ csrf_token() }}");
+        });
         });
     </script>
 @endpush

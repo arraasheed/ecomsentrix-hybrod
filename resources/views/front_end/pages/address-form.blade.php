@@ -101,7 +101,7 @@
 </form>
 
 <script>
-$(document).ready(function() {
+window.onTurboLoad(function () {
     // Initialize select2 for all select elements
     $('.select2').select2({
         theme: 'default',

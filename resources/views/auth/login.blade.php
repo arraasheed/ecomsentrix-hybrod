@@ -111,7 +111,7 @@
         @endif
     @endif
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             $("#form_data").submit(function(e) {
                 $('#loader').fadeIn();
                 $(".login_button").attr("disabled", true);

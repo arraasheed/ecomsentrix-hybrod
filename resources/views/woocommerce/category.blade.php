@@ -78,7 +78,7 @@
 @push('custom-script')
     @include('layouts.includes.datatable-js')
     <script type="text/javascript">
-        $(function() {
+        window.onTurboLoad(function () {
             $('#woocom-category-table').DataTable({
                 processing: true,
                 serverSide: true,

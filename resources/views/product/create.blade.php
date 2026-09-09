@@ -472,12 +472,30 @@
 @endsection
 
 @push('custom-script')
+  {{--
+      Deliberately NOT data-turbo-eval="false" (CLAUDE-6).
+
+      That attribute makes Turbo insert the inert element it parsed from the
+      response instead of re-creating it, so the file never executes. For a library
+      that loads on every page (see partision/footerlink.blade.php) that is the
+      point — it already ran on the cold page and its globals persist. For a
+      page-specific library it is fatal: reach this page by Turbo navigation and
+      repeater.js has never executed anywhere, so
+      `$('#custom_field_repeater_basic').repeater(...)` below throws
+      "$(...).repeater is not a function" and the custom-field UI is dead. Measured
+      on four consecutive visits before this was reverted.
+
+      Both files re-execute per navigation instead, which is safe here: neither has
+      top-level const/let, and both only assign to $.fn. The ordering problem — the
+      inline block running before these finish loading — is handled centrally by
+      resources/js/turbo-script-order.js.
+  --}}
   <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
   <script src="{{ asset('js/repeater.js') }}"></script>
 
 
   <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
       // tag
       $('.select2').select2({
         tags: true,
@@ -526,6 +544,8 @@
       //stock
       $('#options').hide();
       $('.stock_stats').show();
+      });
+      window.onTurboOnce(function () {
       $(document).on("change", "#enable_product_stock", function() {
         $('#options').prop('checked', false);
         if ($(this).prop('checked')) {
@@ -537,7 +557,9 @@
         }
 
       });
+      });
 
+      window.onTurboLoad(function () {
       // prview video
       $("#preview_type").change(function() {
         $(this).find("option:selected").each(function() {
@@ -577,6 +599,7 @@
         });
       }).change();
     });
+    window.onTurboOnce(function () {
     $(document).on("change", "#enable_custom_field", function() {
       $('#custom_value').hide();
       $('.custom_field').hide();
@@ -585,7 +608,9 @@
         $('.custom_field').show();
       }
     });
+});
     
+    window.onTurboLoad(function () {
     $('#custom_field_repeater_basic').repeater({
                 initEmpty: false,
                 defaultValues: {
@@ -603,6 +628,7 @@
                         show_toastr('Error', 'At least one field is required.', 'error');
                     }
                 }
+        });
         });
 
         // Manually add a new item when the "Add More" button is clicked
@@ -659,6 +685,7 @@
 
   <script>
     // display variant hide show
+    window.onTurboOnce(function () {
     $(document).on("change", "#enable_product_variant", function() {
       $('.product-price-div').show();
       $('.product-stock-div').show();
@@ -720,6 +747,7 @@
         });
       });
     });
+    });
 
 
 
@@ -746,6 +774,7 @@
         }
       });
     }
+    window.onTurboOnce(function () {
     $(document).on("change", ".attribute_option_data", function() {
       var inputValue = $('.attribute_option_data').val();
       if (inputValue != []) {
@@ -793,10 +822,34 @@
         add_more_choice_option($(this).val(), $(this).text());
       });
     });
+    });
   </script>
 
   {{-- Dropzones  --}}
   <script>
+    window.onTurboLoad(function () {
+    {{--
+        Dropzone.autoDiscover = false is set below, but that only stops Dropzone's own
+        DOMContentLoaded scan. Two Turbo problems remain (CLAUDE-6):
+
+        1. Dropzone throws "Dropzone already attached" if the element already has
+           `.dropzone`. On a restored snapshot the markup Dropzone built is back but
+           its instance is gone, so this initialiser hit an element it could neither
+           use nor re-attach to.
+        2. The element carries class="dropzone" in the cached HTML. Dropzone's own
+           discover() picks that up on the next execution and constructs an instance
+           with no url — "No URL provided.".
+
+        turbo-cleanup.js destroys the instances on before-cache; this clears the
+        leftover markers so the initialiser below sees a clean element.
+    --}}
+    $('[data-toggle="dropzone1"]').each(function () {
+      if (this.dropzone) {
+        try { this.dropzone.destroy(); } catch (e) {}
+      }
+      $(this).removeClass('dz-clickable dz-started dropzone');
+    });
+
     var Dropzones = function() {
       var e = $('[data-toggle="dropzone1"]'),
         t = $(".dz-preview");
@@ -844,6 +897,7 @@
         }, n.html(""), e.dropzone(i)
       }))
     }()
+    });
 
     $('#submit-all').on('click', function() {
       $('#submit-all').attr('disabled', true);

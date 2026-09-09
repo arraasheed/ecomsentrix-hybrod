@@ -105,12 +105,13 @@
 <script src="{{ asset('public/js/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('public/js/repeater.js') }}"></script>
 <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         setTimeout(() => {
             $('.condition_option').trigger('change');
         }, 100);
     });
 
+    window.onTurboOnce(function () {
     $(document).on('change', '.condition_option', function(e) {
         var id = $(this).val();
 
@@ -220,6 +221,8 @@
             }
         });
     });
+    });
+    window.onTurboLoad(function () {
     if ($(".multi-select").length > 0) {
         $($(".multi-select")).each(function(index, element) {
             var id = $(element).attr('id');
@@ -230,9 +233,10 @@
             );
         });
     }
+    });
 </script>
 <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         let plusFieldIndex = 0;
 
         function addNewField(index) {
@@ -254,7 +258,9 @@
         $("#add-field-btn").on("click", function() {
             addNewField(plusFieldIndex);
         });
+    });
 
+    window.onTurboOnce(function () {
         $(document).on("click", ".delete-icon:not(.disabled)", function() {
             var container = $(this).closest('.form-group-container');
             if (container.attr("id") !== "form-group-container0") {

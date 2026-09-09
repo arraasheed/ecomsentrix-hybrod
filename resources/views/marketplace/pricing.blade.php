@@ -691,7 +691,7 @@
 @push('scripts')
 <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             var userprice = '{{ $userprice }}';
             var planprice = '{{ $planprice }}';
             if ($('.switch-change').prop('checked')==true)
@@ -706,6 +706,7 @@
             var total = parseFloat(userpricetext) + parseFloat(planprice);
             $(".total").text(parseFloat(total).toFixed(2) + currancy_symbol);
         });
+        window.onTurboOnce(function () {
         $(document).on("click", ".user_module_check", function() {
             if ($(this).closest(".user_module").hasClass("active_module"))
             {
@@ -717,6 +718,7 @@
             ChangeModulePrice();
             ChangePrice();
 
+        });
         });
     </script>
     <script>

@@ -325,6 +325,7 @@
 @endsection
 @push('custom-script')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('change', '#trial', function() {
             if ($(this).is(':checked')) {
                 $('.plan_div').removeClass('d-none');
@@ -335,9 +336,11 @@
                 $('#trial_days').removeAttr("required");
             }
         });
+        });
     </script>
 
     <script>
+        window.onTurboOnce(function () {
         $(document).on("click", ".is_disable", function() {
 
             var id = $(this).attr('data-id');
@@ -361,5 +364,6 @@
                 }
             });
         });
+        }, 'plans-index-disable');
     </script>
 @endpush

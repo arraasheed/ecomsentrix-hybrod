@@ -165,6 +165,7 @@
 @endif
 <script>
 
+    window.onTurboOnce(function () {
     $(document).on('click', '.delete_option', function(event) {
         event.preventDefault(); // Prevent the default behavior of the button
 
@@ -177,6 +178,7 @@
         // Also remove any hidden inputs or form elements related to this option
         $('input[name*="' + originalId + '"], select[name*="' + originalId + '"], textarea[name*="' + originalId + '"]').remove();
     });
+    });
 
 
     $('.enable_view').change(function() {
@@ -187,7 +189,7 @@
         }
     });
 
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         if($('.enable_product_stock').prop('checked') == true)
         {
             $('.stock_status').hide();
@@ -201,6 +203,7 @@
         }
     });
 
+    window.onTurboOnce(function () {
     $(document).on('change', '.downloadable', function() {
         var optionValue = $(this).val();
         var container = $(this).closest('.accordion-item');
@@ -241,6 +244,7 @@
             container.find('.enable_manage_stock').addClass('d-none');
             container.find('.stock_status').show();
         }
+    });
     });
 
 </script>

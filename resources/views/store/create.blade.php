@@ -101,11 +101,13 @@
 
 @push('custom-script')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('keyup', '#theme-search', function () {
             var value = $(this).val().toLowerCase();
             $('#theme-list .theme-item').filter(function () {
                 $(this).toggle($(this).find('.theme-label').text().toLowerCase().indexOf(value) > -1)
             });
+        });
         });
     </script>
 @endpush

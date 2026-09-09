@@ -27,6 +27,19 @@
                 'method' => 'post',
                 'enctype' => 'multipart/form-data',
                 'id' => 'formdata',
+                // ⛔ Turbo must never intercept this submit (CLAUDE-5).
+                //
+                // payment.process answers with redirect()->away() to the gateway
+                // for paypal, skrill, esewa, ozow, phonepe and friends. Turbo
+                // submits forms with fetch(), whose default mode is "cors", and
+                // fetch follows that cross-origin redirect itself. No gateway
+                // sends Access-Control-Allow-Origin for our host, so the fetch
+                // rejects with a TypeError, Turbo logs it to the console and
+                // the customer sees nothing happen. Checkout would be dead.
+                //
+                // The same form is also re-pointed at
+                // https://<pfHost>/eng/process by the payfast handler below.
+                'data-turbo' => 'false',
             ]) !!}
             @csrf
                 <div class="flex flex-col lg:flex-row gap-8">
@@ -272,7 +285,7 @@
     
 <script>
     'use strict';
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         loadAddressForm("billing", ".selling_address_form");
     
         handleShippingAddress();
@@ -280,8 +293,10 @@
         loadAdditionalNote();
     });
 
+    window.onTurboOnce(function () {
     $(document).on("change", "#same-address", function() {
         handleShippingAddress();
+    });
     });
 
     function handleShippingAddress() {

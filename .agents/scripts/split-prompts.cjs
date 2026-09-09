@@ -11,7 +11,9 @@ const path = require('path');
 const ROOT = 'C:\\laragon\\www\\ecommercego';
 const OUT = path.join(ROOT, '.ai', 'prompts');
 
-// execution order → [source file, prompt number in that file, task id]
+// execution order → [source file, prompt number in that file, task id, HAND?]
+// HAND = the .txt is hand-written; keep its slot for numbering, skip generation.
+const HAND = 'hand-written';
 const ORDER = [
   ['GEMINI', 1, 'GEMINI-1'],
   ['GEMINI', 2, 'GEMINI-2'],
@@ -22,9 +24,17 @@ const ORDER = [
   ['CLAUDE', 4, 'CLAUDE-4'],
   ['GEMINI', 3, 'GEMINI-3'],
   ['CLAUDE', 5, 'CLAUDE-5'],
-  ['BULK', 2, 'BULK-2'],
+  // BULK-2 keeps its slot so the numbering stays stable, but HAND marks it as
+  // hand-written: 10-BULK-2.txt is not generated. Its generated version told the
+  // model to take "the first 20 files of class A" from script-inventory.md, and
+  // 60 of those 300 blocks sit in packages/workdo/LandingPage, a forbidden
+  // folder. The hand-written file names the 20 allowed files outright.
+  ['BULK', 2, 'BULK-2', HAND],
   ['BULK', 3, 'BULK-3'],
-  ['BULK', 4, 'BULK-4'],
+  // BULK-3 and BULK-4 keep their slots but are hand-written for the same reason
+  // as BULK-2: the inventory mixes in packages/workdo files, and 13 standalone
+  // payment pages have no helper stub, so wrapping them breaks the page.
+  ['BULK', 4, 'BULK-4', HAND],
   ['CLAUDE', 6, 'CLAUDE-6'],
   ['CLAUDE', 7, 'CLAUDE-7'],
   ['CLAUDE', 8, 'CLAUDE-8'],
@@ -219,8 +229,14 @@ function extract(lines, promptNum) {
 }
 
 fs.mkdirSync(OUT, { recursive: true });
+// Wipe generated files, but keep the hand-written ones. 10-BULK-2.txt has no
+// source section in BULK_TASKS.md: its generated version told the model to take
+// "the first 20 files of class A" from script-inventory.md, and 60 of those 300
+// blocks sit in packages/workdo/LandingPage, a forbidden folder. The hand-written
+// file names the 20 allowed files outright.
+const KEEP = new Set(['10-BULK-2.txt', '12-BULK-4.txt']);
 for (const f of fs.readdirSync(OUT)) {
-  if (f.endsWith('.txt')) fs.unlinkSync(path.join(OUT, f));
+  if (f.endsWith('.txt') && !KEEP.has(f)) fs.unlinkSync(path.join(OUT, f));
 }
 
 const cache = {};
@@ -231,7 +247,15 @@ const BOOT_HEAD = (of) => `━━━━━━━━━━━━━━━━━�
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `;
 
-ORDER.forEach(([src, num, taskId], idx) => {
+ORDER.forEach(([src, num, taskId, hand], idx) => {
+  const seqEarly = String(idx + 1).padStart(2, '0');
+  if (hand === HAND) {
+    // Slot reserved for numbering only; the .txt is maintained by hand.
+    const name = `${seqEarly}-${taskId}.txt`;
+    const p = path.join(OUT, name);
+    written.push([name, fs.existsSync(p) ? -1 : -2, 'HAND-WRITTEN (not generated)']);
+    return;
+  }
   if (!cache[src]) {
     cache[src] = fs
       .readFileSync(path.join(ROOT, '.ai', src + '_TASKS.md'), 'utf8')
@@ -269,5 +293,11 @@ ORDER.forEach(([src, num, taskId], idx) => {
 
 console.log(`\nwrote ${written.length} files to .ai\\prompts\\\n`);
 for (const [n, len, t] of written) {
-  console.log(`  ${n.padEnd(20)} ${String(len).padStart(4)} lines  ${t.slice(0, 52)}`);
+  if (len === -1) {
+    console.log(`  ${n.padEnd(20)}    — ${t}`);
+  } else if (len === -2) {
+    console.log(`  ${n.padEnd(20)}    ⚠️ MISSING — ${t}`);
+  } else {
+    console.log(`  ${n.padEnd(20)} ${String(len).padStart(4)} lines  ${t.slice(0, 52)}`);
+  }
 }

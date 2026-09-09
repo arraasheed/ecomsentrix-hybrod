@@ -665,7 +665,7 @@ var scrollSpy = new bootstrap.ScrollSpy(document.body, {
 
 
 <script>
-$(function() {
+window.onTurboOnce(function () {
     $('body').on('click', '.image_delete', function(e) {
         e.preventDefault();
         var id = $(this).attr('data-id');

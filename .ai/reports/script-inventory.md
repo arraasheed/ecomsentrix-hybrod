@@ -9,56 +9,22 @@ ones Turbo Drive stops re-executing after a page swap.
 
 ---
 
-## 0. 🔴 Scope — which of these 300 blocks BULK may touch
-
-The scanner reports every inline block it finds, including ones inside folders the
-BULK model is forbidden to edit. Read this before slicing work out of the tables below.
-
-| Location | Blocks | BULK may edit? |
-|---|---|---|
-| `resources/views/**` | 230 | ✅ yes |
-| `themes/**` | 10 | ✅ yes |
-| `packages/workdo/LandingPage/**` | 60 | ⛔ **no — forbidden folder** |
-
-**BULK-2/3/4 work only on the 240 blocks under `resources/` and `themes/`**
-(157 files): A 108 · B 75 · C 17 · D 11 · E 29, of which **48 are mixed A+B**.
-
-`packages/workdo/` is a licensed upstream module (see `.ai/PROJECT_CONTEXT.md`
-rule 1). Its 60 blocks stay untouched — the LandingPage module renders the
-marketing site, not the storefront or admin, so Turbo navigation there is out of
-scope for Day 2. Claude decides later whether it needs its own treatment.
-
-### False positives in the mixed list
-
-Of the 50 blocks flagged `mixed A+B`, **45 genuinely contain jQuery delegation**
-(`$(document).on(...)`). The other 5 were flagged because the scanner counts
-`document.addEventListener('DOMContentLoaded', ...)` as a global listener —
-that is a page-init wrapper, not a delegated handler, so those 5 need no split.
-Verified by re-reading each block body; example:
-`packages/workdo/LandingPage/.../change_blocks/index.blade.php:108` is a plain
-`DOMContentLoaded` + Sortable init (and is in the forbidden folder anyway).
-
-**Real split work for BULK: 45 blocks, minus any inside `packages/` → check the
-table in section 2.**
-
----
-
 ## 1. Summary
 
 | Class | Meaning | Files | Script blocks |
 |---|---|---|---|
-| A REINIT-NEEDED | must re-init on `turbo:load` | 99 | 129 |
-| B ONCE-ONLY | must run once only | 76 | 91 |
+| A REINIT-NEEDED | must re-init on `turbo:load` | 70 | 84 |
+| B ONCE-ONLY | must run once only | 97 | 123 |
 | C INLINE-DATA | server data → JS variable | 14 | 19 |
 | D THIRD-PARTY | external service | 11 | 12 |
-| E UNCLEAR | needs a human decision | 44 | 49 |
-| **total** | | **199** | **300** |
+| E UNCLEAR | needs a human decision | 56 | 63 |
+| **total** | | **200** | **301** |
 
 ### Widgets found (drives the Day 2 re-init list)
 
 | Widget | Blocks |
 |---|---|
-| (DOM-bound ready block) | 72 |
+| (DOM-bound ready block) | 27 |
 | ApexCharts | 17 |
 | choices.js | 12 |
 | bootstrap modal | 8 |
@@ -77,7 +43,7 @@ table in section 2.**
 
 ---
 
-## 2. Highest risk first — mixed A + B (50 blocks)
+## 2. Highest risk first — mixed A + B (21 blocks)
 
 These blocks initialise a widget **and** register a global/delegated handler in the same
 `<script>`. Wrapping the whole thing in `turbo:load` duplicates the handler; leaving it alone
@@ -87,58 +53,29 @@ loses the widget. They must be split.
 |---|---|---|---|
 | `packages/workdo/LandingPage/src/Resources/views/landingpage/change_blocks/index.blade.php` | 108 | sortable | document.ready wrapper; window/document addEventListener; declares global function |
 | `packages/workdo/LandingPage/src/Resources/views/layouts/pricing.blade.php` | 521 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/AppSetting/index.blade.php` | 667 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/AppSetting/mobile_content.blade.php` | 1134 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/cart/index.blade.php` | 19 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
 | `resources/views/country/index.blade.php` | 338 | DataTable | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/coupon/create.blade.php` | 157 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/customer/grid.blade.php` | 140 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/customer/index.blade.php` | 79 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/flash-sale/create.blade.php` | 107 | choices.js | document.ready wrapper; delegated $(document).on() |
-| `resources/views/flash-sale/create.blade.php` | 234 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/flash-sale/edit.blade.php` | 213 | choices.js | document.ready wrapper; delegated $(document).on() |
-| `resources/views/flash-sale/edit.blade.php` | 331 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/flash-sale/index.blade.php` | 30 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
+| `resources/views/flash-sale/create.blade.php` | 107 | choices.js | delegated $(document).on() |
+| `resources/views/flash-sale/edit.blade.php` | 213 | choices.js | delegated $(document).on() |
 | `resources/views/front_end/common/checkout/checkout_js.blade.php` | 9 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/common/product/filter.blade.php` | 176 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/pages/address.blade.php` | 94 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/front_end/pages/checkout.blade.php` | 273 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/pages/checkout.blade.php` | 350 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/pages/order.blade.php` | 68 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
+| `resources/views/front_end/pages/checkout.blade.php` | 365 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
 | `resources/views/front_end/pages/product-list.blade.php` | 146 | bootstrap modal | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/pages/refund_order.blade.php` | 284 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
 | `resources/views/generate.blade.php` | 95 | bootstrap modal | delegated $(document).on(); declares global function |
-| `resources/views/marketplace/pricing.blade.php` | 693 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
 | `resources/views/menu/script.blade.php` | 2 | bootstrap modal | document.ready wrapper; delegated $(document).on(); window/document addEventListener; declares global function |
-| `resources/views/order/refund_details.blade.php` | 213 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/page/index.blade.php` | 29 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/plans/create.blade.php` | 271 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); window/document addEventListener |
-| `resources/views/plans/edit.blade.php` | 262 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); window/document addEventListener |
-| `resources/views/plans/stripe.blade.php` | 3049 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); window/document addEventListener |
-| `resources/views/plans/stripe.blade.php` | 3099 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
+| `resources/views/plans/stripe.blade.php` | 3105 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
 | `resources/views/pos/index.blade.php` | 283 | bootstrap modal | document.ready wrapper; delegated $(document).on(); $.ajaxSetup(); declares global function |
 | `resources/views/pos/index.blade.php` | 804 | bootstrap modal | delegated $(document).on(); declares global function |
-| `resources/views/product/attribute_combinations_data.blade.php` | 230 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/product/attribute_combinations_edit.blade.php` | 289 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/product/attribute_combinations.blade.php` | 166 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/product/create.blade.php` | 479 | select2 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/product/create.blade.php` | 660 | choices.js | delegated $(document).on(); declares global function |
-| `resources/views/product/edit.blade.php` | 662 | select2, Dropzone, choices.js | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/product/show.blade.php` | 633 | select2 | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/product/show.blade.php` | 779 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/roles/index.blade.php` | 30 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/setting/index.blade.php` | 196 | bootstrap modal | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/setting/index.blade.php` | 477 | select2, tooltip/popover, switchButton | document.ready wrapper; delegated $(document).on(); window/document addEventListener; declares global function |
-| `resources/views/shipping_method/free_shipping.blade.php` | 27 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/theme_analytic.blade.php` | 226 | ApexCharts | document.ready wrapper; assigns window.*; window/document addEventListener; declares global function |
-| `resources/views/theme_customize/customize-script.blade.php` | 3 | summernote | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/users/profile.blade.php` | 198 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on(); window/document addEventListener |
-| `resources/views/wishlist/index.blade.php` | 50 | (DOM-bound ready block) | document.ready wrapper; delegated $(document).on() |
-| `resources/views/woocommerce/coupon.blade.php` | 84 | DataTable | document.ready wrapper; delegated $(document).on() |
+| `resources/views/product/create.blade.php` | 479 | select2 | delegated $(document).on() |
+| `resources/views/product/create.blade.php` | 668 | choices.js | delegated $(document).on(); declares global function |
+| `resources/views/product/edit.blade.php` | 662 | select2, Dropzone, choices.js | delegated $(document).on(); declares global function |
+| `resources/views/product/show.blade.php` | 633 | select2 | delegated $(document).on(); declares global function |
+| `resources/views/setting/index.blade.php` | 196 | bootstrap modal | delegated $(document).on(); declares global function |
+| `resources/views/setting/index.blade.php` | 494 | select2, tooltip/popover, switchButton | delegated $(document).on(); declares global function |
+| `resources/views/theme_customize/customize-script.blade.php` | 3 | summernote | delegated $(document).on(); declares global function |
+| `resources/views/woocommerce/coupon.blade.php` | 84 | DataTable | delegated $(document).on() |
 
 ---
 
-## 3. A — REINIT-NEEDED (129 blocks, 99 files)
+## 3. A — REINIT-NEEDED (84 blocks, 70 files)
 
 Recipe: wrap body in `document.addEventListener("turbo:load", function(){ ... })` and destroy the widget on `turbo:before-cache`.
 
@@ -165,116 +102,71 @@ Recipe: wrap body in `document.addEventListener("turbo:load", function(){ ... })
 | `packages/workdo/LandingPage/src/Resources/views/layouts/landingpage.blade.php` | 898 | 53 | initialises Swiper; declares global function |
 | `packages/workdo/LandingPage/src/Resources/views/layouts/marketplace.blade.php` | 351 | 10 | document.ready wrapper |
 | `packages/workdo/LandingPage/src/Resources/views/layouts/pricing.blade.php` | 521 | 27 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/addon/create.blade.php` | 40 | 30 | initialises Dropzone |
-| `resources/views/AppSetting/index.blade.php` | 667 | 38 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/AppSetting/mobile_content.blade.php` | 1134 | 24 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/attribute_option/index.blade.php` | 75 | 29 | initialises sortable; document.ready wrapper |
-| `resources/views/auth/login.blade.php` | 113 | 9 | document.ready wrapper |
-| `resources/views/cart/index.blade.php` | 19 | 54 | document.ready wrapper; delegated $(document).on() |
+| `resources/views/addon/create.blade.php` | 40 | 32 | initialises Dropzone |
+| `resources/views/attribute_option/index.blade.php` | 75 | 29 | initialises sortable |
 | `resources/views/country/index.blade.php` | 338 | 281 | initialises DataTable; document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/coupon/create.blade.php` | 157 | 52 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/coupon/edit.blade.php` | 125 | 49 | document.ready wrapper |
-| `resources/views/customer/grid.blade.php` | 140 | 26 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/customer/grid.blade.php` | 179 | 93 | document.ready wrapper; declares global function |
-| `resources/views/customer/index.blade.php` | 79 | 27 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/customer/index.blade.php` | 119 | 93 | document.ready wrapper; declares global function |
-| `resources/views/dashboard.blade.php` | 464 | 13 | document.ready wrapper |
-| `resources/views/dashboard.blade.php` | 478 | 125 | initialises ApexCharts; document.ready wrapper; declares global function |
-| `resources/views/dashboard.blade.php` | 625 | 79 | document.ready wrapper; declares global function |
-| `resources/views/flash-sale/create.blade.php` | 107 | 127 | initialises choices.js; document.ready wrapper; delegated $(document).on() |
-| `resources/views/flash-sale/create.blade.php` | 234 | 32 | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/flash-sale/edit.blade.php` | 213 | 106 | initialises choices.js; document.ready wrapper; delegated $(document).on() |
-| `resources/views/flash-sale/edit.blade.php` | 319 | 12 | initialises choices.js |
-| `resources/views/flash-sale/edit.blade.php` | 331 | 46 | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/flash-sale/index.blade.php` | 30 | 30 | document.ready wrapper; delegated $(document).on() |
+| `resources/views/dashboard.blade.php` | 478 | 125 | initialises ApexCharts; declares global function |
+| `resources/views/flash-sale/create.blade.php` | 107 | 131 | initialises choices.js; delegated $(document).on() |
+| `resources/views/flash-sale/edit.blade.php` | 213 | 108 | initialises choices.js; delegated $(document).on() |
+| `resources/views/flash-sale/edit.blade.php` | 321 | 14 | initialises choices.js |
 | `resources/views/front_end/common/checkout/checkout_js.blade.php` | 9 | 67 | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/common/product/filter.blade.php` | 176 | 150 | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/hooks/footer_link.blade.php` | 229 | 76 | document.ready wrapper; declares global function |
-| `resources/views/front_end/jQueryRoute.blade.php` | 334 | 24 | document.ready wrapper |
-| `resources/views/front_end/pages/add_tickets.blade.php` | 94 | 7 | initialises summernote; document.ready wrapper |
-| `resources/views/front_end/pages/address-form.blade.php` | 103 | 64 | initialises select2; document.ready wrapper |
-| `resources/views/front_end/pages/address.blade.php` | 94 | 175 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/front_end/pages/checkout.blade.php` | 273 | 73 | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/pages/checkout.blade.php` | 350 | 69 | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/pages/order.blade.php` | 68 | 47 | document.ready wrapper; delegated $(document).on(); declares global function |
+| `resources/views/front_end/pages/add_tickets.blade.php` | 94 | 7 | initialises summernote |
+| `resources/views/front_end/pages/address-form.blade.php` | 103 | 64 | initialises select2 |
+| `resources/views/front_end/pages/checkout.blade.php` | 365 | 69 | document.ready wrapper; delegated $(document).on(); declares global function |
 | `resources/views/front_end/pages/product-list.blade.php` | 146 | 275 | initialises bootstrap modal; document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/front_end/pages/refund_order.blade.php` | 275 | 9 | document.ready wrapper |
-| `resources/views/front_end/pages/refund_order.blade.php` | 284 | 67 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/front_end/pages/reply_support_ticket.blade.php` | 171 | 7 | initialises summernote; document.ready wrapper |
-| `resources/views/front_end/pages/support_ticket_edit.blade.php` | 128 | 7 | initialises summernote; document.ready wrapper |
-| `resources/views/generate.blade.php` | 95 | 104 | initialises bootstrap modal; delegated $(document).on(); declares global function |
+| `resources/views/front_end/pages/reply_support_ticket.blade.php` | 171 | 7 | initialises summernote |
+| `resources/views/front_end/pages/support_ticket_edit.blade.php` | 128 | 7 | initialises summernote |
+| `resources/views/generate.blade.php` | 95 | 106 | initialises bootstrap modal; delegated $(document).on(); declares global function |
 | `resources/views/layouts/app.blade.php` | 304 | 25 | initialises select2; document.ready wrapper; declares global function |
-| `resources/views/marketplace/pricing.blade.php` | 693 | 29 | document.ready wrapper; delegated $(document).on() |
 | `resources/views/menu/script.blade.php` | 2 | 612 | initialises bootstrap modal; document.ready wrapper; delegated $(document).on(); window/document addEventListener; declares global function |
-| `resources/views/module/add.blade.php` | 55 | 40 | initialises Dropzone |
-| `resources/views/order/order_show.blade.php` | 204 | 39 | initialises bootstrap modal; document.ready wrapper |
-| `resources/views/order/refund_details.blade.php` | 213 | 208 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/page/create.blade.php` | 68 | 15 | initialises choices.js |
-| `resources/views/page/edit.blade.php` | 68 | 15 | initialises choices.js |
-| `resources/views/page/index.blade.php` | 29 | 26 | document.ready wrapper; delegated $(document).on() |
+| `resources/views/module/add.blade.php` | 55 | 42 | initialises Dropzone |
+| `resources/views/order/order_show.blade.php` | 204 | 39 | initialises bootstrap modal |
+| `resources/views/page/create.blade.php` | 68 | 17 | initialises choices.js |
+| `resources/views/page/edit.blade.php` | 68 | 17 | initialises choices.js |
 | `resources/views/payment/authorizenet.blade.php` | 92 | 23 | document.ready wrapper; window/document addEventListener; declares global function |
 | `resources/views/payment/khalti.blade.php` | 14 | 65 | document.ready wrapper; $.ajaxSetup() |
 | `resources/views/payment/telegram.blade.php` | 23 | 66 | document.ready wrapper; declares global function |
 | `resources/views/payment/whatsapp.blade.php` | 19 | 80 | document.ready wrapper; declares global function |
-| `resources/views/plans/create.blade.php` | 271 | 36 | document.ready wrapper; delegated $(document).on(); window/document addEventListener |
 | `resources/views/plans/cybersourcerequest.blade.php` | 164 | 44 | document.ready wrapper; window/document addEventListener; declares global function |
-| `resources/views/plans/edit.blade.php` | 262 | 36 | document.ready wrapper; delegated $(document).on(); window/document addEventListener |
 | `resources/views/plans/Powertranz-payment.blade.php` | 103 | 8 | document.ready wrapper; window/document addEventListener |
 | `resources/views/plans/Powertranz-planpayment.blade.php` | 110 | 8 | document.ready wrapper; window/document addEventListener |
-| `resources/views/plans/stripe.blade.php` | 3049 | 49 | document.ready wrapper; delegated $(document).on(); window/document addEventListener |
-| `resources/views/plans/stripe.blade.php` | 3099 | 109 | document.ready wrapper; delegated $(document).on(); declares global function |
+| `resources/views/plans/stripe.blade.php` | 3105 | 109 | document.ready wrapper; delegated $(document).on(); declares global function |
 | `resources/views/pos/index.blade.php` | 283 | 515 | initialises bootstrap modal; document.ready wrapper; delegated $(document).on(); $.ajaxSetup(); declares global function |
 | `resources/views/pos/index.blade.php` | 804 | 86 | initialises bootstrap modal; delegated $(document).on(); declares global function |
-| `resources/views/product/attribute_combinations_data.blade.php` | 230 | 183 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/product/attribute_combinations_edit.blade.php` | 289 | 153 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/product/attribute_combinations.blade.php` | 166 | 81 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/product/create.blade.php` | 479 | 179 | initialises select2; document.ready wrapper; delegated $(document).on() |
-| `resources/views/product/create.blade.php` | 660 | 137 | initialises choices.js; delegated $(document).on(); declares global function |
-| `resources/views/product/create.blade.php` | 799 | 179 | initialises summernote, Dropzone |
-| `resources/views/product/edit.blade.php` | 662 | 503 | initialises select2, Dropzone, choices.js; document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/product/show.blade.php` | 633 | 87 | initialises select2; document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/product/show.blade.php` | 779 | 21 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/reports/bar_chart_order_report.blade.php` | 62 | 194 | initialises ApexCharts; document.ready wrapper; declares global function |
-| `resources/views/reports/bar_chart_order_report.blade.php` | 256 | 45 | document.ready wrapper |
-| `resources/views/reports/index.blade.php` | 56 | 168 | initialises ApexCharts; document.ready wrapper; declares global function |
-| `resources/views/reports/index.blade.php` | 224 | 33 | document.ready wrapper |
-| `resources/views/reports/order_country_Report.blade.php` | 89 | 13 | initialises ApexCharts |
-| `resources/views/reports/order_country_Report.blade.php` | 103 | 41 | initialises ApexCharts |
-| `resources/views/reports/order_country_Report.blade.php` | 145 | 35 | initialises ApexCharts |
-| `resources/views/reports/order_report.blade.php` | 62 | 181 | initialises ApexCharts; document.ready wrapper; declares global function |
-| `resources/views/reports/order_report.blade.php` | 243 | 49 | document.ready wrapper |
-| `resources/views/reports/orderStatusReport.blade.php` | 71 | 24 | initialises ApexCharts |
-| `resources/views/reports/orderStatusReport.blade.php` | 96 | 41 | initialises ApexCharts |
-| `resources/views/reports/orderStatusReport.blade.php` | 138 | 35 | initialises ApexCharts |
-| `resources/views/reports/sale_by_brand.blade.php` | 67 | 113 | initialises ApexCharts, choices.js; document.ready wrapper; declares global function |
-| `resources/views/reports/sale_by_brand.blade.php` | 180 | 52 | document.ready wrapper |
-| `resources/views/reports/sale_by_category.blade.php` | 71 | 99 | initialises ApexCharts, choices.js; document.ready wrapper; declares global function |
-| `resources/views/reports/sale_by_category.blade.php` | 170 | 52 | document.ready wrapper |
-| `resources/views/reports/sale_by_product.blade.php` | 73 | 103 | initialises ApexCharts, choices.js; document.ready wrapper; declares global function |
-| `resources/views/reports/sale_by_product.blade.php` | 176 | 45 | document.ready wrapper |
-| `resources/views/reports/stock_report.blade.php` | 254 | 189 | initialises DataTable; document.ready wrapper |
-| `resources/views/reports/top_5_reports.blade.php` | 73 | 81 | initialises ApexCharts; declares global function |
-| `resources/views/roles/index.blade.php` | 30 | 83 | document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/setting/email_setting.blade.php` | 51 | 8 | document.ready wrapper |
-| `resources/views/setting/index.blade.php` | 196 | 280 | initialises bootstrap modal; document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/setting/index.blade.php` | 477 | 204 | initialises select2, tooltip/popover, switchButton; document.ready wrapper; delegated $(document).on(); window/document addEventListener; declares global function |
-| `resources/views/shipping_method/free_shipping.blade.php` | 27 | 33 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/shopify/product.blade.php` | 82 | 7 | document.ready wrapper |
-| `resources/views/superadmin/dashboard.blade.php` | 161 | 47 | initialises ApexCharts |
-| `resources/views/theme_analytic.blade.php` | 120 | 106 | initialises ApexCharts |
-| `resources/views/theme_analytic.blade.php` | 226 | 146 | initialises ApexCharts; document.ready wrapper; assigns window.*; window/document addEventListener; declares global function |
-| `resources/views/theme_customize/customize-script.blade.php` | 3 | 326 | initialises summernote; document.ready wrapper; delegated $(document).on(); declares global function |
-| `resources/views/theme_customize/order.blade.php` | 90 | 21 | initialises sortable; document.ready wrapper |
-| `resources/views/users/profile.blade.php` | 198 | 48 | document.ready wrapper; delegated $(document).on(); window/document addEventListener |
-| `resources/views/webhook/create.blade.php` | 43 | 20 | initialises choices.js |
-| `resources/views/webhook/edit.blade.php` | 45 | 20 | initialises choices.js |
-| `resources/views/wishlist/index.blade.php` | 50 | 51 | document.ready wrapper; delegated $(document).on() |
-| `resources/views/woocommerce/category.blade.php` | 80 | 82 | initialises DataTable; document.ready wrapper |
-| `resources/views/woocommerce/coupon.blade.php` | 84 | 126 | initialises DataTable; document.ready wrapper; delegated $(document).on() |
+| `resources/views/product/create.blade.php` | 479 | 187 | initialises select2; delegated $(document).on() |
+| `resources/views/product/create.blade.php` | 668 | 141 | initialises choices.js; delegated $(document).on(); declares global function |
+| `resources/views/product/create.blade.php` | 811 | 181 | initialises summernote, Dropzone |
+| `resources/views/product/edit.blade.php` | 662 | 522 | initialises select2, Dropzone, choices.js; delegated $(document).on(); declares global function |
+| `resources/views/product/show.blade.php` | 633 | 88 | initialises select2; delegated $(document).on(); declares global function |
+| `resources/views/reports/bar_chart_order_report.blade.php` | 62 | 194 | initialises ApexCharts; declares global function |
+| `resources/views/reports/index.blade.php` | 56 | 168 | initialises ApexCharts; declares global function |
+| `resources/views/reports/order_country_Report.blade.php` | 89 | 15 | initialises ApexCharts |
+| `resources/views/reports/order_country_Report.blade.php` | 105 | 43 | initialises ApexCharts |
+| `resources/views/reports/order_country_Report.blade.php` | 149 | 37 | initialises ApexCharts |
+| `resources/views/reports/order_report.blade.php` | 62 | 181 | initialises ApexCharts; declares global function |
+| `resources/views/reports/orderStatusReport.blade.php` | 71 | 26 | initialises ApexCharts |
+| `resources/views/reports/orderStatusReport.blade.php` | 98 | 43 | initialises ApexCharts |
+| `resources/views/reports/orderStatusReport.blade.php` | 142 | 37 | initialises ApexCharts |
+| `resources/views/reports/sale_by_brand.blade.php` | 67 | 115 | initialises ApexCharts, choices.js; declares global function |
+| `resources/views/reports/sale_by_category.blade.php` | 71 | 101 | initialises ApexCharts, choices.js; declares global function |
+| `resources/views/reports/sale_by_product.blade.php` | 73 | 105 | initialises ApexCharts, choices.js; declares global function |
+| `resources/views/reports/stock_report.blade.php` | 254 | 189 | initialises DataTable |
+| `resources/views/reports/top_5_reports.blade.php` | 73 | 83 | initialises ApexCharts; declares global function |
+| `resources/views/setting/index.blade.php` | 196 | 297 | initialises bootstrap modal; delegated $(document).on(); declares global function |
+| `resources/views/setting/index.blade.php` | 494 | 212 | initialises select2, tooltip/popover, switchButton; delegated $(document).on(); declares global function |
+| `resources/views/superadmin/dashboard.blade.php` | 161 | 48 | initialises ApexCharts |
+| `resources/views/theme_analytic.blade.php` | 120 | 108 | initialises ApexCharts |
+| `resources/views/theme_analytic.blade.php` | 228 | 146 | initialises ApexCharts; assigns window.*; declares global function |
+| `resources/views/theme_customize/customize-script.blade.php` | 3 | 328 | initialises summernote; delegated $(document).on(); declares global function |
+| `resources/views/theme_customize/order.blade.php` | 90 | 21 | initialises sortable |
+| `resources/views/webhook/create.blade.php` | 43 | 22 | initialises choices.js |
+| `resources/views/webhook/edit.blade.php` | 45 | 22 | initialises choices.js |
+| `resources/views/woocommerce/category.blade.php` | 80 | 82 | initialises DataTable |
+| `resources/views/woocommerce/coupon.blade.php` | 84 | 130 | initialises DataTable; delegated $(document).on() |
 | `resources/views/woocommerce/customer.blade.php` | 88 | 104 | initialises DataTable; document.ready wrapper |
 | `resources/views/woocommerce/product.blade.php` | 82 | 104 | initialises DataTable; document.ready wrapper |
 
-## 4. B — ONCE-ONLY (91 blocks, 76 files)
+## 4. B — ONCE-ONLY (123 blocks, 97 files)
 
 Recipe: **leave as-is** or move to `resources/js/turbo-bootstrap.js`. Wrapping these in `turbo:load` duplicates handlers on every navigation.
 
@@ -296,80 +188,112 @@ Recipe: **leave as-is** or move to `resources/js/turbo-bootstrap.js`. Wrapping t
 | `packages/workdo/LandingPage/src/Resources/views/marketplace/dedicated/create.blade.php` | 72 | 42 | delegated $(document).on() |
 | `packages/workdo/LandingPage/src/Resources/views/marketplace/dedicated/edit.blade.php` | 99 | 43 | delegated $(document).on() |
 | `packages/workdo/LandingPage/src/Resources/views/marketplace/whychoose/index.blade.php` | 154 | 45 | delegated $(document).on() |
-| `resources/views/addon/apps.blade.php` | 82 | 6 | delegated $(document).on() |
-| `resources/views/addon/index.blade.php` | 158 | 6 | delegated $(document).on() |
+| `resources/views/addon/apps.blade.php` | 82 | 8 | delegated $(document).on() |
+| `resources/views/addon/index.blade.php` | 158 | 8 | delegated $(document).on() |
 | `resources/views/AppSetting/index.blade.php` | 651 | 14 | declares global function; function declarations only |
+| `resources/views/AppSetting/index.blade.php` | 667 | 38 | delegated $(document).on() |
 | `resources/views/AppSetting/mobile_content.blade.php` | 1118 | 14 | declares global function; function declarations only |
-| `resources/views/coupon/index.blade.php` | 37 | 22 | delegated $(document).on() |
+| `resources/views/AppSetting/mobile_content.blade.php` | 1134 | 24 | delegated $(document).on() |
+| `resources/views/cart/index.blade.php` | 19 | 54 | delegated $(document).on() |
+| `resources/views/coupon/create.blade.php` | 157 | 52 | delegated $(document).on() |
+| `resources/views/coupon/index.blade.php` | 37 | 24 | delegated $(document).on() |
+| `resources/views/customer/grid.blade.php` | 140 | 26 | delegated $(document).on() |
 | `resources/views/customer/grid.blade.php` | 167 | 11 | delegated $(document).on() |
+| `resources/views/customer/grid.blade.php` | 179 | 93 | declares global function; function declarations only |
+| `resources/views/customer/index.blade.php` | 79 | 27 | delegated $(document).on() |
 | `resources/views/customer/index.blade.php` | 107 | 11 | delegated $(document).on() |
+| `resources/views/customer/index.blade.php` | 119 | 93 | declares global function; function declarations only |
 | `resources/views/dashboard.blade.php` | 603 | 22 | delegated $(document).on() |
+| `resources/views/dashboard.blade.php` | 625 | 79 | declares global function; function declarations only |
 | `resources/views/DPO/pay.blade.php` | 223 | 27 | declares global function; function declarations only |
-| `resources/views/email_templates/index.blade.php` | 15 | 34 | delegated $(document).on() |
-| `resources/views/front_end/common/product/sale_counter.blade.php` | 23 | 71 | declares global function; function declarations only |
+| `resources/views/email_templates/index.blade.php` | 15 | 36 | delegated $(document).on() |
+| `resources/views/flash-sale/create.blade.php` | 238 | 34 | delegated $(document).on(); declares global function |
+| `resources/views/flash-sale/edit.blade.php` | 335 | 48 | delegated $(document).on(); declares global function |
+| `resources/views/flash-sale/index.blade.php` | 30 | 30 | delegated $(document).on() |
+| `resources/views/front_end/common/product/filter.blade.php` | 176 | 152 | delegated $(document).on(); declares global function |
+| `resources/views/front_end/common/product/sale_counter.blade.php` | 23 | 73 | declares global function; function declarations only |
+| `resources/views/front_end/hooks/footer_link.blade.php` | 229 | 76 | declares global function; function declarations only |
 | `resources/views/front_end/jQueryRoute.blade.php` | 181 | 15 | window/document addEventListener |
 | `resources/views/front_end/jQueryRoute.blade.php` | 200 | 51 | window/document addEventListener |
 | `resources/views/front_end/jQueryRoute.blade.php` | 396 | 60 | delegated $(document).on(); declares global function |
 | `resources/views/front_end/jQueryRoute.blade.php` | 457 | 27 | declares global function; function declarations only |
 | `resources/views/front_end/layouts/app.blade.php` | 98 | 15 | declares global function; function declarations only |
 | `resources/views/front_end/pages/add_tickets.blade.php` | 50 | 44 | window/document addEventListener |
-| `resources/views/front_end/pages/auction_order_detail.blade.php` | 300 | 63 | delegated $(document).on(); declares global function |
-| `resources/views/front_end/pages/order-detail.blade.php` | 288 | 63 | delegated $(document).on(); declares global function |
+| `resources/views/front_end/pages/address.blade.php` | 94 | 175 | delegated $(document).on() |
+| `resources/views/front_end/pages/auction_order_detail.blade.php` | 300 | 65 | delegated $(document).on(); declares global function |
+| `resources/views/front_end/pages/checkout.blade.php` | 286 | 75 | delegated $(document).on(); declares global function |
+| `resources/views/front_end/pages/order-detail.blade.php` | 300 | 65 | delegated $(document).on(); declares global function |
+| `resources/views/front_end/pages/order.blade.php` | 68 | 49 | delegated $(document).on(); declares global function |
+| `resources/views/front_end/pages/refund_order.blade.php` | 284 | 69 | delegated $(document).on() |
 | `resources/views/front_end/pages/reply_support_ticket.blade.php` | 127 | 44 | window/document addEventListener |
 | `resources/views/front_end/pages/support_ticket_edit.blade.php` | 84 | 44 | window/document addEventListener |
-| `resources/views/front_end/sections/order_detail.blade.php` | 386 | 63 | delegated $(document).on(); declares global function |
-| `resources/views/front_end/sections/order_view.blade.php` | 287 | 44 | delegated $(document).on(); declares global function |
-| `resources/views/language/index.blade.php` | 204 | 26 | delegated $(document).on() |
+| `resources/views/front_end/sections/order_detail.blade.php` | 386 | 65 | delegated $(document).on(); declares global function |
+| `resources/views/front_end/sections/order_view.blade.php` | 287 | 48 | delegated $(document).on(); declares global function |
+| `resources/views/language/index.blade.php` | 204 | 28 | delegated $(document).on() |
 | `resources/views/layouts/app.blade.php` | 329 | 105 | delegated $(document).on(); declares global function |
-| `resources/views/layouts/cookie_consent.blade.php` | 48 | 115 | declares global function; function declarations only |
-| `resources/views/layouts/includes/alerts.blade.php` | 27 | 15 | delegated $(document).on() |
+| `resources/views/layouts/cookie_consent.blade.php` | 48 | 117 | declares global function; function declarations only |
+| `resources/views/layouts/includes/alerts.blade.php` | 27 | 17 | delegated $(document).on() |
 | `resources/views/layouts/includes/datatable-js.blade.php` | 6 | 21 | declares global function; function declarations only |
 | `resources/views/layouts/theme_layout.blade.php` | 183 | 17 | declares global function; function declarations only |
-| `resources/views/marketplace/pricing.blade.php` | 722 | 24 | delegated $(document).on() |
-| `resources/views/marketplace/pricing.blade.php` | 746 | 153 | declares global function; function declarations only |
-| `resources/views/marketplace/pricing.blade.php` | 899 | 58 | delegated $(document).on() |
-| `resources/views/marketplace/pricing.blade.php` | 957 | 38 | delegated $(document).on() |
-| `resources/views/marketplace/pricing.blade.php` | 995 | 22 | delegated $(document).on() |
+| `resources/views/marketplace/pricing.blade.php` | 693 | 31 | delegated $(document).on() |
+| `resources/views/marketplace/pricing.blade.php` | 724 | 24 | delegated $(document).on() |
+| `resources/views/marketplace/pricing.blade.php` | 748 | 153 | declares global function; function declarations only |
+| `resources/views/marketplace/pricing.blade.php` | 901 | 58 | delegated $(document).on() |
+| `resources/views/marketplace/pricing.blade.php` | 959 | 38 | delegated $(document).on() |
+| `resources/views/marketplace/pricing.blade.php` | 997 | 22 | delegated $(document).on() |
 | `resources/views/midtras/order_payment.blade.php` | 21 | 29 | declares global function; function declarations only |
 | `resources/views/midtras/payment.blade.php` | 21 | 29 | declares global function; function declarations only |
-| `resources/views/module/index.blade.php` | 573 | 35 | delegated $(document).on() |
+| `resources/views/module/index.blade.php` | 573 | 39 | delegated $(document).on() |
 | `resources/views/myfatoorah/checkout.blade.php` | 73 | 5 | declares global function; function declarations only |
 | `resources/views/myfatoorah/includes/sectionCards.blade.php` | 14 | 5 | declares global function; function declarations only |
 | `resources/views/myfatoorah/includes/sectionForm.blade.php` | 2 | 72 | declares global function; function declarations only |
-| `resources/views/order/grid.blade.php` | 128 | 47 | delegated $(document).on() |
-| `resources/views/order/index.blade.php` | 29 | 47 | delegated $(document).on() |
+| `resources/views/order/grid.blade.php` | 128 | 49 | delegated $(document).on() |
+| `resources/views/order/index.blade.php` | 29 | 49 | delegated $(document).on() |
 | `resources/views/order/receipt.blade.php` | 228 | 9 | assigns window.*; declares global function |
+| `resources/views/order/refund_details.blade.php` | 213 | 211 | delegated $(document).on() |
 | `resources/views/order/script.blade.php` | 3 | 18 | declares global function; function declarations only |
-| `resources/views/order/view.blade.php` | 582 | 163 | delegated $(document).on(); window/document addEventListener; declares global function |
-| `resources/views/partision/add.blade.php` | 32 | 20 | declares global function; function declarations only |
-| `resources/views/partision/footerlink.blade.php` | 60 | 168 | delegated $(document).on(); declares global function |
-| `resources/views/partision/sidebar.blade.php` | 45 | 17 | window/document addEventListener; declares global function |
-| `resources/views/plan-coupon/index.blade.php` | 28 | 12 | delegated $(document).on() |
-| `resources/views/plans/index.blade.php` | 327 | 12 | delegated $(document).on() |
-| `resources/views/plans/index.blade.php` | 340 | 25 | delegated $(document).on() |
-| `resources/views/plans/stripe.blade.php` | 3343 | 51 | delegated $(document).on() |
-| `resources/views/plans/stripe.blade.php` | 3398 | 63 | $.ajaxSetup() |
-| `resources/views/plans/stripe.blade.php` | 3462 | 43 | delegated $(document).on(); $.ajaxSetup(); declares global function |
-| `resources/views/product_brand/index.blade.php` | 38 | 45 | delegated $(document).on() |
-| `resources/views/product_label/index.blade.php` | 38 | 23 | delegated $(document).on() |
-| `resources/views/product/show.blade.php` | 720 | 57 | declares global function; function declarations only |
+| `resources/views/order/view.blade.php` | 582 | 165 | delegated $(document).on(); window/document addEventListener; declares global function |
+| `resources/views/page/index.blade.php` | 29 | 26 | delegated $(document).on() |
+| `resources/views/partision/add.blade.php` | 32 | 22 | declares global function; function declarations only |
+| `resources/views/partision/footerlink.blade.php` | 60 | 176 | delegated $(document).on(); declares global function |
+| `resources/views/partision/sidebar.blade.php` | 45 | 19 | window/document addEventListener; declares global function |
+| `resources/views/plan-coupon/index.blade.php` | 28 | 14 | delegated $(document).on() |
+| `resources/views/plans/create.blade.php` | 271 | 40 | delegated $(document).on() |
+| `resources/views/plans/edit.blade.php` | 262 | 40 | delegated $(document).on() |
+| `resources/views/plans/index.blade.php` | 327 | 14 | delegated $(document).on() |
+| `resources/views/plans/index.blade.php` | 342 | 27 | delegated $(document).on() |
+| `resources/views/plans/stripe.blade.php` | 3049 | 55 | delegated $(document).on(); window/document addEventListener |
+| `resources/views/plans/stripe.blade.php` | 3349 | 51 | delegated $(document).on() |
+| `resources/views/plans/stripe.blade.php` | 3404 | 63 | $.ajaxSetup() |
+| `resources/views/plans/stripe.blade.php` | 3468 | 43 | delegated $(document).on(); $.ajaxSetup(); declares global function |
+| `resources/views/product_brand/index.blade.php` | 38 | 47 | delegated $(document).on() |
+| `resources/views/product_label/index.blade.php` | 38 | 25 | delegated $(document).on() |
+| `resources/views/product/attribute_combinations_data.blade.php` | 230 | 187 | delegated $(document).on() |
+| `resources/views/product/attribute_combinations_edit.blade.php` | 289 | 157 | delegated $(document).on() |
+| `resources/views/product/attribute_combinations.blade.php` | 166 | 85 | delegated $(document).on() |
+| `resources/views/product/show.blade.php` | 721 | 59 | declares global function; function declarations only |
+| `resources/views/product/show.blade.php` | 782 | 22 | delegated $(document).on() |
 | `resources/views/reports/order_country_Report.blade.php` | 76 | 13 | declares global function; function declarations only |
 | `resources/views/reports/orderStatusReport.blade.php` | 58 | 13 | declares global function; function declarations only |
-| `resources/views/shippingzone/create.blade.php` | 33 | 39 | delegated $(document).on() |
-| `resources/views/shippingzone/edit.blade.php` | 45 | 39 | delegated $(document).on() |
-| `resources/views/store/create.blade.php` | 103 | 8 | delegated $(document).on() |
-| `resources/views/store/index.blade.php` | 217 | 37 | delegated $(document).on(); declares global function |
-| `resources/views/store/list.blade.php` | 38 | 37 | delegated $(document).on(); declares global function |
+| `resources/views/roles/index.blade.php` | 30 | 85 | delegated $(document).on(); declares global function |
+| `resources/views/shipping_method/free_shipping.blade.php` | 27 | 35 | delegated $(document).on() |
+| `resources/views/shippingzone/create.blade.php` | 33 | 41 | delegated $(document).on() |
+| `resources/views/shippingzone/edit.blade.php` | 45 | 41 | delegated $(document).on() |
+| `resources/views/store/create.blade.php` | 103 | 10 | delegated $(document).on() |
+| `resources/views/store/index.blade.php` | 217 | 41 | delegated $(document).on(); declares global function |
+| `resources/views/store/list.blade.php` | 38 | 41 | delegated $(document).on(); declares global function |
 | `resources/views/support/edit.blade.php` | 173 | 26 | declares global function; function declarations only |
-| `resources/views/support/edit.blade.php` | 199 | 30 | delegated $(document).on() |
-| `resources/views/taxes-method/create.blade.php` | 57 | 67 | delegated $(document).on() |
-| `resources/views/taxes-method/edit.blade.php` | 58 | 67 | delegated $(document).on() |
-| `resources/views/testimonial/index.blade.php` | 30 | 29 | delegated $(document).on() |
-| `resources/views/theme_customize/index.blade.php` | 60 | 8 | delegated $(document).on() |
-| `resources/views/users/user_info.blade.php` | 147 | 64 | delegated $(document).on() |
-| `resources/views/wishlist/index.blade.php` | 26 | 24 | delegated $(document).on() |
+| `resources/views/support/edit.blade.php` | 199 | 32 | delegated $(document).on() |
+| `resources/views/taxes-method/create.blade.php` | 57 | 71 | delegated $(document).on() |
+| `resources/views/taxes-method/edit.blade.php` | 58 | 71 | delegated $(document).on() |
+| `resources/views/testimonial/index.blade.php` | 30 | 31 | delegated $(document).on() |
+| `resources/views/theme_customize/index.blade.php` | 60 | 10 | delegated $(document).on() |
+| `resources/views/users/profile.blade.php` | 198 | 53 | delegated $(document).on(); window/document addEventListener |
+| `resources/views/users/user_info.blade.php` | 147 | 66 | delegated $(document).on() |
+| `resources/views/wishlist/index.blade.php` | 26 | 26 | delegated $(document).on() |
+| `resources/views/wishlist/index.blade.php` | 52 | 53 | delegated $(document).on() |
 | `themes/greentic/views/front_end/layouts/app.blade.php` | 105 | 15 | declares global function; function declarations only |
-| `themes/stylique/views/front_end/layouts/app.blade.php` | 105 | 15 | declares global function; function declarations only |
+| `themes/stylique/views/front_end/layouts/app.blade.php` | 113 | 15 | declares global function; function declarations only |
 | `themes/techzonix/views/front_end/layouts/app.blade.php` | 186 | 15 | declares global function; function declarations only |
 
 ## 5. C — INLINE-DATA (19 blocks, 14 files)
@@ -393,8 +317,8 @@ Recipe: no change needed. Inline data is re-parsed with the new document body.
 | `resources/views/woocommerce/customer.blade.php` | 193 | 11 | only variable assignment |
 | `themes/greentic/views/front_end/layouts/app.blade.php` | 89 | 5 | only variable assignment |
 | `themes/greentic/views/front_end/layouts/app.blade.php` | 97 | 5 | only variable assignment |
-| `themes/stylique/views/front_end/layouts/app.blade.php` | 89 | 5 | only variable assignment |
 | `themes/stylique/views/front_end/layouts/app.blade.php` | 97 | 5 | only variable assignment |
+| `themes/stylique/views/front_end/layouts/app.blade.php` | 105 | 5 | only variable assignment |
 | `themes/techzonix/views/front_end/layouts/app.blade.php` | 170 | 5 | only variable assignment |
 | `themes/techzonix/views/front_end/layouts/app.blade.php` | 178 | 5 | only variable assignment |
 
@@ -413,11 +337,11 @@ Recipe: leave as-is; most SDKs guard against double-init. Page-view events may n
 | `resources/views/dashboard.blade.php` | 705 | 9 | third-party snippet |
 | `resources/views/front_end/jQueryRoute.blade.php` | 254 | 52 | third-party snippet |
 | `resources/views/front_end/jQueryRoute.blade.php` | 308 | 22 | third-party snippet |
-| `resources/views/marketplace/pricing.blade.php` | 1022 | 11 | third-party snippet |
+| `resources/views/marketplace/pricing.blade.php` | 1024 | 11 | third-party snippet |
 | `resources/views/payment/razorpay.blade.php` | 23 | 33 | third-party snippet |
-| `resources/views/plans/stripe.blade.php` | 3208 | 129 | third-party snippet |
+| `resources/views/plans/stripe.blade.php` | 3214 | 129 | third-party snippet |
 
-## 7. E — UNCLEAR (49 blocks, 44 files)
+## 7. E — UNCLEAR (63 blocks, 56 files)
 
 Recipe: read by hand before touching.
 
@@ -443,20 +367,26 @@ Recipe: read by hand before touching.
 | `packages/workdo/LandingPage/src/Resources/views/layouts/dash_qr_scripts.blade.php` | 46 | 11 | no rule matched |
 | `packages/workdo/LandingPage/src/Resources/views/marketplace/modules.blade.php` | 26 | 15 | no rule matched |
 | `packages/workdo/LandingPage/src/Resources/views/marketplace/product_main/index.blade.php` | 15 | 6 | no rule matched |
+| `resources/views/auth/login.blade.php` | 113 | 9 | no rule matched |
 | `resources/views/components/datatable.blade.php` | 20 | 24 | document.ready wrapper; declares global function |
 | `resources/views/coupon/edit.blade.php` | 120 | 5 | no rule matched |
+| `resources/views/coupon/edit.blade.php` | 125 | 49 | no rule matched |
 | `resources/views/coupon/show.blade.php` | 22 | 18 | no rule matched |
+| `resources/views/dashboard.blade.php` | 464 | 13 | no rule matched |
 | `resources/views/faq/edit.blade.php` | 76 | 17 | no rule matched |
 | `resources/views/front_end/jQueryRoute.blade.php` | 137 | 3 | no rule matched |
 | `resources/views/front_end/jQueryRoute.blade.php` | 142 | 33 | no rule matched |
+| `resources/views/front_end/jQueryRoute.blade.php` | 334 | 24 | no rule matched |
 | `resources/views/front_end/jQueryRoute.blade.php` | 361 | 34 | document.ready wrapper; declares global function |
 | `resources/views/front_end/pages/about.blade.php` | 122 | 23 | no rule matched |
 | `resources/views/front_end/pages/order-complete.blade.php` | 85 | 18 | no rule matched |
+| `resources/views/front_end/pages/refund_order.blade.php` | 275 | 9 | no rule matched |
 | `resources/views/layouts/app.blade.php` | 435 | 3 | no rule matched |
 | `resources/views/layouts/app.blade.php` | 442 | 3 | no rule matched |
 | `resources/views/layouts/cookie_consent.blade.php` | 7 | 41 | no rule matched |
 | `resources/views/layouts/includes/alerts.blade.php` | 1 | 26 | no rule matched |
-| `resources/views/layouts/includes/alerts.blade.php` | 42 | 16 | no rule matched |
+| `resources/views/layouts/includes/alerts.blade.php` | 44 | 16 | no rule matched |
+| `resources/views/layouts/includes/turbo.blade.php` | 25 | 35 | assigns window.* |
 | `resources/views/layouts/theme_layout.blade.php` | 172 | 3 | no rule matched |
 | `resources/views/layouts/theme_layout.blade.php` | 177 | 3 | no rule matched |
 | `resources/views/payment/flutterwave.blade.php` | 8 | 42 | document.ready wrapper |
@@ -469,8 +399,16 @@ Recipe: read by hand before touching.
 | `resources/views/pos/printview.blade.php` | 100 | 16 | no rule matched |
 | `resources/views/product/index.blade.php` | 53 | 9 | document.ready wrapper |
 | `resources/views/product/list.blade.php` | 167 | 9 | document.ready wrapper |
-| `resources/views/reports/order_country_Report.blade.php` | 183 | 19 | no rule matched |
+| `resources/views/reports/bar_chart_order_report.blade.php` | 256 | 45 | no rule matched |
+| `resources/views/reports/index.blade.php` | 224 | 33 | no rule matched |
+| `resources/views/reports/order_country_Report.blade.php` | 189 | 21 | no rule matched |
+| `resources/views/reports/order_report.blade.php` | 243 | 49 | no rule matched |
+| `resources/views/reports/sale_by_brand.blade.php` | 182 | 52 | no rule matched |
+| `resources/views/reports/sale_by_category.blade.php` | 172 | 52 | no rule matched |
+| `resources/views/reports/sale_by_product.blade.php` | 178 | 45 | no rule matched |
 | `resources/views/setting/email_fields.blade.php` | 193 | 5 | document.ready wrapper |
+| `resources/views/setting/email_setting.blade.php` | 51 | 8 | no rule matched |
+| `resources/views/shopify/product.blade.php` | 82 | 7 | no rule matched |
 | `themes/techzonix/views/front_end/layouts/app.blade.php` | 43 | 93 | no rule matched |
 
 ---

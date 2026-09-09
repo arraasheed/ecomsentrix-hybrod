@@ -159,6 +159,7 @@
 
 @push('custom-script')
     <script>
+        window.onTurboLoad(function () {
         (function () {
             var options = {
                 chart: {
@@ -203,6 +204,6 @@
             var chart = new ApexCharts(document.querySelector("#traffic-chart"), options);
             chart.render();
         })();
-
+        });
     </script>
 @endpush

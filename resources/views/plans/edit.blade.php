@@ -260,6 +260,7 @@
 @endsection
 @push('custom-script')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('change', '#trial', function() {
             if ($(this).is(':checked')) {
                 $('.plan_div').removeClass('d-none');
@@ -270,8 +271,9 @@
                 $('#trial_days').removeAttr("required");
             }
         });
+        });
 
-        document.addEventListener('DOMContentLoaded', function() {
+        window.onTurboLoad(function () {
             document.querySelectorAll('.img-checkbox').forEach(function(element) {
                 element.addEventListener('click', function() {
                     const checkboxId = this.getAttribute('data-checkbox');
@@ -281,6 +283,7 @@
             });
         });
 
+        window.onTurboOnce(function () {
         $(document).on('keyup','#theme-search', function() {
             var value = $(this).val().toLowerCase();
             $('#theme-list .theme-item').filter(function() {
@@ -293,6 +296,7 @@
             $('#addon-list .addon-item').filter(function() {
                 $(this).toggle($(this).find('h5').text().toLowerCase().indexOf(value) > -1)
             });
+        });
         });
     </script>
 @endpush

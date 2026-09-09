@@ -27,7 +27,7 @@
 @push('custom-script')
 
 <script>
-    $(document).ready(function () {
+    window.onTurboOnce(function () {
         $(document).on('change', '.page-toggle', function () {
             const pageId = $(this).data('page-id');
             const isActivated = $(this).prop('checked');

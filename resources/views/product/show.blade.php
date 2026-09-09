@@ -627,11 +627,13 @@
 @endsection
 
 @push('custom-script')
+    {{-- No data-turbo-eval here on purpose — page-specific libraries. Reasoning in
+         product/create.blade.php. --}}
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('js/repeater.js') }}"></script>
     <script src="{{ asset('assets/css/summernote/summernote-bs4.js') }}"></script>
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             $('input').attr('readonly', true);
             $('select').attr('readonly', true);
             attribute_option_data();
@@ -704,11 +706,12 @@
                 });
             }).change();
         });
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             if ($('#enable_custom_field').prop('checked') == true) {
                 $('#custom_value').show();
             }
-
+        });
+        window.onTurboOnce(function () {
             $(document).on("change", "#enable_custom_field", function() {
                 $('#custom_value').hide();
                 if ($(this).prop('checked') == true) {
@@ -718,6 +721,7 @@
         });
     </script>
     <script>
+        window.onTurboLoad(function () {
         //variation option on off
         if ($('.enable_product_variant').prop('checked') == true) {
             var inputValue = $('.attribute_option_data').val();
@@ -735,6 +739,7 @@
 
             }
         }
+});
        
         // edit attribute data
         function attribute_option_data() {
@@ -780,8 +785,8 @@
         
 
         // Product Attribute
-        $(document).ready(function() {
-            $(document).on("change", ".product_attribute", function() {
+        window.onTurboOnce(function () {
+        $(document).on("change", ".product_attribute", function() {
 
                 if ($('.enable_product_variant').prop('checked') == true) {
                     $(".use_for_variation").removeClass("d-none");
@@ -789,7 +794,8 @@
                     $(".use_for_variation").addClass("d-none");
                 }
             });
-
+        });
+        window.onTurboLoad(function () {
             if ($('#enable_product_variant').prop('checked') == true) {
                 $('.product-price-div').hide();
                 $('.product-stock-div').hide();

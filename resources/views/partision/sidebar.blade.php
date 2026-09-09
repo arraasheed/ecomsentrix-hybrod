@@ -56,6 +56,8 @@ $company_logo = get_file($company_logo);
         }
     }
 
+    window.onTurboOnce(function () {
     window.addEventListener('load', checkScreenWidth);
     window.addEventListener('resize', checkScreenWidth);
+    });
     </script>

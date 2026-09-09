@@ -66,6 +66,7 @@
 
 <script script src="{{ asset('assets/js/plugins/choices.min.js') }}"></script>
 <script>
+    window.onTurboLoad(function () {
     $('.modal').on('shown.bs.modal', function() {
         var textRemove = new Choices(
             document.getElementById('choices-text-remove-button'), {
@@ -78,5 +79,6 @@
                 editItems: true,
             }
         );
+    });
     });
 </script>

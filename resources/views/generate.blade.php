@@ -132,6 +132,7 @@
             $('#commanModelOver').modal('hide');
         
         }
+        window.onTurboOnce(function () {
         $('body').on('shown.bs.modal', function () {
             $("#commanModelOver input:radio:first").prop("checked", true).trigger("change");
         });
@@ -193,6 +194,7 @@
                     $('#loader').fadeOut();
                 },
             });
+        });
         });
         
     </script>

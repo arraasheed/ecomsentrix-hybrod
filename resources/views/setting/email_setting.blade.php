@@ -49,7 +49,7 @@
 
 @push('custom-script')
 <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         var emailSetting = $('#email_setting').val();
         getEmailSettingFields(emailSetting);
 

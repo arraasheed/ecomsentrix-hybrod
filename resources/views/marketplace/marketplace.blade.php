@@ -262,6 +262,14 @@
     @if($admin_settings['enable_cookie'] == 'on')
         @include('layouts.cookie_consent')
     @endif
+    {{--
+        Turbo helper stub (CLAUDE-6). Not Turbo itself — this layout stays on full
+        page loads. marketplace/pricing.blade.php:694 calls window.onTurboLoad()
+        after the BULK migration; undefined here, that was a TypeError which took
+        the plan/price calculation with it. Must stay above @stack('scripts'),
+        where that block lands, and below jquery.min.js, which those blocks use.
+    --}}
+    @include('layouts.includes.turbo-stub')
     @stack('scripts')
     <!--scripts end here-->
 </body>

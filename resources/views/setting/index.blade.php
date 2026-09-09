@@ -197,7 +197,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
     var currentActiveTab = $('.nav-link.active').data('tab');
     var currentActiveUrl = $('.nav-link.active').data('url');
 
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         initializePwaListeners();
 
         if (currentActiveTab) {
@@ -230,6 +230,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
         });
     });
 
+    window.onTurboOnce(function () {
     $(document).on('click', '.nav-link', function (e){
         e.preventDefault();
         // Check if the clicked tab is already active
@@ -247,6 +248,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
 
         getSettingForm(newTab, newUrl);
     });
+});
 
     function getSettingForm(tab_type, url) {
         $.ajax({
@@ -279,10 +281,12 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
         });
     }
 
+    window.onTurboOnce(function () {
     $(document).on('change', '#email_setting', function() {
         var emailSetting = $(this).val();
         getEmailSettingFields(emailSetting);
     });
+});
 
     function myFunction() {
         var copyText = document.getElementById("myInput");
@@ -300,6 +304,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
         show_toastr('Success', "{{ __('Link copied') }}", 'success');
     }
 
+    window.onTurboOnce(function () {
     $(document).on("click", '.send_email', function(e) {
         e.preventDefault();
         var title = $(this).attr('data-title');
@@ -333,7 +338,9 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
             });
         }
     });
+});
 
+    window.onTurboOnce(function () {
     $(document).on("click", '.test-whatsapp-massage', function(e) {
         e.preventDefault();
         var title = $(this).attr('data-title');
@@ -361,8 +368,10 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
             });
         }
     });
+});
 
 
+    window.onTurboOnce(function () {
     $(document).on('change', '[name=storage_setting]', function() {
         if ($(this).val() == 's3') {
             $('.s3-setting').removeClass('d-none');
@@ -374,11 +383,14 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
             $('.local-setting').addClass('d-none');
         } else {
             $('.s3-setting').addClass('d-none');
+            $('.s3-setting').addClass('d-none');
             $('.wasabi-setting').addClass('d-none');
             $('.local-setting').removeClass('d-none');
         }
     });
+});
 
+    window.onTurboOnce(function () {
     $(document).on('submit', '#test_email', function(e) {
         e.preventDefault();
         $("#email_sending").show();
@@ -408,7 +420,9 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
             },
         });
     });
+});
 
+    window.onTurboOnce(function () {
     $(document).on('change', '.whatsapp-notification', function() {
 
         var status = $(this).prop('checked') == true ? 1 : 0;
@@ -431,6 +445,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
             },
         });
     });
+});
 
     function check_theme(color_val) {
         $('.theme-color').prop('checked', false);
@@ -438,9 +453,11 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
     }
 
 
+    window.onTurboOnce(function () {
     $(document).on('change', '.currency_note', function() {
         sendData();
     });
+});
 
     function sendData(selectedValue, type) {
         var formData = $('#setting-currency-form').serialize();
@@ -475,6 +492,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
     </script>
 
 <script>
+    window.onTurboOnce(function () {
     $(document).on('click','.colorPicker', function(e) {
         $('body').removeClass('custom-color');
         if (/^theme-\d+$/) {
@@ -493,7 +511,9 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
 
         $(`input[name='color_flag`).val('true');
     });
+});
 
+    window.onTurboOnce(function () {
     $(document).on('click','.themes-color-change', function() {
 
         $(`input[name='color_flag`).val('false');
@@ -510,6 +530,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
         $(this).addClass('active_color');
         $(`input[value=${color_val}]`).prop('checked', true);
     });
+});
 
     $.fn.removeClassRegex = function(regex) {
         return $(this).removeClass(function(index, classes) {
@@ -519,7 +540,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
         });
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
+    window.onTurboLoad(function () {
         if (typeof initializePaynowListeners === 'function') {
             initializePaynowListeners();
         }
@@ -646,6 +667,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
         }
     }
 
+    window.onTurboOnce(function () {
     $(document).on('change', '#pwa_store', function() {
         if ($('.enable_pwa_store').is(':checked')) {
 
@@ -655,6 +677,7 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
             $('.pwa_is_enable').addClass('disabledPWA');
         }
     });
+});
 
     document.getElementById('tab-search').addEventListener('input', function () {
         var searchValue = this.value.toLowerCase();
@@ -671,11 +694,13 @@ $activeTab = session()->get('setting_tab') ?? 'email_setting';
     });
     
     // Payment gateway search functionality
+    window.onTurboOnce(function () {
     $(document).on("keyup", "#payment-search", function() {
         var value = $(this).val().toLowerCase();
         $("#payment-gateways .accordion-item").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+});
 </script>
 @endpush

@@ -80,7 +80,7 @@
         }
     }
 
-    $(document).ready(function() {
+    window.onTurboOnce(function () {
         // Attach the CheckPermission function to all permission checkboxes
         $(document).on('change', 'input[type=checkbox]', function() {
             var id = $(this).attr('id');
@@ -90,6 +90,7 @@
     });
 
     // Click event for "Show more" link
+window.onTurboOnce(function () {
     $(document).on('click', '.show-more', function(e) {
         e.preventDefault();
         $(this).addClass('d-none'); // Hide "Show more"
@@ -109,6 +110,7 @@
         // Show the "Show more" link
         $(this).closest('.role-permission-table').find('.show-more').removeClass('d-none');
     });
+});
 </script>
 
 @endpush

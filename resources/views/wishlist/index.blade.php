@@ -24,6 +24,7 @@
 
     @push('custom-script')
         <script>
+            window.onTurboOnce(function () {
             $(document).on('change', '#category_id', function(e) {
                 var id = $(this).val();
                 var val = $('.product_id_div').attr('data_val');
@@ -46,9 +47,10 @@
                 });
 
             });
+            }, 'wishlist-category-product');
         </script>
         <script>
-            $(document).ready(function() {
+            window.onTurboOnce(function () {
 
             $(document).on('click', '.bandonwish', function(e) {
                 var wish_id  = $(this).attr('data-id');
@@ -73,7 +75,8 @@
                 });
 
             });
-        });
+        }, 'wishlist-bandonwish-email');
+        window.onTurboOnce(function () {
         $(document).on('click', '.bandonwishmess', function(e) {
         var wish_id  = $(this).attr('data-id');
         var wish_id  = $(this).attr('data-id');
@@ -97,5 +100,6 @@
         });
 
     });
+    }, 'wishlist-wish-message');
         </script>
     @endpush

@@ -462,7 +462,7 @@
 @push('custom-script')
     @if (auth()->user()->type != 'superadmin')
         <script>
-            $(document).ready(function () {
+            window.onTurboLoad(function () {
                 $('.cp_link').on('click', function () {
                     var value = $(this).attr('data-link');
                     var $temp = $("<input>");
@@ -478,7 +478,7 @@
     <script>
 
         // new-chart-js-start
-        $(document).ready(function () {
+        window.onTurboLoad(function () {
             var options = {
                 series: [{{ round($storage_limit, 2) }}],
                 chart: {
@@ -634,7 +634,7 @@
             comman_function();
         }
 
-        $(document).ready(function () {
+        window.onTurboLoad(function () {
             var customURL = {!! json_encode($theme_url) !!};
             console.log('customURL', customURL);
             $('.Demo1').socialSharingPlugin({

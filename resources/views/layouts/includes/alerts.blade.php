@@ -25,6 +25,7 @@
      @endif
  </script>
  <script>
+     window.onTurboOnce(function () {
      $(document).on('click', '.delete-action', function() {
          var form_id = $(this).attr('data-form-id')
          $.confirm({
@@ -38,6 +39,7 @@
              }
          });
      });
+     }, 'alerts-delete-confirm');
  </script>
  <script>
      const sweetAlert = Swal.mixin({

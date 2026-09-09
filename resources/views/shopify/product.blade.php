@@ -80,7 +80,7 @@
 @endsection
 @push('custom-script')
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             const totalEntries = {{ $total_products }};
             $('.dataTable-info').text('Showing ' + totalEntries + ' entries');
             $('.dataTable-dropdown').hide();

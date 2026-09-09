@@ -137,6 +137,15 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{--
+        Turbo helper stub (CLAUDE-6). Not Turbo itself — this layout stays on full
+        page loads. auth/login.blade.php:114 calls window.onTurboLoad() after the
+        BULK migration, and without a definition that was a TypeError which
+        aborted the rest of the block (reCAPTCHA token, submit-button lock).
+        Must stay above @stack('scripts'), which is where those blocks land.
+    --}}
+    @include('layouts.includes.turbo-stub')
+
     <title>{{ config('app.name', 'Laravel') }}-@yield('page-title')</title>
 
     <!-- Favicon icon -->

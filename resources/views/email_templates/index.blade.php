@@ -14,6 +14,7 @@
 @push('script-page')
     <script type="text/javascript">
         @can('On-Off Email Template')
+        window.onTurboOnce(function () {
         $(document).on("click", ".email-template-checkbox", function () {
             var chbox = $(this);
             $.ajax({
@@ -43,6 +44,7 @@
                     }
                 }
             })
+        });
         });
         @endcan
     </script>

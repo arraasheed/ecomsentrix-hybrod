@@ -110,7 +110,7 @@ git log আর PROGRESS.md না মিললে git-কে সত্য ধর
 | Server | Laragon (Apache) — **docroot প্রজেক্ট root, `public/` নয়**। root `.htaccess` whitelist দিয়ে rewrite করে |
 | Node / npm | `v26.4.0` / `11.17.0` ✅ |
 | Playwright Chromium | `chromium-1234`, `chromium-1243` ইনস্টল ✅ |
-| git branch | `master` (Day 1 merged, tag `day1-complete`) · পরের কাজ → `day2/turbo-drive` |
+| git branch | `day2/turbo-drive` (master-এ Day 1 merged, tag `day1-complete`) |
 | git baseline tag | `baseline-v0` → commit `17a47e9` |
 | **git remote** | `origin` → `https://github.com/arraasheed/ecommercego.git` (public) |
 
@@ -175,13 +175,13 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 
 ## 📊 সামগ্রিক অবস্থা
 
-**বর্তমান পর্যায়:** ✅ **Day 1 সম্পূর্ণ — Day 2 শুরুর জন্য প্রস্তুত**
-**সর্বশেষ আপডেট:** Day 1 শেষ (CLAUDE-4 — ২৩ পেজ × ২ viewport regression পাস, ০ নতুন console error, master-এ merge, tag `day1-complete`)
-**সক্রিয় branch:** `master` · পরের কাজ → `git checkout -b day2/turbo-drive`
+**বর্তমান পর্যায়:** 🟨 **Day 2 চলছে — CLAUDE-5 শেষ, BULK-2 শুরুর জন্য প্রস্তুত**
+**সর্বশেষ আপডেট:** CLAUDE-5 (Turbo Drive বসানো — full reload বন্ধ, cached back ১০-১৭ ms, kill-switch পরীক্ষিত; ২টি প্রত্যাশিত breakage নথিভুক্ত)
+**সক্রিয় branch:** `day2/turbo-drive`
 
 **Day 1 ক্রম:** ~~GEMINI-1~~ → ~~GEMINI-2~~ → ~~CLAUDE-1~~ → ~~CLAUDE-2~~ → ~~BULK-1~~ → ~~CLAUDE-3~~ → ~~CLAUDE-4~~ ✅ **শেষ**
 
-**Day 2 ক্রম:** **CLAUDE-5 (Turbo ইনস্টল + bootstrap) এখন চালানো যায়** → BULK-2/3/4 → CLAUDE-6 → CLAUDE-7 → CLAUDE-8
+**Day 2 ক্রম:** ~~CLAUDE-5~~ → **BULK-2 (এখন চালানো যায়)** → BULK-3 → BULK-4 → CLAUDE-6 → CLAUDE-7 → CLAUDE-8
 
 ### Day 1-এর সংক্ষিপ্ত ফলাফল (mobile, cold, median of 3)
 
@@ -198,6 +198,47 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | CLS (দুইটিতেই) | 0.00 | 0.00 | অপরিবর্তিত |
 
 বিস্তারিত → `.ai/reports/benchmark.md` ("Day 1 Final") ও `.ai/reports/day1-final-test.md`
+
+---
+
+## ⚠️ BULK-2/3/4 শুরুর আগে যা জানা দরকার (CLAUDE-5 থেকে)
+
+**Turbo বসেছে এবং storefront-এ চালু আছে।** পূর্ণ রিপোর্ট →
+`.ai/reports/turbo-initial-test.md`। যা পড়ে নেওয়া দরকার:
+
+- **helper তিনটি রেডি ও পরীক্ষিত:**
+  ```js
+  window.onTurboLoad(fn)     // প্রতি পেজে একবার — widget init
+  window.onTurboOnce(fn, k)  // পুরো সেশনে একবার — event delegation
+  window.onTurboUnload(fn)   // পেজ cache হওয়ার আগে — destroy
+  ```
+  `onTurboMount` / `onTurboUnmount` — Vue island-এর জন্য (CLAUDE-15)।
+  layout-এ একটি stub আছে, তাই bundle লোড হওয়ার আগেই inline script এগুলো
+  ডাকতে পারে — কোনো "not a function" error হবে না।
+- 🔴 **`onTurboLoad` এ registration পেজ-নির্দিষ্ট।** Turbo প্রতি navigation-এ
+  body-র সব `<script>` আবার চালায়, তাই BULK-এর wrap করা block প্রতি পেজে
+  নিজেই আবার register হবে — এটিই কাঙ্ক্ষিত। যাচাই করা হয়েছে: ৭ পেজ পরেও
+  ডুপ্লিকেট চলেনি।
+- 🔴 **event delegation অবশ্যই `onTurboOnce`-এ দিতে হবে।** না দিলে যা হয় তা
+  মাপা হয়েছে: `document`-এ click handler **২৯ → ৪৬৪** (৮ navigation), এবং
+  একটি add-to-cart ক্লিকে **৮টি `POST /product_cart`** — DB-তে qty ১ → ৮।
+  একই source-এর handler দুইবার register হলে `onTurboOnce` নিজেই skip করে।
+  ⚠️ Blade মান interpolate করা block-এ source text প্রতি পেজে আলাদা হয়, তাই
+  সেখানে দ্বিতীয় আর্গুমেন্টে একটি নাম দিতে হবে: `onTurboOnce(fn, 'cart-delegation')`।
+- 🔴 **`custom.js` এখন প্রতি navigation-এ SyntaxError দেয়** (৫৩টি top-level
+  `const`, `searchToggle` প্রথমটি)। ফলে দ্বিতীয় পেজে Swiper, cart drawer,
+  search popup, dropdown, mobile menu — সব মরা। **এটি BULK-এর কাজ নয়**
+  (`custom.js` blade নয়, theme asset) — CLAUDE-6 ঠিক করবে। BULK মডেল এই
+  error দেখে ভয় পাবে না, এটি জানা সমস্যা।
+- **kill-switch:** `.env`-এ `TURBO_ENABLED=false` + `php artisan view:clear` →
+  Turbo সম্পূর্ণ বন্ধ (chunk ডাউনলোডও হয় না), helper তবুও `$(document).ready`-র
+  মতো কাজ করে। কিছু ভাঙলে এটিই ফেরার পথ।
+- **`data-turbo="false"` যোগ করা হয়েছে ৩ জায়গায়** — checkout form (gateway-তে
+  `redirect()->away()` করে, Turbo-র fetch cross-origin redirect follow করতে
+  পারে না → checkout মরে যেত), এবং downloadable-product anchor। BULK এগুলো
+  ছোঁবে না।
+- **`target="_blank"` ও `download` attribute যুক্ত link-এ কিছু লাগে না** —
+  Turbo নিজেই বাদ দেয় (পরীক্ষিত)। `.pdf`/`.zip` extension-ও তাই।
 
 ---
 
@@ -291,13 +332,13 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | টাস্ক | মডেল | অবস্থা | কমিট | নোট |
 |---|---|---|---|---|
 | GEMINI-3  ১৭০টি inline script ইনভেন্টরি | Gemini | ✅ REDONE by Claude | `d4f2c70` | Gemini-র সংস্করণ ব্যবহারযোগ্য ছিল না (যাচাই → `.ai/reports/gemini3-verification.md`)। CLAUDE-4-এ স্ক্যানার দিয়ে পুনর্নির্মাণ: `.agents/scripts/scan-inline-scripts.cjs` → **199 ফাইল / 300 block**, A 129 · B 91 · C 19 · D 12 · E 49, 🔴 **mixed A+B = 50** |
-| CLAUDE-5  Turbo ইনস্টল + bootstrap + kill-switch | Claude | ⬜ PENDING | — | **এখন চালানো যায়** |
-| BULK-2  script → `turbo:load` (batch 1: ৬০টি) | BULK মডেল | ⬜ PENDING | — | recipe অনুসরণ · ⚠️ mixed A+B ব্লকগুলো আলাদা করে দিতে হবে |
-| BULK-3  script → `turbo:load` (batch 2: ৬০টি) | BULK মডেল | ⬜ PENDING | — | |
-| BULK-4  script → `turbo:load` (batch 3: বাকি) | BULK মডেল | ⬜ PENDING | — | |
-| CLAUDE-6  DataTable + modal + select2 re-init | Claude | ⬜ PENDING | — | ৭০ table, ১০১ modal |
-| CLAUDE-7  Turbo 303 redirect middleware | Claude | ⬜ PENDING | — | form/validation |
-| CLAUDE-8  Day 2 ব্রাউজার টেস্ট (২০ পেজ) | Claude | ⬜ PENDING | — | DB-তে টেস্ট ডেটা আছে — cart/checkout/order flow যাচাই করা যাবে |
+| CLAUDE-5  Turbo ইনস্টল + bootstrap + kill-switch | Claude | ✅ DONE | `581b91c` | Turbo 8.0.23 pin · `turbo-bootstrap.js` (৫টি helper, page-scoped registry) · `store.js`+`admin.js` entry · storefront layout-এ যোগ · kill-switch `TURBO_ENABLED` দুই দিকে পরীক্ষিত · **full reload বন্ধ** (১০ nav-এ document request 1) · cached back **১০-১৭ ms** · রিপোর্ট → `.ai/reports/turbo-initial-test.md` · 🔴 প্রত্যাশিতভাবে ভেঙেছে: `custom.js` SyntaxError (৫৩ top-level const) → সব widget মরে; delegated handler ২৯→৪৬৪ জমে → add-to-cart ১ ক্লিকে ৮ POST |
+| BULK-2  script → `turbo:load` (batch 1: ৬০টি) | BULK মডেল | ✅ DONE | `ec71eb7` | ১৮ ফাইল wrap (A ৬ · B ১ · C ৪ · D ১ · E ৬) · ⚠️ ২ ফাইল Claude দেখবে: `country/index`, `checkout_js` · রিপোর্ট → `.ai/reports/turbo-migration-batch1.md` |
+| BULK-3  script → `turbo:load` (batch 2: ৬০টি) | BULK মডেল | ✅ DONE | `47c52ff` | ১৫ ফাইল wrap · ⚠️ ৫ ফাইল Claude দেখবে: `product-list`, `layouts/app`, `menu/script`, `authorizenet`, `khalti` + `checkout` block@363 · রিপোর্ট → `.ai/reports/turbo-migration-batch2.md` |
+| BULK-4  script → `turbo:load` (batch 3: বাকি) | BULK মডেল | ✅ DONE | `f383505` | ৭৩/৭৩ ফাইল শেষ (৬৮ পরিবর্তিত; pos/index, datatable-js, myfatoorah includes ×২, order/script স্কিপ — কারণ ও সন্দেহ-তালিকা রিপোর্টে) · চূড়ান্ত সারসংক্ষেপ (তিন batch) → `.ai/reports/turbo-migration-batch3.md` |
+| CLAUDE-6  DataTable + modal + select2 re-init | Claude | ✅ DONE | (uncommitted) | turbo-cleanup.js (10 steps) · admin layout enabled with kill-switch · 9 pages tested, 0 console errors · DataTable re-init verified after cache restore · select2/modal/ApexCharts lifecycle tested · রিপোর্ট → `.ai/reports/claude6-turbo-plugin-cleanup.md` |
+| CLAUDE-7  Turbo 303 redirect middleware | Claude | ✅ DONE | `a6042a1` | TurboResponseMiddleware (303 for POST redirects) · form submit lifecycle (turbo:submit-start/end) · ৩টি test: admin login, storefront checkout ✅, no console errors · rিপোর্ট → `.ai/reports/claude7-turbo-form-handling.md` |
+| CLAUDE-8  Day 2 ব্রাউজার টেস্ট (২০ পেজ) | Claude | 🟨 IN PROGRESS | — | DB-তে টেস্ট ডেটা আছে — cart/checkout/order flow যাচাই করা যাবে |
 
 ### Day 3 — PWA + Workbox (branch: `day3/pwa-workbox`)
 
@@ -336,6 +377,15 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | gzip / brotli বন্ধ (`Content-Encoding` নেই) | Apache কনফিগ, Day 1-এর স্কোপে নয়। DevTools: storefront 66 KB, admin 72.5 KB, FCP/LCP ~640 ms সঞ্চয় | CLAUDE-9 |
 | `all.min.js` = 1.5 MB একক ফাইল (P2) | code-split-এর জন্য Turbo/Vite entry দরকার | Day 2 |
 
+CLAUDE-5-এর পর যোগ হলো (এগুলোও ব্লকার নয় — জানা ও নির্ধারিত):
+
+| বিষয় | অবস্থা | কার কাজ |
+|---|---|---|
+| `custom.js`-এ ৫৩টি top-level `const` → প্রতি Turbo navigation-এ SyntaxError, দ্বিতীয় পেজে সব widget মরা | 🔴 নিশ্চিতভাবে পুনরুৎপাদনযোগ্য। `data-turbo-eval="false"` কাজ করে না (পরীক্ষিত) — ফাইলটি IIFE-তে মোড়াতে হবে বা guard দিতে হবে | CLAUDE-6 |
+| delegated handler জমে (২৯ → ৪৬৪ in ৮ nav) → এক ক্লিকে ৮টি add-to-cart POST | 🔴 `onTurboOnce` দিয়ে সমাধান হয়, helper রেডি | BULK-2/3/4 |
+| Turbo forward navigation ≈ full reload (515 বনাম 558 ms) | server TTFB ৫৫০-৭৩০ ms একাই কারণ। cached back navigation ইতিমধ্যে ১০-১৭ ms | CLAUDE-9 |
+| Swiper কখনো destroy হয় না → `turbo:before-cache` cleanup দরকার | `onTurboUnload` helper রেডি, ব্যবহার করা হয়নি | CLAUDE-6 |
+
 > কোনো মডেল আটকে গেলে এখানে এই ফরম্যাটে লিখবে:
 > ```
 > ### [তারিখ] <MODEL>-<TASK#> — ব্লকড
@@ -365,3 +415,10 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | Day 1 | Lighthouse স্কোরের বদলে সরাসরি Core Web Vitals মাপা হলো | `APP_DEBUG=true` + file cache-এ TTFB ≈765 ms একা Performance স্কোর টেনে নামায় — সংখ্যাটি asset কাজের গুণ বোঝাত না। CLAUDE-9 (Redis + OPcache)-এর পর Lighthouse অর্থবহ হবে |
 | Day 1 | `css/custome.css` (404) সংশোধন **না** করার সিদ্ধান্ত | ফাইলটি অস্তিত্বে নেই; `custom.css`-এ বদলালে ৬০১টি নতুন CSS rule হঠাৎ চালু হয়ে ডিজাইন বদলাতে পারে। master-এও একই 404। উপকার নেই, ঝুঁকি আছে |
 | Day 1 | inline-script ইনভেন্টরি হাতে না লিখে স্ক্যানার লেখা হলো | Gemini-র হাতে-লেখা রিপোর্টে ১০টি লাইন রেফারেন্সের ৯টি ভুল ছিল। স্ক্রিপ্ট নির্ভুল, পুনরায় চালানো যায়, এবং BULK মডেলের জন্য JSON আউটপুট দেয় |
+| Day 2 | Turbo **dynamic import** (`import('@hotwired/turbo')`), static নয় | প্যাকেজটি import হলেই `start()` চালিয়ে দেয় — static import হলে `TURBO_ENABLED=false` দিয়েও Turbo চালু হয়ে যেত, kill-switch অর্থহীন হতো। এখন flag বন্ধ থাকলে ৯৯ KB chunk ডাউনলোডই হয় না |
+| Day 2 | `onTurboLoad` registration **পেজ-নির্দিষ্ট**, চিরস্থায়ী নয় | Turbo প্রতি body swap-এ সব inline script আবার চালায়। callback চিরকাল রাখলে home → product → home ঘুরে এলে একই init দুইবার চলত — দুইটি select2, "Cannot reinitialise DataTable", ডাবল add-to-cart। এখন যে পেজে register, শুধু সেই পেজেই চলে; script নিজেই পরের পেজে আবার register করে |
+| Day 2 | layout-এ `window.onTurboLoad` **stub** বসানো হলো | `@vite()` দেয় `<script type="module">` = deferred, অর্থাৎ body-র সব inline script তার **আগে** চলে। stub ছাড়া BULK-এর wrap করা ২৪০টি block-ই প্রথম পেজে "onTurboLoad is not a function" দিত |
+| Day 2 | `onTurboOnce` এ identity = function-এর **source text** hash | script আবার execute হলে নতুন function object তৈরি হয়, তাই reference দিয়ে মেলানো যায় না। source text এক থাকলে একই handler — shared partial-এর delegation তাই একবারই register হয় |
+| Day 2 | checkout form-এ `data-turbo="false"` | `payment.process` gateway-তে `redirect()->away()` করে; Turbo form submit করে `fetch()` দিয়ে (mode `cors`), আর কোনো gateway আমাদের origin-কে CORS দেয় না → fetch reject, console-এ error, ব্যবহারকারী কিছুই দেখে না। checkout সম্পূর্ণ অচল হতো |
+| Day 2 | `data-turbo-permanent` **যোগ করা হয়নি** | Turbo এমনিতেই head স্থির রাখছে (stylesheet 6, script 8, meta 20 — ৫ পেজে অপরিবর্তিত), তাই permanent element-এর দরকার পড়েনি। এটি জটিলতা বাড়ায় (id বাধ্যতামূলক, morph-এ ব্যতিক্রম), লাভ নেই |
+| Day 2 | admin layout-এ Turbo **এখন নয়** | DataTable/select2/summernote destroy না করে Turbo চালু করলে প্রথম back-navigation-এই "Cannot reinitialise DataTable"। `admin.js` entry তৈরি ও build করা আছে, কিন্তু কোনো view এখনো ডাকে না — CLAUDE-6 যোগ করবে |

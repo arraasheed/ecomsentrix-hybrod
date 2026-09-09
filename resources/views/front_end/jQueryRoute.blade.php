@@ -179,74 +179,109 @@
 <script src="{{ asset('assets/js/front-theme.js') }}" defer="defer"></script>
     @if (isset($store->enable_pwa_store) && $store->enable_pwa_store == 'on')
         <script type="text/javascript">
-            const container = document.querySelector("body")
+            {{--
+                CLAUDE-6: wrapped in onTurboOnce. Two top-level `const` here
+                ("container", "coffees") would throw "Identifier 'container' has
+                already been declared" on the second Turbo navigation, from inside
+                the body swap.
 
-            const coffees = [];
+                onTurboOnce rather than onTurboLoad because service-worker
+                registration is a once-per-session action; re-registering the same
+                script URL on every page is a no-op the browser has to process
+                anyway.
 
-            if ("serviceWorker" in navigator) {
-                window.addEventListener("load", function() {
+                Both declarations are dead code (nothing reads them), kept so this
+                stays a scope-only change.
+
+                ⚠️ Not reachable in this install — both stores have
+                enable_pwa_store = 'off' — so it is unverified in the browser. Day 3
+                (CLAUDE-10) replaces this registration with Workbox regardless.
+            --}}
+            window.onTurboOnce(function () {
+                const container = document.querySelector("body")
+
+                const coffees = [];
+
+                if ("serviceWorker" in navigator) {
                     navigator.serviceWorker
                         .register("{{ asset('serviceWorker.js') }}")
                         .then(res => console.log("service worker registered"))
                         .catch(err => console.log("service worker not registered", err))
-
-                })
-            }
+                }
+            }, 'pwa-sw-register');
         </script>
     @endif
 
 
     @if ($store->enable_pwa_store == 'on')
         <script type="text/javascript">
-            // PWA Install functionality
-            let deferredPrompt;
-            const pwaModal = document.getElementById('pwa-install-modal');
-            const installBtn = document.getElementById('pwa-install-btn');
-            const cancelBtn = document.getElementById('pwa-cancel-btn');
+            {{--
+                CLAUDE-6: wrapped in onTurboOnce for the same reason as above — four
+                top-level declarations, one of which (`pwaModal`) is also read by the
+                three listeners below.
 
-            // Listen for the beforeinstallprompt event
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                
-                // Check if user hasn't dismissed the modal before
-                if (!localStorage.getItem('pwa-install-dismissed')) {
-                    setTimeout(() => {
-                        pwaModal.classList.remove('hidden');
-                    }, 3000); // Show after 3 seconds
-                }
-            });
+                onTurboOnce is right here: `beforeinstallprompt` fires on window and
+                the three element listeners are attached to nodes inside
+                #pwa-install-modal, which lives in this shared partial and is present
+                on every page. Re-attaching per page would multiply the install
+                prompt.
 
-            // Install button click
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    
-                    if (outcome === 'accepted') {
-                        show_toastr('Success', '{{ __('App installed successfully!') }}', 'success');
-                    } else {
-                        show_toastr('Info', '{{ __('App installation cancelled') }}', 'error');
+                The DOM lookups move inside the handlers so they read the current
+                page's nodes rather than the ones captured on first registration.
+
+                ⚠️ Unverified in the browser: enable_pwa_store = 'off' for both
+                stores in this install.
+            --}}
+            window.onTurboOnce(function () {
+                // PWA Install functionality
+                let deferredPrompt;
+
+                const modal = () => document.getElementById('pwa-install-modal');
+
+                // Listen for the beforeinstallprompt event
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+
+                    // Check if user hasn't dismissed the modal before
+                    if (!localStorage.getItem('pwa-install-dismissed')) {
+                        setTimeout(() => {
+                            modal()?.classList.remove('hidden');
+                        }, 3000); // Show after 3 seconds
                     }
-                    
-                    deferredPrompt = null;
-                    pwaModal.classList.add('hidden');
-                }
-            });
+                });
 
-            // Cancel button click
-            cancelBtn.addEventListener('click', () => {
-                pwaModal.classList.add('hidden');
-                localStorage.setItem('pwa-install-dismissed', 'true');
-            });
+                // Install button click
+                $(document).on('click', '#pwa-install-btn', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
 
-            // Close modal when clicking outside
-            pwaModal.addEventListener('click', (e) => {
-                if (e.target === pwaModal) {
-                    pwaModal.classList.add('hidden');
+                        if (outcome === 'accepted') {
+                            show_toastr('Success', '{{ __('App installed successfully!') }}', 'success');
+                        } else {
+                            show_toastr('Info', '{{ __('App installation cancelled') }}', 'error');
+                        }
+
+                        deferredPrompt = null;
+                        modal()?.classList.add('hidden');
+                    }
+                });
+
+                // Cancel button click
+                $(document).on('click', '#pwa-cancel-btn', () => {
+                    modal()?.classList.add('hidden');
                     localStorage.setItem('pwa-install-dismissed', 'true');
-                }
-            });
+                });
+
+                // Close modal when clicking outside
+                $(document).on('click', '#pwa-install-modal', (e) => {
+                    if (e.target === modal()) {
+                        modal()?.classList.add('hidden');
+                        localStorage.setItem('pwa-install-dismissed', 'true');
+                    }
+                });
+            }, 'pwa-install-prompt');
         </script>
     @endif
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ $google_analytic ?? '' }}"></script>
@@ -332,7 +367,7 @@
 
 @if(\Request::route()->getName() == 'page.contact_us')
     <script>
-        $(document).ready(function() {
+        window.onTurboLoad(function () {
             // Assuming $slug is defined somewhere in your Blade template
             var slug = "{{ $slug }}"; // Replace with actual value
             var mobile = "{{ $store->user->mobile ?? '+123 456-78-90'}}";

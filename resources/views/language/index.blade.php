@@ -202,6 +202,7 @@
 
 @push('custom-script')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('change','#disable_lang',function(){
         var val = $(this).prop("checked");
         if(val == true){
@@ -226,6 +227,7 @@
                 }
         });
         });
+        }, 'language-disable-toggle');
     </script>
 @endpush
 

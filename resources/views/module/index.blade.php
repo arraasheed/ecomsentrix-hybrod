@@ -571,12 +571,15 @@
 
 @push('scripts')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('click', '.module_change', function() {
             var id = $(this).attr('data-id');
             $('#loader').show();
             $('#form_' + id).submit();
         });
+        });
 
+        window.onTurboLoad(function () {
         document.getElementById('moduleSearch').addEventListener('keyup', function() {
             let query = this.value.toLowerCase();
             let modules = document.querySelectorAll('.module-card');
@@ -603,6 +606,7 @@
             $("#themes .card-wrapper").filter(function() {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
+        });
         });
     </script>
 @endpush

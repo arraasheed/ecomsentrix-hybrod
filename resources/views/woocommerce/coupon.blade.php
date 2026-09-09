@@ -82,7 +82,7 @@
 @push('custom-script')
     @include('layouts.includes.datatable-js')
     <script type="text/javascript">
-        $(function() {
+        window.onTurboLoad(function () {
             $('#woocom-coupon-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -186,6 +186,7 @@
                 }
             });
         });
+        window.onTurboOnce(function () {
         $(document).on('click', '.code', function () {
             var type = $(this).val();
             $('#code_text').addClass('col-md-12').removeClass('col-md-8');
@@ -195,7 +196,9 @@
                 $('#autogerate_button').removeClass('d-none');
             }
         });
+        });
 
+        window.onTurboOnce(function () {
         $(document).on('click', '#code-generate', function () {
             var length = 10;
             var result = '';
@@ -205,6 +208,7 @@
                 result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
             $('#auto-code').val(result);
+        });
         });
     </script>
 @endpush

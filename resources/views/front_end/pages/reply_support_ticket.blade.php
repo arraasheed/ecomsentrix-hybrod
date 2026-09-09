@@ -169,7 +169,7 @@
     });
 </script>
 <script>
-    $(document).ready(function() {
+    window.onTurboLoad(function () {
         $('.summernote').summernote({
             height: 200,
         });

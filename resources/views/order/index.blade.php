@@ -27,6 +27,7 @@
 
 @push('custom-script')
     <script>
+        window.onTurboOnce(function () {
         $(document).on('click', '.code', function() {
             var type = $(this).val();
             $('#code_text').addClass('col-md-12').removeClass('col-md-8');
@@ -72,5 +73,6 @@
             }
             $('#auto-code').val(result);
         });
+        }, 'order-index-delegations');
     </script>
 @endpush

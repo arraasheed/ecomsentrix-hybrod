@@ -252,7 +252,7 @@
 @push('custom-script')
     @include('layouts.includes.datatable-js')
     <script type="text/javascript">
-        $(function () {
+        window.onTurboLoad(function () {
             $('#low-stock-table').DataTable({
                 processing: true,
                 serverSide: true,

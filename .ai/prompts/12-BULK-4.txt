@@ -1,10 +1,15 @@
 ################################################################
 #  ফাইল: 12-BULK-4.txt
 #  টাস্ক: BULK-4
-#  প্রম্পট ৪ — Turbo script migration, Batch 3 (Day 2)
+#  প্রম্পট ৪ — Turbo script migration, Batch 3 (শেষ batch)
+#
+#  ⚠️ এই ফাইলটি হাতে লেখা — split-prompts.cjs এটি তৈরি করে না।
+#     কারণ: script-inventory.md-এর তালিকায় নিষিদ্ধ packages/workdo/
+#     ফোল্ডারের ফাইল মিশে আছে, এবং ১৩টি standalone পেজে wrap করলে
+#     সেগুলো ভেঙে যাবে। নিচে ঠিক কোন ফাইল করতে হবে ও কোনগুলো বাদ,
+#     সব লেখা আছে।
 #
 #  এই ফাইলের পুরোটা কপি করে মডেলকে দিন (Ctrl+A → Ctrl+C)।
-#  ভেতরে ৩টি ধাপ আছে — সবগুলো একসাথে পেস্ট করবেন।
 ################################################################
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -12,151 +17,305 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 তুমি C:\laragon\www\ecommercego প্রজেক্টে কাজ করছ।
-ধরে নাও তোমার কোনো পূর্ব স্মৃতি নেই। কাজ শুরুর আগে এই ৪টি ধাপ করো:
+ধরে নাও তোমার কোনো পূর্ব স্মৃতি নেই। কাজ শুরুর আগে এই ৫টি ধাপ করো:
 
   ১. পড়ো:  .ai/PROJECT_CONTEXT.md
   ২. পড়ো:  .ai/PROGRESS.md
-  ৩. চালাও: git log --oneline -20
-  ৪. চালাও: git status --short
+           ↳ "BULK-2/3/4 শুরুর আগে যা জানা দরকার" সেকশনটি বাধ্যতামূলক
+  ৩. পড়ো:  .ai/reports/turbo-migration-batch2.md   ← BULK-3 এ কী করেছ
+  ৪. চালাও: git log --oneline -20
+  ৫. চালাও: git status --short
+
+branch: git checkout day2/turbo-drive
 
 নিচের টাস্কটি PROGRESS.md-এ কোন অবস্থায় আছে দেখো:
 
   ⬜ PENDING      → নতুন করে শুরু করো
-  🟨 IN PROGRESS  → আগের সেশনে অসম্পূর্ণ রেখে থেমেছিলে। সেই টাস্কের
-                    .ai/reports/ ফাইলটি পড়ো, কোন ফাইল পর্যন্ত শেষ হয়েছে
-                    দেখো, তার পরের ফাইল থেকে শুরু করো।
-                    ⛔ শেষ হওয়া ফাইল আবার করবে না — দুইবার পরিবর্তন
-                       করলে কোড ভেঙে যাবে।
+  🟨 IN PROGRESS  → আগের সেশনে অসম্পূর্ণ রেখে থেমেছিলে।
+                    .ai/reports/turbo-migration-batch3.md পড়ো, কোন ফাইল
+                    পর্যন্ত শেষ হয়েছে দেখো, তার পরের ফাইল থেকে শুরু করো।
+                    ⛔ শেষ হওয়া ফাইল আবার wrap করবে না।
   ✅ DONE         → এই টাস্ক শেষ। ব্যবহারকারীকে জানাও, নতুন কিছু করবে না।
 
-git log আর PROGRESS.md না মিললে git-কে সত্য ধরবে। কমিট মিথ্যা বলে না।
+git log আর PROGRESS.md না মিললে git-কে সত্য ধরবে।
 
 ⛔ git সম্পর্কে দুইটি কঠোর নিয়ম:
 
-  • `git push` কখনো চালাবে না। remote (github.com/arraasheed/ecommercego)
-    একটি PUBLIC repo। push শুধু ব্যবহারকারী নিজে সিদ্ধান্ত নেবেন।
-    তোমার কাজ শুধু লোকাল `git commit`।
+  • `git push` কখনো চালাবে না। remote একটি PRIVATE repo, push শুধু
+    ব্যবহারকারীর সিদ্ধান্ত। তোমার কাজ শুধু লোকাল `git commit`।
   • `git reset --hard`, `git clean`, `git checkout <file>`,
-    `git push --force` — এগুলোও কখনো নয়। এতে কাজ মুছে যায়।
+    `git push --force` — কখনো নয়।
+  • `git add -A` করবে না — শুধু নিজের পরিবর্তিত ফাইল stage করবে।
 
-শুরু করার আগে আমাকে এক লাইনে জানাও: কোন টাস্কে আছ, কোথা থেকে শুরু করছ।
+শুরু করার আগে আমাকে এক লাইনে জানাও: কোন টাস্কে আছ, কোন ফাইল থেকে শুরু করছ।
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ধাপ ২ / ৩ — কাজের নিয়ম (এগুলো ভাঙা যাবে না)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-তোমার কাজ = দেওয়া recipe হুবহু প্রয়োগ করা। নতুন কিছু ডিজাইন করা নয়,
-সিদ্ধান্ত নেওয়া নয়।
-
 ▎নিয়ম ১ — "আরও ভালো করে দিই" ⛔ নিষিদ্ধ
 
-  indentation বদলাবে না। variable-এর নাম বদলাবে না। let → const করবে না।
-  অপ্রয়োজনীয় মনে হওয়া কোড মুছবে না।
+  ভেতরের কোডের একটি অক্ষরও বদলাবে না। শুধু wrapper লাইন।
+  indentation যেমন আছে তেমন রাখবে — সুন্দর করবে না।
 
-  এটি একটি লাইসেন্সকৃত স্ক্রিপ্ট (WorkDo)। ব্যবহারকারীকে পরে upstream
-  আপডেট merge করতে হবে। তুমি যত লাইন বদলাবে, তত merge conflict।
+  এটি লাইসেন্সকৃত WorkDo স্ক্রিপ্ট, পরে upstream আপডেট merge করতে হবে।
+  re-indent করলে ২ লাইনের diff ৩০ লাইনের হয়ে যায়।
 
-    আগে:                           পরে:
-    $(document).ready(function(){   window.onTurboLoad(function(){
-        $('.select2').select2();        $('.select2').select2();  ← হুবহু একই
-    });                             });
-
-  কোনো লাইন খারাপ মনে হলে রিপোর্টে লিখবে, ঠিক করবে না।
+  BULK-2 ও BULK-3 এ তোমার diff ছিল ২ ফাইলে ২-৩ লাইন — এটাই আদর্শ।
 
 ▎নিয়ম ২ — সন্দেহ হলে স্পর্শ করবে না
 
-  নিশ্চিত না হলে ফাইলটি বাদ দাও, রিপোর্টে লিখো "Claude দেখবে"।
-  একটি ফাইল বাদ দেওয়া নিরাপদ; ভুলভাবে বদলানো নয়।
+  রিপোর্টে "Claude দেখবে" লিখে এগিয়ে যাও। BULK-3 এ তুমি ৬টি ফাইলে এটি
+  করেছিলে এবং ছয়টিতেই সিদ্ধান্ত সঠিক ছিল
+  (`.ai/reports/bulk3-skipped-decisions.md` দেখো)।
 
-  এগুলো পেলে থামবে, নিজে সিদ্ধান্ত নেবে না:
-    • একই <script>-এ $(document).ready আর $(document).on(...) দুইটাই আছে
-    • Blade কোড (@if, {{ }}) script-এর মধ্যে জড়ানো
-    • ভেতরে nested function যার ভূমিকা অস্পষ্ট
-    • ফাইলটি তালিকায় নেই
+  এগুলো পেলে থামবে:
+    • Blade `@if`/`@else`-এর ভেতরে function declaration
+    • ৩০০+ লাইনের একক block যেখানে ১০+ delegation
+    • payment gateway flow
 
 ▎নিয়ম ৩ — পাইলট: প্রথমে ২টি ফাইল করে থামবে
 
-  ১. শুধু ২টি ফাইল করো
-  ২. git add -A
-     git commit -m "wip(<scope>): pilot 2 files  [<টাস্ক আইডি>]"
-  ৩. ব্যবহারকারীকে দেখাও ওই ২ ফাইলে হুবহু কী বদলেছ (before/after)
-  ৪. থামো। অনুমতি ছাড়া ৩ নম্বর ফাইলে যাবে না।
-
-  কারণ: ভুল recipe-এ ২০ ফাইল নষ্ট করার চেয়ে ২ ফাইলে ধরা পড়া ভালো।
+  ১. শুধু নিচের তালিকার ১ ও ২ নম্বর করো
+  ২. git commit -m "wip(turbo): pilot 2 files  [BULK-4]"
+  ৩. ব্যবহারকারীকে before/after দেখাও
+  ৪. থামো। অনুমতি ছাড়া ৩ নম্বরে যাবে না।
 
 ▎নিয়ম ৪ — এরপর প্রতি ৩টি ফাইলে commit
 
-  পাইলট পাস করার পর, প্রতি ৩টি ফাইল শেষ করার সাথে সাথে:
-    ১. .ai/reports/<এই টাস্কের রিপোর্ট>.md এ ওই ৩টি ফাইলের সারি যোগ করো
-    ২. .ai/PROGRESS.md এ অবস্থা 🟨 IN PROGRESS, নোটে "N/মোট ফাইল শেষ"
-    ৩. git add -A
-       git commit -m "wip(<scope>): files X-Y  [<টাস্ক আইডি>]"
+  ১. .ai/reports/turbo-migration-batch3.md এ ওই ৩টির সারি যোগ
+  ২. .ai/PROGRESS.md এ BULK-4 → 🟨 IN PROGRESS, নোটে "N/৭৩ ফাইল শেষ"
+  ৩. git commit -m "wip(turbo): batch 3 files X-Y  [BULK-4]"
 
-  কারণ: টোকেন লিমিট মাঝপথে ফুরালে সর্বোচ্চ ২ ফাইলের কাজ হারাবে, ২০টার নয়।
+  ৫ নয়, ৩ — BULK-2 ও BULK-3 এ তুমি দুইবারই "৫" লিখেছিলে।
 
 ▎নিয়ম ৫ — রিপোর্টে সৎ থাকবে
 
-  তিনটি সংখ্যা আলাদা করে লিখতে হবে:
-    পরিবর্তন করেছি        : N ফাইল
-    স্পর্শ করিনি (কারণ সহ)  : N ফাইল
-    সন্দেহ — Claude দেখবে   : N ফাইল
-
-  "সব ঠিক আছে" লিখলে Claude যাচাই করবে, না মিললে কাজ বাতিল হবে।
-  বাদ দেওয়া ফাইল স্বীকার করা ব্যর্থতা নয় — সেটাই সঠিক আচরণ।
+  পরিবর্তন করেছি        : N ফাইল
+  স্পর্শ করিনি (কারণ সহ)  : N ফাইল
+  সন্দেহ — Claude দেখবে   : N ফাইল
 
 ▎নিয়ম ৬ — যা কখনো করবে না
 
   ❌ app/  routes/  database/  vendor/  packages/  — নিষিদ্ধ ফোল্ডার
-  ❌ git push — remote একটি PUBLIC repo, push শুধু ব্যবহারকারীর সিদ্ধান্ত
-  ❌ git reset --hard, git checkout <file>, git clean, git push --force
-  ❌ npm install / composer install — কখনো নয়
-  ❌ .env ফাইল পড়বে না, লিখবে না
-  ❌ একই ফাইল দুইবার পরিবর্তন করবে না
-  ❌ টাস্ক নম্বরের বাইরে কোনো কাজ নয় — "পাশে একটা bug দেখলাম" = রিপোর্টে লিখো
+  ❌ themes/*/assets/js/custom.js — CLAUDE-6 এর কাজ
+  ❌ নিচের "⛔ বাদ" তালিকার কোনো ফাইল
+  ❌ git push / add -A / reset --hard / clean / checkout <file>
+  ❌ npm install / composer install
+  ❌ .env পড়া বা লেখা
+  ❌ একই ফাইল দুইবার wrap করা
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ধাপ ৩ / ৩ — তোমার টাস্ক
+ধাপ ৩ / ৩ — তোমার টাস্ক (BULK-4, শেষ batch)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-তুমি `C:\laragon\www\ecommercego` প্রজেক্টে কাজ করছ।
+### helper তিনটি (BULK-2/3 এর মতোই)
 
-প্রথমে পড়ো:
-1. .ai/PROJECT_CONTEXT.md
-2. .ai/PROGRESS.md
-3. .ai/reports/script-inventory.md
-4. .ai/reports/turbo-migration-batch1.md
-5. .ai/reports/turbo-migration-batch2.md
-6. resources/js/turbo-bootstrap.js
+```js
+window.onTurboLoad(fn)      // প্রতি পেজে — widget init (DataTable, select2, chart)
+window.onTurboOnce(fn, key) // পুরো সেশনে একবার — event delegation
+window.onTurboUnload(fn)    // পেজ cache হওয়ার আগে — destroy
+```
 
-branch: git checkout day2/turbo-drive
+### রূপান্তরের নিয়ম (অপরিবর্তিত)
 
-তোমার কাজ (BULK-4): শ্রেণি A তালিকার **৪১ নম্বর থেকে বাকি সব ফাইল**।
-এছাড়া শ্রেণি B (ONCE-ONLY) তালিকার সব ফাইল — এগুলোতে `window.onTurboOnce()` ব্যবহার করবে।
+| পেলে | করবে |
+|---|---|
+| `$(document).ready(function(){...})` | `window.onTurboLoad(function () {...})` |
+| `$(function(){...})` | `window.onTurboLoad(function () {...})` |
+| `$(document).on('click', sel, fn)` | `window.onTurboOnce(function () {...})` |
+| `$('body').on('click', sel, fn)` | `window.onTurboOnce(function () {...})` |
+| খোলা কোড যা DOM খুঁজে init করে | `window.onTurboLoad(...)` |
+| শুধু `var x = "...";` | **স্পর্শ করবে না** |
+| একই block-এ init + delegation | ভাগ করো (নিয়ম E) |
 
-নিয়ম BULK-2 এর মতোই।
+🔴 delegation কে `onTurboOnce` না দিলে যা হয় তা মাপা হয়েছে: handler
+২৯ → ৪৬৪ (৮ navigation), এক ক্লিকে ৮টি POST, DB-তে qty ১ → ৮।
 
-শ্রেণি B-এর জন্য বিশেষ নির্দেশ:
-- event delegation (`$(document).on(...)`) → `onTurboOnce`
-- global variable / `window.X = ...` → স্পর্শ করবে না
-- service worker registration → স্পর্শ করবে না (Claude আলাদাভাবে করবে)
+⚠️ block-এ Blade মান interpolate থাকলে (`{{ $x }}`) প্রতি পেজে source text
+আলাদা হয়, duplicate detection কাজ করে না। তখন দ্বিতীয় আর্গুমেন্টে নাম দাও:
+`window.onTurboOnce(function () {...}, 'coupon-code-copy');`
 
-শ্রেণি C (INLINE-DATA), D (THIRD-PARTY), E (UNCLEAR) → **স্পর্শ করবে না।**
+---
 
-🔁 checkpoint: প্রতি ৫ ফাইলে রিপোর্ট আপডেট + 🟨 IN PROGRESS +
-`git commit -m "wip(turbo): batch 3 files X-Y  [BULK-4]"`
-এই batch-এ ফাইল সংখ্যা বেশি হতে পারে, তাই checkpoint বাদ দিলে কাজ হারানোর
-ঝুঁকি সবচেয়ে বেশি।
+## অংশ ১ — শ্রেণি A, ৩৫টি ফাইল
 
-সম্পন্ন করার পর:
+BULK-2 করেছে ১-২০, BULK-3 করেছে ২১-৪০। এগুলো ৪১ থেকে বাকি:
+
+```
+ 1. resources/views/plans/create.blade.php
+ 2. resources/views/plans/edit.blade.php
+ 3. resources/views/plans/stripe.blade.php
+ 4. resources/views/pos/index.blade.php
+ 5. resources/views/product/attribute_combinations.blade.php
+ 6. resources/views/product/attribute_combinations_data.blade.php
+ 7. resources/views/product/attribute_combinations_edit.blade.php
+ 8. resources/views/product/create.blade.php
+ 9. resources/views/product/edit.blade.php
+10. resources/views/product/show.blade.php
+11. resources/views/reports/bar_chart_order_report.blade.php
+12. resources/views/reports/index.blade.php
+13. resources/views/reports/order_country_Report.blade.php
+14. resources/views/reports/order_report.blade.php
+15. resources/views/reports/orderStatusReport.blade.php
+16. resources/views/reports/sale_by_brand.blade.php
+17. resources/views/reports/sale_by_category.blade.php
+18. resources/views/reports/sale_by_product.blade.php
+19. resources/views/reports/stock_report.blade.php
+20. resources/views/reports/top_5_reports.blade.php
+21. resources/views/roles/index.blade.php
+22. resources/views/setting/email_setting.blade.php
+23. resources/views/setting/index.blade.php
+24. resources/views/shipping_method/free_shipping.blade.php
+25. resources/views/shopify/product.blade.php
+26. resources/views/superadmin/dashboard.blade.php
+27. resources/views/theme_analytic.blade.php
+28. resources/views/theme_customize/customize-script.blade.php
+29. resources/views/theme_customize/order.blade.php
+30. resources/views/users/profile.blade.php
+31. resources/views/webhook/create.blade.php
+32. resources/views/webhook/edit.blade.php
+33. resources/views/wishlist/index.blade.php
+34. resources/views/woocommerce/category.blade.php
+35. resources/views/woocommerce/coupon.blade.php
+```
+
+পাইলটের ২টি = `plans/create` ও `plans/edit`।
+
+⚠️ ১১-২০ নম্বর (reports/*) এ ApexCharts আছে। chart init `onTurboLoad`-এ
+যাবে। chart destroy করার দরকার নেই — CLAUDE-6 কেন্দ্রীয়ভাবে
+`turbo-cleanup.js` এ করবে।
+
+⚠️ ৫-৭ নম্বর (attribute_combinations*) এ `$('body').on(...)` আছে —
+`onTurboOnce` এ যাবে, BULK-2 এ AppSetting-এ যেমন করেছিলে।
+
+---
+
+## অংশ ২ — শুধু শ্রেণি B (delegation), ৩৮টি ফাইল
+
+এগুলোতে শুধু `$(document).on(...)` ধরনের delegation আছে, কোনো widget init
+নেই। সবগুলোই `onTurboOnce`:
+
+```
+36. resources/views/addon/apps.blade.php
+37. resources/views/addon/index.blade.php
+38. resources/views/coupon/index.blade.php
+39. resources/views/email_templates/index.blade.php
+40. resources/views/front_end/common/product/sale_counter.blade.php
+41. resources/views/front_end/pages/auction_order_detail.blade.php
+42. resources/views/front_end/pages/order-detail.blade.php
+43. resources/views/front_end/sections/order_detail.blade.php
+44. resources/views/front_end/sections/order_view.blade.php
+45. resources/views/language/index.blade.php
+46. resources/views/layouts/cookie_consent.blade.php
+47. resources/views/layouts/includes/alerts.blade.php
+48. resources/views/layouts/includes/datatable-js.blade.php
+49. resources/views/module/index.blade.php
+50. resources/views/myfatoorah/includes/sectionCards.blade.php
+51. resources/views/myfatoorah/includes/sectionForm.blade.php
+52. resources/views/order/grid.blade.php
+53. resources/views/order/index.blade.php
+54. resources/views/order/script.blade.php
+55. resources/views/order/view.blade.php
+56. resources/views/partision/add.blade.php
+57. resources/views/partision/footerlink.blade.php
+58. resources/views/partision/sidebar.blade.php
+59. resources/views/plan-coupon/index.blade.php
+60. resources/views/plans/index.blade.php
+61. resources/views/product_brand/index.blade.php
+62. resources/views/product_label/index.blade.php
+63. resources/views/shippingzone/create.blade.php
+64. resources/views/shippingzone/edit.blade.php
+65. resources/views/store/create.blade.php
+66. resources/views/store/index.blade.php
+67. resources/views/store/list.blade.php
+68. resources/views/support/edit.blade.php
+69. resources/views/taxes-method/create.blade.php
+70. resources/views/taxes-method/edit.blade.php
+71. resources/views/testimonial/index.blade.php
+72. resources/views/theme_customize/index.blade.php
+73. resources/views/users/user_info.blade.php
+```
+
+⚠️ ৪৮ নম্বর `datatable-js.blade.php` — এতে শুধু একটি global function
+declaration (`removeSortingOrderFromHeader`) আছে, কোনো ready wrapper নেই।
+Function declaration global থাকতে হবে, নইলে অন্য ফাইল থেকে ডাকা যাবে না।
+**এটি স্পর্শ করবে না** — রিপোর্টে "function declaration only, global
+থাকা দরকার" লিখে রাখো।
+
+---
+
+## ⛔ বাদ — এই ১৯টি ফাইল কখনো স্পর্শ করবে না
+
+### standalone পেজ (১৩টি) — helper stub নেই, wrap করলে ভাঙবে
+
+এগুলো নিজের `<!DOCTYPE html>` / `<head>` / `<meta charset>` দিয়ে শুরু হয়,
+কোনো layout extend করে না। তাই `layouts/includes/turbo.blade.php` এর
+helper stub সেখানে পৌঁছায় না — `onTurboLoad` মোড়ালে সাথে সাথে
+`onTurboLoad is not a function`, পেজ মরে যাবে।
+
+```
+resources/views/payment/telegram.blade.php
+resources/views/payment/whatsapp.blade.php
+resources/views/plans/cybersourcerequest.blade.php
+resources/views/plans/Powertranz-payment.blade.php
+resources/views/plans/Powertranz-planpayment.blade.php
+resources/views/DPO/pay.blade.php
+resources/views/midtras/order_payment.blade.php
+resources/views/midtras/payment.blade.php
+resources/views/myfatoorah/checkout.blade.php
+resources/views/order/receipt.blade.php
+resources/views/layouts/theme_layout.blade.php
+themes/greentic/views/front_end/layouts/app.blade.php
+themes/techzonix/views/front_end/layouts/app.blade.php
+```
+
+এগুলোতে Turbo navigation পৌঁছায়ও না — gateway form-এ `data-turbo="false"`
+বসানো আছে, তাই ব্রাউজার পূর্ণ page load করে, `$(document).ready`
+স্বাভাবিকভাবেই চলে।
+
+### layout ফাইল (২টি) — Claude নিজে করবে
+
+```
+resources/views/front_end/layouts/app.blade.php
+themes/stylique/views/front_end/layouts/app.blade.php
+```
+
+Turbo boot এখানেই বসানো (CLAUDE-5)। CLAUDE-6 এই ফাইলগুলোতে কাজ করবে।
+
+### CLAUDE-6 / CLAUDE-7 এর জন্য সংরক্ষিত (৪টি)
+
+BULK-3 এ তুমি এগুলো স্পর্শ করোনি — সঠিক সিদ্ধান্ত ছিল, তাই এখনো করবে না:
+
+```
+resources/views/layouts/app.blade.php              admin layout, select2 init
+resources/views/menu/script.blade.php              ৬১৩ লাইন, ~১৬ delegation
+resources/views/front_end/pages/product-list.blade.php   Blade @if-এ function
+resources/views/front_end/pages/checkout.blade.php       payment flow
+resources/views/payment/authorizenet.blade.php     standalone
+resources/views/payment/khalti.blade.php           standalone
+```
+
+কারণ বিস্তারিত: `.ai/reports/bulk3-skipped-decisions.md`
+
+---
+
+### সম্পন্ন করার পর
+
 ১. রিপোর্ট: `.ai/reports/turbo-migration-batch3.md`
-   এবং একটি চূড়ান্ত সারসংক্ষেপ যোগ করো:
-   - তিন batch মিলে মোট কত ফাইল migrate হয়েছে
-   - কত ফাইল বাকি আছে এবং কেন
+   | # | ফাইল | কোন নিয়ম | নোট |
+   এবং **তিন batch মিলে চূড়ান্ত সারসংক্ষেপ**:
+   - BULK-2 + BULK-3 + BULK-4 মিলে মোট কত ফাইল migrate হয়েছে
+   - কত বাকি আছে এবং কেন
    - কোন ফাইলগুলো Claude-কে দেখতে হবে
-২. `.ai/PROGRESS.md`-এ BULK-4 → ✅ DONE
+
+২. `.ai/PROGRESS.md`-এ BULK-4 → ✅ DONE, কমিট hash সহ।
+
 ৩. commit:
-git add -A
+```
 git commit -m "refactor(turbo): migrate document.ready to turbo:load, batch 3 of 3  [BULK-4]"
-৪. বাংলায় রিপোর্ট
+```
+
+৪. বাংলায় জানাও: কত ফাইল, কোন নিয়ম কতবার, কোনটা স্পর্শ করিনি।
