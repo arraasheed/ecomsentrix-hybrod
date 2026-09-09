@@ -362,6 +362,68 @@ function scheduleFirstFlush() {
     window.addEventListener('load', () => flush('window-load'), { once: true });
 }
 
+// ── Form submission lifecycle ──────────────────────────────────────────────────
+//
+// Turbo intercepts form submissions and uses fetch(). We need to disable the submit
+// button to prevent double-submission, and show visual feedback to the user.
+//
+// turbo:submit-start fires before the fetch begins.
+// turbo:submit-end fires after the response arrives (success or network error).
+//
+// Validation errors are handled by redirecting with flash messages, which Turbo
+// preserves across navigation. The layout's alerts.blade.php is executed by Turbo's
+// page swap and shows the toastr messages automatically.
+
+document.addEventListener('turbo:submit-start', (event) => {
+    const form = event.detail.formSubmission.form;
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    if (submitButton) {
+        // Store original content so we can restore it
+        submitButton.dataset.originalContent = submitButton.innerHTML;
+        
+        // Disable button and show loading state
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled', 'opacity-50');
+        
+        // If button has a spinner or loading indicator, show it
+        if (submitButton.querySelector('[data-turbo-indicator]')) {
+            submitButton.querySelector('[data-turbo-indicator]').classList.remove('hidden');
+        }
+        
+        trace('form submit started, button disabled');
+    }
+});
+
+document.addEventListener('turbo:submit-end', (event) => {
+    const form = event.detail.formSubmission.form;
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    if (submitButton) {
+        // Re-enable button
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled', 'opacity-50');
+        
+        // Restore original content
+        if (submitButton.dataset.originalContent) {
+            submitButton.innerHTML = submitButton.dataset.originalContent;
+        }
+        
+        // Hide loading indicator if present
+        if (submitButton.querySelector('[data-turbo-indicator]')) {
+            submitButton.querySelector('[data-turbo-indicator]').classList.add('hidden');
+        }
+        
+        trace('form submit ended, button re-enabled');
+    }
+    
+    // Check for network errors or fetch failures
+    if (event.detail.formSubmission.error) {
+        console.error('[turbo] form submission error:', event.detail.formSubmission.error);
+        // Toast or alert can be shown here if needed
+    }
+});
+
 // CSRF for every non-GET request Turbo makes.
 //
 // Turbo already sets X-CSRF-Token itself, but only in FormSubmission — so plain

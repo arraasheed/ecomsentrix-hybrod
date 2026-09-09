@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         // Append middleware to the 'web' group
         $middleware->appendToGroup('web', \App\Http\Middleware\SetLocate::class);
+        $middleware->appendToGroup('web', \App\Http\Middleware\TurboResponseMiddleware::class);
         // Exclude specific routes from CSRF protection
         $middleware->validateCsrfTokens(
             except: [
