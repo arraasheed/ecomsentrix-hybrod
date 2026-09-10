@@ -65,6 +65,13 @@
         Kill-switch: TURBO_ENABLED=false in .env.
     --}}
     @include('layouts.includes.turbo')
+    
+    {{--
+        PWA Service Worker registration (CLAUDE-12). Must stay in <head> so it
+        loads early and registers the SW before any page navigation.
+        Kill-switch: PWA_ENABLED=false in .env (unregisters existing SW).
+    --}}
+    @vite(['resources/js/sw-register.js'])
 </head>
 
 <body>
