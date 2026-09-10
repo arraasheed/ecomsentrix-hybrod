@@ -67,11 +67,67 @@
     @include('layouts.includes.turbo')
     
     {{--
-        PWA Service Worker registration (CLAUDE-12). Must stay in <head> so it
-        loads early and registers the SW before any page navigation.
-        Kill-switch: PWA_ENABLED=false in .env (unregisters existing SW).
+        PWA Service Worker registration (CLAUDE-12). Inline script to register SW early,
+        before any page interaction. Kill-switch: PWA_ENABLED=false in .env.
     --}}
-    @vite(['resources/js/sw-register.js'])
+    <script>
+        (function() {
+          const pwaEnabled = document.documentElement.dataset.pwaEnabled === 'true';
+          const storeId = document.documentElement.dataset.storeId;
+
+          console.log('[PWA] sw-register IIFE running. pwaEnabled:', pwaEnabled, 'storeId:', storeId);
+
+          if (!navigator.serviceWorker) {
+            console.log('[PWA] No SW support');
+            return;
+          }
+
+          if (!pwaEnabled) {
+            console.log('[PWA] PWA disabled via kill-switch');
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+              registrations.forEach(reg => reg.unregister());
+            });
+            return;
+          }
+
+          console.log('[PWA] Attempting to register /sw.js');
+          navigator.serviceWorker
+            .register('/sw.js', { scope: '/' })
+            .then(registration => {
+              console.log('[PWA] Service Worker registered:', registration);
+
+              setInterval(() => {
+                registration.update();
+              }, 60000);
+
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    console.log('[PWA] New Service Worker available. Page refresh recommended.');
+                  }
+                });
+              });
+            })
+            .catch(error => {
+              console.error('[PWA] Service Worker registration failed:', error);
+            });
+
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(reg => {
+              if (reg.scope === '/') {
+                caches.keys().then(names => {
+                  names.forEach(name => {
+                    if (!name.includes('v1')) {
+                      caches.delete(name);
+                    }
+                  });
+                });
+              }
+            });
+          });
+        })();
+    </script>
 </head>
 
 <body>
