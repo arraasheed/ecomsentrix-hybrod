@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) ?? 'en' }}" dir="{{ ($currantLang == 'ar' || $currantLang == 'he') ? 'rtl' : 'ltr' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) ?? 'en' }}" dir="{{ ($currantLang == 'ar' || $currantLang == 'he') ? 'rtl' : 'ltr' }}" data-pwa-enabled="{{ $store->enable_pwa_store == 'on' ? 'true' : 'false' }}" data-store-id="{{ $store->id ?? '' }}">
 
 <head>
   <meta charset="UTF-8">

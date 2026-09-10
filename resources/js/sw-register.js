@@ -5,9 +5,15 @@
   const pwaEnabled = document.documentElement.dataset.pwaEnabled === 'true';
   const storeId = document.documentElement.dataset.storeId;
 
-  if (!navigator.serviceWorker) return;
+  console.log('[PWA] sw-register IIFE running. pwaEnabled:', pwaEnabled, 'storeId:', storeId);
+
+  if (!navigator.serviceWorker) {
+    console.log('[PWA] No SW support');
+    return;
+  }
 
   if (!pwaEnabled) {
+    console.log('[PWA] PWA disabled via kill-switch');
     // Kill-switch: unregister any existing SW
     navigator.serviceWorker.getRegistrations().then(registrations => {
       registrations.forEach(reg => reg.unregister());
@@ -15,6 +21,7 @@
     return;
   }
 
+  console.log('[PWA] Attempting to register /sw.js');
   // Register new SW
   navigator.serviceWorker
     .register('/sw.js', { scope: '/' })
