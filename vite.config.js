@@ -25,6 +25,7 @@ export default defineConfig({
                 // but not yet referenced by any view — see the note in that file.
                 'resources/js/store.js',
                 'resources/js/admin.js',
+                'resources/js/sw-register.js',
             ],
             refresh: true,
         }),
