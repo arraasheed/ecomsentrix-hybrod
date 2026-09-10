@@ -66,6 +66,23 @@ No existing file was modified. The old raw install prompt in `jQueryRoute.blade.
 
 ---
 
+## ⚠️ Working-tree notes — commits around BULK-5 (read before proceeding)
+
+- `be4bab9` (`docs(progress): record BULK-5 commit hash [BULK-5]`) was created with `git add -A`
+  while **two pre-existing uncommitted changes from CLAUDE-11's session** were still in the working
+  tree. That commit therefore also absorbed:
+  1. `app/Providers/PackageServiceProvider.php` — adds `'PwaManifest'` to the static addons list and
+     guards it in `loadDynamicAddons()`. **This is the module registration CLAUDE-11 needed for the
+     `PwaManifest` module to load**; it was not part of commit `5dc29c2` and must stay committed.
+  2. `.ai/scratch/test_loader.php` — a temporary provider-loader test file, accidentally swept in;
+     it has since been removed by the concurrent commit `98c65c2`. Nothing to do.
+- `9e624cc` (`fix(pwa): include sw-register.js in vite input`) and `98c65c2` were created
+  concurrently by another agent while BULK-5 was finishing. They do not touch BULK-5 files.
+- BULK-5's own files are byte-identical to commit `e382284` (`git diff e382284 HEAD -- <blade files>`
+  is empty); the concurrent commits did not modify them.
+
+---
+
 ## 👉 For Claude — what to do next
 
 1. **Include the install prompt** in the storefront layout (CLAUDE-11 step 5): `@include('front_end.partison.pwa-install')` at the end of the body in the live storefront layout (`themes/stylique/views/front_end/layouts/app.blade.php`, and/or `resources/views/front_end/layouts/app.blade.php`). The partial is self-contained (style + markup + script) and guarded by `enable_pwa_store`.
