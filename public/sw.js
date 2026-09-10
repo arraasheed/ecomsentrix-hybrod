@@ -121,11 +121,12 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
+  const currentCaches = [RUNTIME_CACHE, ASSET_CACHE, IMAGE_CACHE];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames
-          .filter(name => !name.startsWith(CACHE_VERSION))
+          .filter(name => !currentCaches.includes(name))
           .map(name => caches.delete(name))
       );
     })

@@ -133,5 +133,8 @@
             }
         }
     </script>
+
+    {{-- PWA install banner (BULK-5 / CLAUDE-11) --}}
+    @include('front_end.partison.pwa-install')
 </body>
 </html>
