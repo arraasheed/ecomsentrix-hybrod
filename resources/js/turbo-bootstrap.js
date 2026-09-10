@@ -341,6 +341,26 @@ document.addEventListener('turbo:load', () => {
     } else {
         flush('turbo:load');
     }
+
+    // PWA: Register service worker on every Turbo page load (CLAUDE-12)
+    const pwaEnabled = document.documentElement.dataset.pwaEnabled === 'true';
+    if (pwaEnabled && navigator.serviceWorker) {
+        navigator.serviceWorker
+            .register('/sw.js', { scope: '/' })
+            .then(reg => {
+                console.log('[PWA] Service Worker registered via turbo:load:', reg);
+                setInterval(() => reg.update(), 60000);
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('[PWA] New Service Worker available. Page refresh recommended.');
+                        }
+                    });
+                });
+            })
+            .catch(err => console.error('[PWA] SW registration failed:', err));
+    }
 });
 
 window.addEventListener('pagehide', () => cleanup('pagehide'));
