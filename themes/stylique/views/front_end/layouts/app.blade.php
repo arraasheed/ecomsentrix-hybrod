@@ -37,17 +37,13 @@
     <link rel="apple-touch-icon" sizes="152x152" href="{{ $faviconUrl }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ $faviconUrl }}">
     <link rel="apple-touch-icon" sizes="167x167" href="{{ $faviconUrl }}">
-    @if ($store->enable_pwa_store == 'on')
-        <link rel="manifest"
-            href="{{ asset('storage/uploads/customer_app/store_' . $store->id . '/manifest.json') }}" />
-    @endif
-    @if (!empty($store->pwa_store($store->slug)->theme_color))
-        <meta name="theme-color" content="{{ $store->pwa_store($store->slug)->theme_color }}" />
-    @endif
-    @if (!empty($store->pwa_store($store->slug)->background_color))
-        <meta name="apple-mobile-web-app-status-bar"
-            content="{{ $store->pwa_store($store->slug)->background_color }}" />
-    @endif
+     @if ($store->enable_pwa_store == 'on')
+         <link rel="manifest" href="{{ route('pwa.manifest', $store->slug) }}" />
+         <meta name="theme-color" content="{{ $themeSettings['header_color'] ?? '#000000' }}" />
+         <meta name="apple-mobile-web-app-capable" content="yes" />
+         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+         <meta name="apple-mobile-web-app-title" content="{{ substr($store->name, 0, 12) }}" />
+     @endif
     <style>
         {!! $storecss ?? '' !!}
     </style>
