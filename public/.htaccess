@@ -19,3 +19,41 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# ============================================================================
+# Gzip/Brotli Compression (P6 Fix)
+# ============================================================================
+# KILL-SWITCH: Comment out this block to disable compression.
+# ============================================================================
+
+<IfModule mod_deflate.c>
+    <FilesMatch "\.(css|js|html|xml|svg|json|txt)$">
+        SetHandler default-handler
+        AddOutputFilterByType DEFLATE text/css
+        AddOutputFilterByType DEFLATE application/javascript
+        AddOutputFilterByType DEFLATE text/html
+        AddOutputFilterByType DEFLATE text/xml
+        AddOutputFilterByType DEFLATE application/json
+        AddOutputFilterByType DEFLATE image/svg+xml
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_brotli.c>
+    <FilesMatch "\.(css|js|html|xml|svg|json|txt)$">
+        SetHandler default-handler
+        AddOutputFilterByType BROTLI_COMPRESS text/css
+        AddOutputFilterByType BROTLI_COMPRESS application/javascript
+        AddOutputFilterByType BROTLI_COMPRESS text/html
+        AddOutputFilterByType BROTLI_COMPRESS text/xml
+        AddOutputFilterByType BROTLI_COMPRESS application/json
+        AddOutputFilterByType BROTLI_COMPRESS image/svg+xml
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_headers.c>
+ Header append Vary Accept env=!dont-vary
+</IfModule>
+
+# ============================================================================
+# END Gzip/Brotli Compression
+# ============================================================================
