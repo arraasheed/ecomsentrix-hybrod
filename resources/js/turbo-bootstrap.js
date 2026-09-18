@@ -341,6 +341,37 @@ document.addEventListener('turbo:load', () => {
     } else {
         flush('turbo:load');
     }
+
+    // PWA: Register service worker (CLAUDE-12 fix)
+    const pwaEnabled = document.documentElement.dataset.pwaEnabled === 'true';
+    if (navigator.serviceWorker) {
+        if (!pwaEnabled) {
+            navigator.serviceWorker.getRegistrations().then(regs => {
+                regs.forEach(reg => reg.unregister());
+            });
+        } else if (!window.__swRegistered) {
+            window.__swRegistered = true;
+            navigator.serviceWorker
+                .register('/sw.js', { scope: '/' })
+                .then(reg => {
+                    console.log('[PWA] Service Worker registered:', reg);
+                    setInterval(() => reg.update(), 60000);
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        if (!newWorker) return;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('[PWA] New Service Worker available. Page refresh recommended.');
+                            }
+                        });
+                    });
+                })
+                .catch(err => {
+                    window.__swRegistered = false;
+                    console.error('[PWA] SW registration failed:', err);
+                });
+        }
+    }
 });
 
 window.addEventListener('pagehide', () => cleanup('pagehide'));

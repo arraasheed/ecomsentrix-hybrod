@@ -178,37 +178,20 @@
 <script src="{{ asset('public/js/flipdown.js') }}"></script>
 <script src="{{ asset('assets/js/front-theme.js') }}" defer="defer"></script>
     @if (isset($store->enable_pwa_store) && $store->enable_pwa_store == 'on')
-        <script type="text/javascript">
-            {{--
-                CLAUDE-6: wrapped in onTurboOnce. Two top-level `const` here
-                ("container", "coffees") would throw "Identifier 'container' has
-                already been declared" on the second Turbo navigation, from inside
-                the body swap.
-
-                onTurboOnce rather than onTurboLoad because service-worker
-                registration is a once-per-session action; re-registering the same
-                script URL on every page is a no-op the browser has to process
-                anyway.
-
-                Both declarations are dead code (nothing reads them), kept so this
-                stays a scope-only change.
-
-                ⚠️ Not reachable in this install — both stores have
-                enable_pwa_store = 'off' — so it is unverified in the browser. Day 3
-                (CLAUDE-10) replaces this registration with Workbox regardless.
-            --}}
-            window.onTurboOnce(function () {
-                const container = document.querySelector("body")
-
-                const coffees = [];
-
-                if ("serviceWorker" in navigator) {
-                    navigator.serviceWorker
-                        .register("{{ asset('serviceWorker.js') }}")
-                        .then(res => console.log("service worker registered"))
-                        .catch(err => console.log("service worker not registered", err))
-                }
-            }, 'pwa-sw-register');
+        @vite(['resources/js/sw-register.js'])
+        <script>
+            document.documentElement.dataset.pwaEnabled = 'true';
+            document.documentElement.dataset.storeId = '{{ $store->id ?? "" }}';
+        </script>
+    @else
+        <script>
+            document.documentElement.dataset.pwaEnabled = 'false';
+            // Will unregister any existing SW if PWA is disabled
+            if (navigator.serviceWorker) {
+                navigator.serviceWorker.getRegistrations().then(regs => {
+                    regs.forEach(reg => reg.unregister());
+                });
+            }
         </script>
     @endif
 

@@ -1,0 +1,25 @@
+{
+    "name": "workdo/pwa-manifest",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Workdo\\PwaManifest\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "WorkDo",
+            "email": "support@workdo.io"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Workdo\\PwaManifest\\Providers\\PwaManifestServiceProvider"
+            ]
+        }
+    }
+}

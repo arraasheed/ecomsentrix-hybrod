@@ -1,0 +1,206 @@
+{{--
+    BULK-5 — Standalone PWA offline page.
+    - No layout extend (the offline fallback renders without any storefront assets)
+    - All CSS inline, all images inline SVG, vanilla JS only
+    - Rendered to static HTML (public/offline.html) by Claude at build time
+--}}
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#111827">
+    <title>Offline — সংযোগ নেই / You&rsquo;re offline</title>
+    <style>
+        :root {
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --text: #111827;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --accent: #2563eb;
+            --accent-contrast: #ffffff;
+            --icon-bg: #eff6ff;
+            --icon: #2563eb;
+            --status-text: #92400e;
+            --status-bg: #fffbeb;
+            --status-border: #fde68a;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #111827;
+                --card: #1f2937;
+                --text: #f9fafb;
+                --muted: #9ca3af;
+                --border: #374151;
+                --accent: #3b82f6;
+                --accent-contrast: #ffffff;
+                --icon-bg: #1e3a8a;
+                --icon: #60a5fa;
+                --status-text: #fbbf24;
+                --status-bg: rgba(251, 191, 36, .08);
+                --status-border: #374151;
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body { height: 100%; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Bengali", "Hind Siliguri", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px 16px;
+        }
+
+        .wrap { width: 100%; max-width: 440px; }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 40px 28px 28px;
+            text-align: center;
+            box-shadow: 0 12px 32px rgba(17, 24, 39, .08);
+        }
+
+        .bn, .en { display: block; }
+
+        .en { color: var(--muted); font-size: .85em; margin-top: 6px; }
+
+        .card__icon {
+            width: 84px;
+            height: 84px;
+            margin: 0 auto 22px;
+            border-radius: 50%;
+            background: var(--icon-bg);
+            color: var(--icon);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card__icon svg { width: 46px; height: 46px; }
+
+        .card__title { font-size: 24px; font-weight: 700; line-height: 1.3; }
+        .card__title .en { font-size: .72em; font-weight: 500; }
+
+        .card__desc { margin-top: 14px; font-size: 15px; line-height: 1.7; }
+        .card__desc .en { margin-top: 2px; }
+
+        .card__hint {
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: var(--icon-bg);
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .retry-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px 20px;
+            border: 0;
+            border-radius: 12px;
+            background: var(--accent);
+            color: var(--accent-contrast);
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: filter .15s ease, transform .05s ease;
+        }
+
+        .retry-btn:hover { filter: brightness(1.08); }
+        .retry-btn:active { transform: scale(.98); }
+
+        .retry-btn__icon { width: 18px; height: 18px; flex: none; }
+        .retry-btn__text { text-align: left; }
+        .retry-btn__text .en { color: var(--accent-contrast); opacity: .85; font-size: .82em; font-weight: 500; margin-top: 1px; }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 22px;
+            padding: 6px 14px;
+            border: 1px solid var(--status-border);
+            border-radius: 999px;
+            background: var(--status-bg);
+            color: var(--status-text);
+            font-size: 13px;
+        }
+
+        .status__dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .85; }
+        .status__label .en { display: inline; color: inherit; font-size: .92em; margin-top: 0; }
+    </style>
+</head>
+<body>
+<main class="wrap">
+    <div class="card" role="alert" aria-live="polite">
+        <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 9.5Q12 3 22 9.5"/>
+                <path d="M5 13.5Q12 8.5 19 13.5"/>
+                <path d="M8.5 17.5Q12 14 15.5 17.5"/>
+                <circle cx="12" cy="20.5" r="1.3" fill="currentColor" stroke="none"/>
+                <path d="M4 4l16 16"/>
+            </svg>
+        </div>
+        <h1 class="card__title">
+            <span class="bn">আপনি অফলাইনে আছেন</span>
+            <span class="en">You&rsquo;re offline</span>
+        </h1>
+        <p class="card__desc">
+            <span class="bn">ইন্টারনেট সংযোগ নেই। দোকানটি এই মুহূর্তে লোড করা যাচ্ছে না।</span>
+            <span class="en">No internet connection. The store can&rsquo;t be loaded right now.</span>
+        </p>
+        <p class="card__hint">
+            <span class="bn">সংযোগ ফিরে এলে এই পেজটি স্বয়ংক্রিয়ভাবে রিফ্রেশ হবে।</span>
+            <span class="en">This page will refresh automatically when you&rsquo;re back online.</span>
+        </p>
+        <button type="button" id="offline-retry" class="retry-btn">
+            <svg class="retry-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+                <path d="M21 3v6h-6"/>
+            </svg>
+            <span class="retry-btn__text"><span class="bn">আবার চেষ্টা করুন</span><span class="en">Retry</span></span>
+        </button>
+        <p class="status">
+            <span class="status__dot" aria-hidden="true"></span>
+            <span class="status__label"><span class="bn">অফলাইন</span> <span class="en">Offline</span></span>
+        </p>
+    </div>
+</main>
+<script>
+    (function () {
+        'use strict';
+
+        // Retry button — reload manually
+        var retry = document.getElementById('offline-retry');
+        if (retry) {
+            retry.addEventListener('click', function () {
+                window.location.reload();
+            });
+        }
+
+        // Auto-reload as soon as the device is back online
+        window.addEventListener('online', () => location.reload());
+    })();
+</script>
+</body>
+</html>

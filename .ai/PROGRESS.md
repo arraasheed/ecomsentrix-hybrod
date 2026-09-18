@@ -175,15 +175,15 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 
 ## 📊 সামগ্রিক অবস্থা
 
-**বর্তমান পর্যায়:** ✅ **Day 2 সম্পূর্ণ — merged to master, tag `day2-complete`**
-**সর্বশেষ আপডেট:** CLAUDE-8 (Day 2 final test: 6 storefront + 2 admin pages, checkout form ✅, all Turbo navigation ✅, merge ✅)
-**সক্রিয় branch:** `master` (Day 2 merged)
+**বর্তমান পর্যায়:** ✅ **Day 3 সম্পূর্ণ — CLAUDE-12 সম্পন্ন, Day 4 প্রস্তুত**
+**সর্বশেষ আপডেট:** CLAUDE-12 (PWA Workbox SW, offline.html cache, install prompt UI, bug fixes verified)
+**সক্রিয় branch:** `day3/pwa-workbox`
 
 **Day 1 ক্রম:** ~~GEMINI-1~~ → ~~GEMINI-2~~ → ~~CLAUDE-1~~ → ~~CLAUDE-2~~ → ~~BULK-1~~ → ~~CLAUDE-3~~ → ~~CLAUDE-4~~ ✅ **শেষ**
 
 **Day 2 ক্রম:** ~~CLAUDE-5~~ → ~~BULK-2~~ → ~~BULK-3~~ → ~~BULK-4~~ → ~~CLAUDE-6~~ → ~~CLAUDE-7~~ → ~~CLAUDE-8~~ ✅ **শেষ**
 
-**Day 3 ক্রম:** **CLAUDE-9 (এখন চালানো যায়)** → CLAUDE-10 → CLAUDE-11 → BULK-5 → CLAUDE-12
+**Day 3 ক্রম:** ~~CLAUDE-9~~ → ~~CLAUDE-10~~ → ~~CLAUDE-11~~ → ~~BULK-5~~ → ~~CLAUDE-12~~ ✅ **শেষ**
 
 ### Day 1-এর সংক্ষিপ্ত ফলাফল (mobile, cold, median of 3)
 
@@ -346,11 +346,11 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 
 | টাস্ক | মডেল | অবস্থা | কমিট | নোট |
 |---|---|---|---|---|
-| CLAUDE-9   Redis + OPcache + optimize | Claude | ⬜ PENDING | — | |
-| CLAUDE-10  Workbox SW (P4 fix) | Claude | ⬜ PENDING | — | ভাঙা SW প্রতিস্থাপন |
-| CLAUDE-11  Per-store manifest generator | Claude | ⬜ PENDING | — | |
-| BULK-5  Offline page + install prompt UI | BULK মডেল | ⬜ PENDING | — | |
-| CLAUDE-12  Day 3 PWA টেস্ট (install + offline) | Claude | ⬜ PENDING | — | |
+| CLAUDE-9   Redis + OPcache + optimize | Claude | ✅ DONE | `868433c` | Predis ^2.2 added · `.env` → Redis (cache/session/queue) · `.env.example` updated · kill-switches still using `env()` (pending config refactor before `config:cache`) · OPcache status: system-level, user must configure php.ini · রিপোর্ট → `.ai/reports/claude9-redis-config.md` |
+| CLAUDE-10  Workbox SW (P4 fix) | Claude | ✅ DONE | `41974f4` | Old broken SW replaced · NetworkFirst for HTML (always fresh), CacheFirst for hashed assets · Secure routes (login/checkout/cart/account) → NetworkOnly · kill-switch: PWA_ENABLED=false unregisters SW · রিপোর্ট → `.ai/reports/claude10-pwa-caching.md` |
+| CLAUDE-11  Per-store manifest generator | Claude | ✅ DONE | `5dc29c2` | Module-based solution (`packages/workdo/PwaManifest/`) · Dynamic route `/{slug}/manifest.json` · 3 themes updated · рিপোর্ট → `.ai/reports/manifest-audit.md` |
+| BULK-5  Offline page + install prompt UI | BULK মডেল | ✅ DONE | `e382284` · pilot `19674c9` | Offline page (`offline.blade.php`) + install banner (`partison/pwa-install.blade.php`), vanilla JS, dark mode, iOS instructions, 7-day dismiss, kill-switch `enable_pwa_store=='on'` · Blade+=php -l ✅ · `jQueryRoute`-এর পুরনো prompt স্পর্শ করা হয়নি (Claude সরাবে) · ⚠️ `be4bab9`-এ CLAUDE-11-এর uncommitted `PwaManifest` registration (`app/Providers/PackageServiceProvider.php`) চলে এসেছে — প্রয়োজনীয়, রাখা হয়েছে · রিপোর্ট → `.ai/reports/pwa-ui.md` |
+| CLAUDE-12  Day 3 PWA টেস্ট (install + offline) | Gemini / Antigravity | ✅ DONE | `5019259` | 4 blockers fixed: missing `public/offline.html`, `.htaccess` rewrite, `sw.js` activate cache wipe bug, missing `pwa-install` include · Chromium CDP verified: SW activated, offline.html 200 OK cached, install banner in DOM · রিপোর্ট → `.ai/reports/claude12-pwa-final-test.md` |
 
 ### Day 4 — Mobile App-Feel (branch: `day4/mobile-polish`)
 

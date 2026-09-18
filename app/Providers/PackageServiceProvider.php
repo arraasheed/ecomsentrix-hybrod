@@ -13,7 +13,7 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $staticAddons = ['LandingPage'];
+        $staticAddons = ['LandingPage', 'PwaManifest'];
         $this->loadAddons($staticAddons);
         
         // Defer database queries until after DB connection is ready
@@ -33,6 +33,9 @@ class PackageServiceProvider extends ServiceProvider
 
             if (! in_array('LandingPage', $dbAddons)) {
                 $dbAddons[] = 'LandingPage';
+            }
+            if (! in_array('PwaManifest', $dbAddons)) {
+                $dbAddons[] = 'PwaManifest';
             }
 
             $this->loadAddons($dbAddons);
