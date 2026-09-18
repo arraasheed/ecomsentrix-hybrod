@@ -110,7 +110,7 @@ git log আর PROGRESS.md না মিললে git-কে সত্য ধর
 | Server | Laragon (Apache) — **docroot প্রজেক্ট root, `public/` নয়**। root `.htaccess` whitelist দিয়ে rewrite করে |
 | Node / npm | `v26.4.0` / `11.17.0` ✅ |
 | Playwright Chromium | `chromium-1234`, `chromium-1243` ইনস্টল ✅ |
-| git branch | `day2/turbo-drive` (master-এ Day 1 merged, tag `day1-complete`) |
+| git branch | `master` (Day 1, Day 2, Day 3 merged; tags: `day1-complete`, `day2-complete`, `day3-complete`) |
 | git baseline tag | `baseline-v0` → commit `17a47e9` |
 | **git remote** | `origin` → `https://github.com/arraasheed/ecommercego.git` (public) |
 
@@ -175,9 +175,9 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 
 ## 📊 সামগ্রিক অবস্থা
 
-**বর্তমান পর্যায়:** ✅ **Day 3 সম্পূর্ণ — CLAUDE-12 সম্পন্ন, Day 4 প্রস্তুত**
-**সর্বশেষ আপডেট:** CLAUDE-12 (PWA Workbox SW, offline.html cache, install prompt UI, bug fixes verified)
-**সক্রিয় branch:** `day3/pwa-workbox`
+**বর্তমান পর্যায়:** ✅ **Day 3 সম্পূর্ণ (merged to `master`, tag `day3-complete`) — Day 4 প্রস্তুত**
+**সর্বশেষ আপডেট:** Day 3 merged into `master`, tag `day3-complete` created. Cache & junk clean verified.
+**সক্রিয় branch:** `master`
 
 **Day 1 ক্রম:** ~~GEMINI-1~~ → ~~GEMINI-2~~ → ~~CLAUDE-1~~ → ~~CLAUDE-2~~ → ~~BULK-1~~ → ~~CLAUDE-3~~ → ~~CLAUDE-4~~ ✅ **শেষ**
 
