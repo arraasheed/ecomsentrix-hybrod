@@ -1,0 +1,208 @@
+/* =====================================================================
+   mobile-table.css  —  BULK-7 (Day 4, branch day4/mobile-polish)
+   =====================================================================
+   Turns DataTables rendered inside `.ecom-data-table` (see
+   resources/views/components/datatable.blade.php:7) into card-like
+   stacked rows on phones only.
+
+   Scope rules:
+   - Applies ONLY at max-width 767.98px. Nothing above 768px changes,
+     desktop design is untouched.
+   - Applies ONLY inside `.ecom-data-table`.
+   - Dark mode respected through the theme's own CSS variables, which
+     both public/assets/css/style.css and public/assets/css/style-dark.css
+     define on their normal scopes (dark is a stylesheet swap on
+     #main-style-link, not a body class):
+       --bs-card-bg            (set on .card:  #ffffff / #292A33)
+       --bs-table-border-color (set on .table: #f1f1f1 / #3E3F4A)
+       --bs-table-color        (set on .table)
+       --bs-secondary          (set on :root)
+   - `!important` used only where DataTables sets inline styles that
+     must be overridden (table width, cell width).
+   - Kill-switch: remove the <link> to this file (added by Claude) and
+     tables go back to horizontal scroll.
+
+   Column handling:
+   - thead is hidden, EXCEPT a th that holds the "select all" checkbox
+     (BulkDelete module) — :has() keeps it visible as a small bar above
+     the cards. Browsers without :has() just hide it (progressive).
+   - checkbox cells (no th text) get no data-label, content stays left.
+   - action cells keep their "Action" label, buttons wrap right.
+   - .dataTables_empty (colspan "no data") is centered, no label.
+   ===================================================================== */
+
+@media (max-width: 767.98px) {
+
+    /* -----------------------------------------------------------------
+       1. Kill horizontal scroll inside the component
+       ----------------------------------------------------------------- */
+    .ecom-data-table.table-responsive,
+    .ecom-data-table .table-responsive,
+    .ecom-data-table .dataTables_wrapper {
+        overflow-x: visible;
+        -webkit-overflow-scrolling: auto;
+    }
+
+    /* -----------------------------------------------------------------
+       2. Stack DataTables length / filter / info / pagination / buttons
+       ----------------------------------------------------------------- */
+    .ecom-data-table .dataTables_wrapper .row {
+        display: block;
+    }
+
+    .ecom-data-table .dataTables_wrapper .row > * {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .ecom-data-table .dataTables_length,
+    .ecom-data-table .dataTables_filter,
+    .ecom-data-table .dataTables_info,
+    .ecom-data-table .dataTables_paginate {
+        width: 100%;
+        text-align: start;
+        margin-bottom: 10px;
+    }
+
+    .ecom-data-table .dataTables_filter label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    /* 16px stops iOS Safari auto-zoom on this input (audit C1, local scope) */
+    .ecom-data-table .dataTables_filter input.dataTable-input {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
+        font-size: 16px;
+    }
+
+    .ecom-data-table .dataTables_length select.dataTable-selector {
+        width: auto;
+        display: inline-block;
+    }
+
+    .ecom-data-table .dataTables_paginate {
+        margin-bottom: 0;
+    }
+
+    .ecom-data-table .dataTables_paginate .pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 0;
+    }
+
+    .ecom-data-table .dt-buttons {
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+    .ecom-data-table .dataTables_processing {
+        width: max-content;
+        max-width: 90%;
+        margin-inline: auto;
+    }
+
+    /* -----------------------------------------------------------------
+       3. Table -> block, rows -> cards
+       ----------------------------------------------------------------- */
+    .ecom-data-table table {
+        display: block;
+        width: 100% !important; /* DataTables inline width */
+        margin: 0;
+    }
+
+    .ecom-data-table thead,
+    .ecom-data-table thead tr,
+    .ecom-data-table tbody,
+    .ecom-data-table tbody tr {
+        display: block;
+        width: 100%;
+    }
+
+    /* hide column headers … */
+    .ecom-data-table thead th {
+        display: none;
+    }
+
+    /* … but keep the BulkDelete "select all" checkbox as a bar */
+    .ecom-data-table thead th:has(input[type="checkbox"]) {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 4px 2px 10px;
+        border-bottom: none;
+    }
+
+    .ecom-data-table tbody tr {
+        margin: 0 0 12px;
+        padding: 10px 14px;
+        background-color: var(--bs-card-bg, #ffffff);
+        border: 1px solid var(--bs-table-border-color, var(--bs-border-color, #f1f1f1));
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(28, 35, 47, 0.06);
+    }
+
+    .ecom-data-table tbody tr:last-child {
+        margin-bottom: 0;
+    }
+
+    /* -----------------------------------------------------------------
+       4. Cells -> label / value rows
+       ----------------------------------------------------------------- */
+    .ecom-data-table tbody td,
+    .ecom-data-table tfoot td,
+    .ecom-data-table tfoot th {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: auto !important;  /* DataTables inline cell widths */
+        max-width: none;
+        padding: 6px 0;
+        border-bottom: none;     /* Bootstrap .table cell borders off inside cards */
+        text-align: start;
+        overflow-wrap: anywhere;
+    }
+
+    .ecom-data-table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--bs-secondary, #6c757d);
+        flex: 0 0 auto;
+        max-width: 45%;
+    }
+
+    /* cells without a data-label (checkbox, colspan, …): no pseudo label */
+    .ecom-data-table tbody td:not([data-label])::before {
+        content: none;
+    }
+
+    /* checkbox cell: no label, keep input at the start */
+    .ecom-data-table tbody td:not([data-label]) {
+        justify-content: flex-start;
+    }
+
+    /* action buttons wrap to the end edge */
+    .ecom-data-table tbody td .btn-group {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .ecom-data-table tbody td img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* "No data available" row: centered, no fake label */
+    .ecom-data-table tbody td.dataTables_empty {
+        display: block;
+        text-align: center;
+        padding: 24px 8px;
+    }
+}
