@@ -357,7 +357,7 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | টাস্ক | মডেল | অবস্থা | কমিট | নোট |
 |---|---|---|---|---|
 | GEMINI-4   মোবাইল UX অডিট (স্ক্রিনশট বিশ্লেষণ) | Gemini | ✅ DONE | `49e7209` | ১৫টি সমস্যা চিহ্নিত (৫ critical, ৬ medium, ৪ minor) · ১৯টি ৬+ কলামের টেবিল · রিপোর্ট → `.ai/reports/mobile-audit.md` |
-| BULK-6  Mobile bottom nav (storefront) | BULK মডেল | ⬜ PENDING | — | |
+| BULK-6  Mobile bottom nav (storefront) | BULK মডেল | ✅ DONE | — | ১টি নতুন ফাইল: `themes/stylique/views/front_end/partison/mobile-bottom-nav.blade.php` · route নাম customer.php থেকে যাচাইকৃত (`landing_page`/`collections`/`page.cart`/`wishlist`/`my-account.index`/`customer.login`) · `data-turbo-permanent` + turbo:load active/badge sync · vanilla JS · kill-switch = include কমেন্ট · ⚠️ include এখনো হয়নি — CLAUDE করবে (রিপোর্টে position লেখা) · রিপোর্ট → `.ai/reports/mobile-nav.md` |
 | BULK-7  DataTable → mobile card view (CSS) | BULK মডেল | ⬜ PENDING | — | ৭০ table |
 | CLAUDE-13  Skeleton loader + Turbo preview | Claude | ⬜ PENDING | — | |
 | CLAUDE-14  Touch polish (tap delay, dvh, safe-area) | Claude | ⬜ PENDING | — | |
