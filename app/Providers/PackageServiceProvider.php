@@ -13,7 +13,7 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $staticAddons = ['LandingPage', 'PwaManifest', 'ViteAssets'];
+        $staticAddons = ['LandingPage', 'PwaManifest'];
         $this->loadAddons($staticAddons);
         
         // Defer database queries until after DB connection is ready
