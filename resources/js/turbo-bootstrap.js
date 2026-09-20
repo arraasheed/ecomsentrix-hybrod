@@ -487,7 +487,7 @@ function installProgressBarStyle() {
 
     const style = document.createElement('style');
     style.id = 'turbo-progress-style';
-    style.textContent = '.turbo-progress-bar{height:3px;background:var(--turbo-progress-color,#f8796c)}';
+    style.textContent = '.turbo-progress-bar{height:3px !important;background:linear-gradient(90deg,#f8796c 0%,#ff5252 50%,#e02424 100%) !important;box-shadow:0 0 8px rgba(248,121,108,0.6) !important;z-index:999999 !important}';
     document.head.appendChild(style);
 }
 

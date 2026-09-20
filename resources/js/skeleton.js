@@ -11,6 +11,11 @@
 
 import '../css/skeleton.css';
 
+// ── Kill-switch ─────────────────────────────────────────────────────────────
+// Set to false to disable the skeleton overlay and selective prefetch entirely.
+// To disable: change `true` to `false` below.
+const SKELETON_ENABLED = true;
+
 let skeletonTimer = null;
 let skeletonEl = null;
 
@@ -41,6 +46,9 @@ function createSkeletonOverlay() {
 }
 
 function showSkeletonDebounced() {
+    // Kill-switch: skip entirely if disabled
+    if (!SKELETON_ENABLED) return;
+
     // If Turbo preview (cached snapshot) is active, do not display skeleton
     if (document.documentElement.hasAttribute('data-turbo-preview')) {
         return;
@@ -97,6 +105,17 @@ document.addEventListener('turbo:load', () => {
     initSelectivePrefetch();
 });
 
+// If a navigation fails (network offline, server error, etc.) the skeleton
+// overlay would otherwise be stuck on screen forever — hide it so the user
+// can still interact with the page or see the error.
+document.addEventListener('turbo:visit-failed', () => {
+    hideSkeleton();
+});
+
+document.addEventListener('turbo:fetch-request-error', () => {
+    hideSkeleton();
+});
+
 document.addEventListener('turbo:before-cache', () => {
     cleanupBeforeCache();
 });
@@ -104,11 +123,23 @@ document.addEventListener('turbo:before-cache', () => {
 // ── Selective Prefetch Policy ───────────────────────────────────────────────
 
 function initSelectivePrefetch() {
+    // Kill-switch: skip entirely if disabled
+    if (!SKELETON_ENABLED) return;
+
+    // Excluded href patterns — cart/wishlist/account/checkout/auth routes
+    // must never be speculatively prefetched (stateful or dynamic routes).
+    const skipPatterns = ['cart', 'wishlist', 'my-account', 'login', 'logout', 'checkout', 'register'];
+    const shouldSkipHref = (href) => href && skipPatterns.some((p) => href.includes(p));
+
     // Enable prefetch on mobile bottom navigation
     const bottomNavLinks = document.querySelectorAll('#mobile-bottom-nav a[href]');
     bottomNavLinks.forEach((link) => {
         if (!link.hasAttribute('data-turbo-prefetch') && !link.hasAttribute('data-turbo-eval')) {
-            link.setAttribute('data-turbo-prefetch', 'true');
+            const href = link.getAttribute('href');
+            // Skip stateful/auth routes in the bottom nav
+            if (!shouldSkipHref(href)) {
+                link.setAttribute('data-turbo-prefetch', 'true');
+            }
         }
     });
 
@@ -116,9 +147,11 @@ function initSelectivePrefetch() {
     const mainNavLinks = document.querySelectorAll('.main-nav a[href], .site-header a.nav-link[href]');
     mainNavLinks.forEach((link) => {
         const href = link.getAttribute('href');
-        // Do not prefetch external links, auth endpoints, or modals
-        if (href && !href.startsWith('#') && !href.includes('login') && !href.includes('logout') && !href.includes('checkout')) {
-            link.setAttribute('data-turbo-prefetch', 'true');
+        if (href && !href.startsWith('#')) {
+            // Skip external, auth, and stateful routes (cart/wishlist/checkout/account)
+            if (!shouldSkipHref(href)) {
+                link.setAttribute('data-turbo-prefetch', 'true');
+            }
         }
     });
 
