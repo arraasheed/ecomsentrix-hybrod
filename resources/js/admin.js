@@ -21,3 +21,6 @@ import './turbo-bootstrap';
 // Must come after the bootstrap: its turbo:before-cache listener registers
 // first, so a page's own onTurboUnload teardowns run before this global sweep.
 import './turbo-cleanup';
+
+// Skeleton loader & selective prefetch (CLAUDE-13)
+import './skeleton';

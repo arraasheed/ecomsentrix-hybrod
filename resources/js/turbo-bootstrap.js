@@ -505,7 +505,7 @@ const ready = disabled
               // (APP_DEBUG=true + file cache; CLAUDE-9 fixes that). At 500 ms the
               // bar appeared right as the page swapped, which reads as a flicker
               // rather than as feedback.
-              Turbo.config.drive.progressBarDelay = 250;
+              Turbo.config.drive.progressBarDelay = 150;
               installProgressBarStyle();
               trace('Turbo Drive started, drive =', Turbo.session.drive);
               return Turbo;

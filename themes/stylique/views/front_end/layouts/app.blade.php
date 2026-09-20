@@ -134,6 +134,9 @@
         }
     </script>
 
+    {{-- Mobile bottom navigation (BULK-6) --}}
+    @include('front_end.partison.mobile-bottom-nav')
+
     {{-- PWA install banner (BULK-5 / CLAUDE-11) --}}
     @include('front_end.partison.pwa-install')
 </body>
