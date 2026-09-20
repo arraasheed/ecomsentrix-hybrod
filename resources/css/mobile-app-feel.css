@@ -1,0 +1,322 @@
+/* ==========================================================================
+   Mobile App-Feel Polish (CLAUDE-14)
+   App-like touch, viewport, and safe-area improvements.
+   Kill-switch: env('MOBILE_APP_FEEL', true) in .env
+   ========================================================================== */
+
+/* ── 1. 100vh → 100dvh fallback (C4) ──────────────────────────────────────
+   Mobile browsers keep the address bar visible, so 100vh cuts off the
+   bottom of fixed/absolute elements. dvh follows the dynamic toolbar.
+   Override in new CSS only — never touch source CSS. ──────────────────── */
+
+.turbo-skeleton-overlay,
+.skeleton-loader,
+#loader,
+.modal-fullscreen,
+.modal-fullscreen .modal-content,
+.data-table-loader,
+.fullscreen-loader,
+.dash-sidebar-overlay,
+#commanModelOver,
+#commanModel {
+    height: 100vh;
+    height: 100dvh;
+}
+
+/* ── 2. Safe-area insets (C3) ──────────────────────────────────────────────
+   Requires viewport-fit=cover on the <meta viewport> (added in blade). ── */
+
+/* Fixed header at top — pad so content isn't hidden under notch/status bar */
+.dash-header,
+.navbar-brand,
+.main-header,
+.header-section,
+.sticky-top-header,
+.dash-mob-header {
+    padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Mobile bottom nav — pad so buttons aren't hidden under home indicator */
+#mobile-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+/* Generic fixed-to-bottom elements */
+.position-fixed.bottom-0,
+.fixed.bottom-0,
+.d-footer,
+.main-footer-sticky {
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+/* Left/right safe areas for sidebars and edge-swipe gestures */
+.dash-sidebar {
+    padding-left: env(safe-area-inset-left, 0px);
+}
+.dash-content {
+    padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* ── 3. iOS auto-zoom fix (C1) ─────────────────────────────────────────────
+   iOS Safari zooms the viewport when an <input>/<select>/<textarea> with
+   font-size < 16px receives focus. Setting font-size:16px prevents this.
+   Scope: only ≤ 767px so desktop typing isn't affected. ────────────── */
+
+@media (max-width: 767px) {
+    input,
+    select,
+    textarea,
+    .form-control,
+    .form-input,
+    select.select2 {
+        font-size: 16px !important;
+    }
+}
+
+/* ── 4. Scroll physics (L1) ────────────────────────────────────────────────
+   - overscroll-behavior-y: contain prevents double-tap-bounce and parent
+     scroll chaining on fixed/mobile containers.
+   - -webkit-overflow-scrolling: touch enables momentum scrolling on iOS. ── */
+
+html,
+body {
+    overscroll-behavior-y: contain;
+}
+
+@media (max-width: 767px) {
+    html,
+    body {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-open {
+        overflow: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Scroll containers */
+    .table-responsive,
+    .table-wrapper,
+    .scroll-container,
+    .scroll-y,
+    .data-table-scroll,
+    .sidebar-scroll,
+    .dash-navbar-scroll,
+    .navbar-content {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+    }
+
+    /* Modal body scroll lock — Bootstrap sets overflow:hidden on body
+       itself, which is adequate. No extra JS lock library needed.
+       The -webkit-overflow-scrolling:touch above ensures iOS consistency. */
+    .modal-open body,
+    .modal-show body {
+        overflow: hidden;
+    }
+}
+
+/* ── 5. Touch targets & tap highlight (L1, L2) ──────────────────────────────
+   - -webkit-tap-highlight-color: transparent removes the blue flash on tap.
+   - touch-action: manipulation removes the 300ms tap delay on interactive
+     elements (links, buttons) that don't need double-tap-to-zoom.
+   - We do NOT add :active transform — CLAUDE-13 already provides scale(0.97)
+     on tap; redefining it would conflict. ────────────────────────────── */
+
+/* Desktop tap highlight (harmless, removes flash) */
+button,
+a,
+.btn {
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 767px) {
+    button,
+    a,
+    input[type="submit"],
+    input[type="button"],
+    input[type="reset"],
+    .btn,
+    .btn-link,
+    .btn-outline-primary,
+    .btn-primary,
+    .action-button,
+    select,
+    textarea,
+    .form-select,
+    .checkbox-custom input[type="checkbox"],
+    .form-check-input,
+    nav a,
+    .nav-link,
+    .nav-item,
+    .mnav-item,
+    .mobile-bottom-nav a,
+    .mobile-bottom-nav button {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+}
+
+/* ── 6. Touch target sizing (M1) ────────────────────────────────────────────
+   Audit (GEMINI-4) found btn-sm, btn-xs, btn-icon, and datatable action
+   icons below the 44×44px minimum. Mobile only. ──────────────────────── */
+
+@media (max-width: 767px) {
+    /* Small buttons, icon buttons, badge buttons */
+    .btn-sm,
+    .btn-xs,
+    .btn-icon,
+    .nav-link.btn-sm,
+    .btn-sm.btn-badge,
+    .btn-xs.btn-badge,
+    .btn-sm.btn-info,
+    .btn-xs.btn-info,
+    .btn-sm.btn-danger,
+    .btn-xs.btn-danger,
+    .btn-sm.btn-primary,
+    .btn-xs.btn-primary,
+    .btn-sm.btn-warning,
+    .btn-xs.btn-warning {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+
+    /* Pagination links */
+    .pagination .page-link,
+    .page-link,
+    .pagination a,
+    .pagination span {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+
+    /* Datatable action buttons, dropdowns, utility buttons */
+    .action-btns,
+    .action-button,
+    .datatable-action,
+    .btn-group > .btn,
+    .btn-group > a,
+    .dropdown-toggle,
+    .copy-btn,
+    .csv-btn,
+    .print-btn {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+
+    /* Quantity +/- buttons */
+    .qty-plus,
+    .qty-minus,
+    .quantity-spinner button,
+    .input-group-append button,
+    .input-group-prepend button,
+    .input-group .btn {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+
+    /* Close / toggle / filter buttons */
+    .close,
+    .btn-close,
+    .data-table-filter-close,
+    .filter-close,
+    #filter-close {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+
+    /* Hamburger / menu / search / cart / wishlist toggles */
+    .menu-toggle,
+    .navbar-toggler,
+    .mobile-menu-toggle,
+    .toggle-nav,
+    .search-toggle,
+    .cart-toggle,
+    .wishlist-toggle,
+    .mobile-search-toggle {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+}
+
+/* ── 7. user-select control (M L2 variant) ────────────────────────────────
+   Prevent accidental text selection on interactive controls and navigation,
+   but ALLOW selection on content users may want to copy (prices, names,
+   paragraphs). ────────────────────────────────────────────────────────── */
+
+/* Disable selection on interactive/nav elements */
+button,
+.btn,
+.btn-link,
+.btn-primary,
+.btn-secondary,
+.btn-info,
+.btn-danger,
+.btn-warning,
+.btn-success,
+nav,
+.navbar,
+.nav-link,
+.dropdown-toggle,
+.mnav-item,
+.mnav-link,
+.action-button,
+.action-btns,
+.dropdown-menu,
+.pagination,
+.nav-tabs,
+.nav-pills,
+.toggle-switch,
+.form-switch,
+.checkbox-custom input[type="checkbox"],
+.radio-btn input[type="radio"],
+.select2-container--default .select2-selection,
+.progress-skip,
+.skip-link {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Keep selection enabled for content users may want to copy */
+p,
+.price,
+.product-name,
+.product-title,
+.content,
+.description,
+.text-content,
+.card-text,
+.product-description,
+.order-detail,
+.order-reference,
+.amount,
+.total-amount,
+.copyright-text,
+p *,
+.price *,
+.content * {
+    user-select: text;
+}
+
+/* ── 8. Form element polish ────────────────────────────────────────────────
+   Prevent zoom on focus by ensuring font-size remains 16px on mobile. ── */
+
+@media (max-width: 767px) {
+    input:focus,
+    select:focus,
+    textarea:focus {
+        font-size: 16px;
+    }
+}
+
+/* Sidebar scroll investigation (CLAUDE-14 item 12) result:
+   No new JS needed. dash.js registers dashInit() via onTurboLoad (CLAUDE-6),
+   which re-binds the hamburger, #mobile-collapse, and SimpleBar scroller
+   on every Turbo page load. The sidebar maintains its state correctly.
+   The only mobile additions are momentum scroll (-webkit-overflow-scrolling)
+   on .navbar-content (above) and safe-area/dvh overrides (section 1-2).
+   Deferred: no code change required. */

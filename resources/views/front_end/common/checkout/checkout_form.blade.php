@@ -190,14 +190,14 @@
                                             <div class="col-md-6 col-12">
                                                 <div class="form-group">
                                                     <label>{{ __('Telephone') }}<sup aria-hidden="true">*</sup>:</label>
-                                                    {!! Form::number(
-                                                        'billing_info[billing_user_telephone]',
-                                                        !empty(Auth::guard('customers')->user()) ? Auth::guard('customers')->user()->mobile : '',
-                                                        [
-                                                            'class' => 'form-control',
-                                                            'placeholder' => '1234567890',
-                                                        ],
-                                                    ) !!}
+                                                    <input type="tel"
+                                                        name="billing_info[billing_user_telephone]"
+                                                        value="{{ !empty(Auth::guard('customers')->user()) ? Auth::guard('customers')->user()->mobile : '' }}"
+                                                        class="form-control"
+                                                        placeholder="1234567890"
+                                                        inputmode="numeric"
+                                                        enterkeyhint="next"
+                                                        required>
                                                 </div>
                                             </div>
                                         </div>

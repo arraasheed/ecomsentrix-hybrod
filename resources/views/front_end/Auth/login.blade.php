@@ -32,7 +32,7 @@
               <!-- Email Field -->
               <div>
                 <label for="email" class="block mb-2 font-medium md:text-base text-sm">{{ $themeSettings['login_email'] ?? __('Email Address') }} <span class="text-red-500">*</span></label>
-                <input type="email" name="email" id="email" class="form-input" required/>
+                <input type="email" name="email" id="email" class="form-input" required autocomplete="username" enterkeyhint="next" />
               </div>
               
               <!-- Password Field -->
@@ -43,7 +43,7 @@
                   <a href="{{ route('customer.password.request',$slug) }}" class="text-sm text-primary hover:text-primary-dark">{{ $themeSettings['login_forgot_link'] ?? __('Forgot password?') }}</a>
                   @endif
                 </div>
-                <input type="password" name="password" id="password" class="form-input" required/>
+                <input type="password" name="password" id="password" class="form-input" required autocomplete="current-password" enterkeyhint="go" />
               </div>
               
               <!-- Remember Me -->

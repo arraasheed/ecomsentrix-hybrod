@@ -24,7 +24,7 @@
         </div>
         <div>
             <label for="phone" class="block mb-2 font-medium md:text-base text-sm text-left rtl:text-right">{{ __('Phone Number') }} <span class="text-red-500">*</span></label>
-            <input type="tel" name="phone" id="phone" class="form-input text-left rtl:text-right" value="{{ $address->phone ?? old('phone') }}" required />
+            <input type="tel" name="phone" id="phone" class="form-input text-left rtl:text-right" value="{{ $address->phone ?? old('phone') }}" required inputmode="numeric" enterkeyhint="next" />
         </div>
     </div>
 
@@ -72,6 +72,8 @@
                     class="text-red-500">*</span></label>
             <input type="text" name="postcode" id="zip"
                 class="form-input text-left rtl:text-right"
+                inputmode="numeric"
+                enterkeyhint="next"
                 required />
         </div>
     </div>

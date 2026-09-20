@@ -70,7 +70,12 @@
 <html lang="{{ str_replace('_', '-', ($setting['currantLang'] ?? app()->getLocale())) }}" dir="{{ isset($setting['SITE_RTL']) && $setting['SITE_RTL'] == 'on'? 'rtl' : '' }}" id="html-dir-tag">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, minimal-ui" />
+    @if (env('MOBILE_APP_FEEL', true))
+        <meta name="theme-color" content="{{ isset($setting['color']) && $setting['color_flag'] == 'true' ? $setting['color'] : '#f8796c' }}">
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121212">
+        @vite(['resources/css/mobile-app-feel.css'])
+    @endif
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="WorkDo.io" />
     <meta name="base-url" content="{{ URL::to('/') }}">

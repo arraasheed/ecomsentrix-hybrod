@@ -69,7 +69,7 @@
                             <div class="md:mb-6 mb-4">
                                 <label for="phone" class="block mb-2 font-medium">{{ $themeSettings['register_phone'] ?? __('Phone Number') }} <span
                                         class="text-red-500">*</span></label>
-                                <input name="mobile" type="number" value="{{ old('mobile') }}" class="form-input"
+                                <input name="mobile" type="tel" inputmode="numeric" enterkeyhint="next" value="{{ old('mobile') }}" class="form-input"
                                     placeholder="1234567890" required="">
                                 <p class="text-sm text-gray-500 mt-1">{{ $themeSettings['register_phone_note'] ?? __('For order updates and delivery notifications') }}</p>
                             </div>

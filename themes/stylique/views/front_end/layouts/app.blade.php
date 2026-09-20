@@ -3,7 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  @if (env('MOBILE_APP_FEEL', true))
+    @vite(['resources/css/mobile-app-feel.css'])
+  @endif
   <meta name="author" content="{{ config('app.name') ?? Stylique }}">
   <meta name="base-url" content="{{ URL::to('/') }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
