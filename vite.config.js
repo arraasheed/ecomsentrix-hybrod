@@ -8,6 +8,8 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/css/store.css',
+                // CLAUDE-14-FIX: mobile app-feel polish (tap delay, dvh, safe-area)
+                'resources/css/mobile-app-feel.css',
 
                 // Admin bundle (P3): replaces 28 separate <link> tags in
                 // resources/views/layouts/app.blade.php. Four variants because
