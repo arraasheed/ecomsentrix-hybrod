@@ -128,3 +128,12 @@ the model with browser tools (Claude) does it.
 Work on your assigned task number and nothing else. Do not "also fix" things you
 notice — write them down in your report instead. Unrequested changes are how a
 four-day project becomes a three-week debugging session.
+
+## 8. Image Inspection / Vision for all models
+
+When any model (especially non-vision models like DeepSeek, Ling, MiniMax) needs to read, inspect, or analyze an image or screenshot, run:
+```bash
+node .agents/scripts/gemini-vision.cjs <path/to/image.png> [optional prompt]
+```
+The script transcribes all text, UI elements, errors, and layout details to stdout.
+
