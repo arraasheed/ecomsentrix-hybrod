@@ -361,7 +361,7 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | BULK-7  DataTable → mobile card view (CSS) | BULK মডেল | ✅ DONE | `7a64fd1` | ২টি নতুন ফাইল: `public/css/mobile-table.css` + `public/js/mobile-table.js` · শুধু `.ecom-data-table` স্কোপ, ≤767.98px, dark/RTL = theme CSS variable দিয়ে · checkbox (`:has()`), action, colspan/empty, hidden column handle · vanilla JS + body MutationObserver (rAF debounce), turbo-safe IIFE · রিপোর্ট → `.ai/reports/mobile-table.md` |
 | CLAUDE-13  Skeleton loader + Turbo preview | Gemini / Claude | ✅ DONE | `064b870` | Progress bar 150ms delay & custom gradient · Skeleton overlay debounced (150ms, 0 CLS, prefers-reduced-motion) · Instant tap :active scaling · Selective prefetch on bottom nav, main nav, pagination · fix-forward: prefetch filter, skeleton unstick, inline progress style, kill-switch [CLAUDE-13-FIX `96476ad`] + scroll `525b6a3` |
 | CLAUDE-14  Touch polish (tap delay, dvh, safe-area) | Claude | ✅ DONE | `48d60df` + vite-input fix `e35ed26` + color_flag fix `a78311b` | browser-verified by Muse Spark: storefront 200 + Turbo nav + prefetch policy + admin dashboard 200, 0 console errors |
-| CLAUDE-15  Vue island: cart drawer + variant | Claude | ⬜ PENDING | — | `api.php` ব্যবহার |
+| CLAUDE-15  Vue island: cart drawer + variant | Claude | 🟨 IN PROGRESS | `1e33cf5` (partial: CartDrawer.vue + island-registry.js + api-contract.md) | `api.php` ব্যবহার · পুরনো সেশনে context-overflow-এ থেমেছে, নতুন সেশনে resume চলছে |
 | CLAUDE-16  চূড়ান্ত টেস্ট + master-এ merge | Claude | ⬜ PENDING | — | |
 
 **অবস্থার প্রতীক:** ⬜ PENDING · 🟨 IN PROGRESS · ✅ DONE · ❌ BLOCKED · ⏭️ SKIPPED
