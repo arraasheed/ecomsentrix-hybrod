@@ -29,3 +29,9 @@ import './turbo-cleanup';
 
 // Skeleton loader & selective prefetch (CLAUDE-13)
 import './skeleton';
+
+// Vue 3 island registry (CLAUDE-15). Progressive-enhancement bridge: mounts
+// CartDrawer and VariantSelector onto [data-island] nodes, unmounts on
+// turbo:before-cache to prevent memory leaks, and no-ops when
+// window.__SPA_VUE_ISLANDS__ === false.
+import('./island-registry');

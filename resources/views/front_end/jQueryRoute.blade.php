@@ -11,10 +11,11 @@
         @endif
 
          <!-- Cart Overlay and Panel -->
-        <div id="cart-overlay" class="cart-overlay">
-            <div id="cart-panel" class="cart-panel">
-            </div>
-        </div>
+         <div data-island="cart-drawer" data-prop-slug="{{ $slug ?? '' }}" style="display:none"></div>
+         <div id="cart-overlay" class="cart-overlay">
+             <div id="cart-panel" class="cart-panel">
+             </div>
+         </div>
         @if ($themeSettings['header_status'] && $themeSettings['header_status'] == '1')
         <div id="mobile-menu" class="mobile-menu fixed inset-y-0 right-0 z-50 bg-white shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto">
             <div class="flex justify-between items-center p-4 border-b">

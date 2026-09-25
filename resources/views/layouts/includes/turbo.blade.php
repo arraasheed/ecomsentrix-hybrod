@@ -17,6 +17,7 @@
     ── KILL-SWITCHES ─────────────────────────────────────────────────────────
     TURBO_ENABLED=false        both layouts, master switch
     TURBO_ADMIN_ENABLED=false  admin only; the storefront keeps Turbo
+    SPA_VUE_ISLANDS=false      storefront only; disables Vue island components
     then: php artisan view:clear
 
     With a switch off, Turbo is never downloaded (the import in
@@ -44,9 +45,15 @@
     if (($entry ?? 'store') === 'admin') {
         $turboEnabled = $turboEnabled && (bool) env('TURBO_ADMIN_ENABLED', true);
     }
+
+    // Vue islands kill-switch (CLAUDE-15). When false, the island-registry.js
+    // becomes a no-op: no component chunk is downloaded, no mount happens, and
+    // the existing jQuery handlers (front-theme.js) take over as before.
+    $vueIslandsEnabled = ($entry ?? 'store') === 'store' && (bool) env('SPA_VUE_ISLANDS', true);
 @endphp
 <script>
     window.__TURBO_DISABLED__ = {{ $turboEnabled ? 'false' : 'true' }};
+    window.__SPA_VUE_ISLANDS__ = {{ $vueIslandsEnabled ? 'true' : 'false' }};
 
     /*
      * Queue stub. The Vite tag below emits <script type="module">, which is
