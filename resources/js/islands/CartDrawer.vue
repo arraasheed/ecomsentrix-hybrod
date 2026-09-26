@@ -21,6 +21,32 @@ const cartCount = ref(props.initialCount)
 const isLoadingCart = ref(false)
 const error = ref(null)
 
+// Bumped to force Vue to re-insert the teleported drawer content.
+// Background: jQuery's page-load get_cartlist() ajax is already in flight
+// when this island mounts (the no-op override only stops NEW calls). When
+// its response lands, `$('#cart-panel').html(response.html)` wipes the
+// teleported div. Vue never notices (no reactivity link to foreign DOM
+// writes), so without this the drawer would show stale server HTML forever.
+const teleportKey = ref(0)
+
+function ensureTeleport() {
+  const panel = document.getElementById('cart-panel')
+  if (panel && !panel.querySelector('[data-vue-drawer]')) {
+    teleportKey.value += 1
+  }
+}
+
+// Remove server-rendered (jQuery) children so the drawer never shows stale
+// markup next to (or instead of) the reactive Vue content. Safe because this
+// only runs when the island is mounted, i.e. the kill-switch is ON and jQuery
+// is stood down via the get_cartlist no-op.
+function claimPanel() {
+  const panel = document.getElementById('cart-panel')
+  if (!panel) return
+  panel.querySelectorAll(':scope > :not([data-vue-drawer])').forEach((n) => n.remove())
+  ensureTeleport()
+}
+
 const storeSlug = props.slug || (window.location.pathname.split('/').filter(Boolean)[0] ?? '')
 const endpoints = {
   list: `/${storeSlug}/cart-list-sidebar`,
@@ -65,6 +91,12 @@ function parseCartHtml(html) {
     const imgEl = root ? root.querySelector('img') : null
     // Variant name is in a <p class="text-sm text-gray-600"> sibling
     const variantPEl = root ? root.querySelector('p.text-sm.text-gray-600') : null
+    // Server-formatted prices (currency symbol, separators per store
+    // settings). Scraped so the island matches jQuery output pixel-for-pixel
+    // without re-implementing currency_format_with_sym client-side.
+    const priceScope = qtyRoot || root
+    const insEl = priceScope ? priceScope.querySelector('ins') : null
+    const delEl = priceScope ? priceScope.querySelector('del') : null
     items.push({
       cart_id: cartId,
       product_id: productId,
@@ -73,9 +105,29 @@ function parseCartHtml(html) {
       image: imgEl ? imgEl.src : '',
       qty,
       variant_name: variantPEl ? variantPEl.textContent.trim() : '',
+      price: insEl ? insEl.textContent.trim() : '',
+      original_price: delEl ? delEl.textContent.trim() : '',
     })
   })
   return items
+}
+
+// Server-formatted drawer totals, scraped from the same response HTML so
+// currency rendering matches the Blade output exactly. Falls back to the raw
+// numbers when the markup is absent.
+function parseTotals(html) {
+  const out = { sub_total: '', tax_price: '', total: '' }
+  if (!html) return out
+  const c = document.createElement('div')
+  c.innerHTML = html
+  const box = c.querySelector('#cart-panel .border-t, .border-t.p-4')
+  if (!box) return out
+  const bolds = box.querySelectorAll('span.font-bold')
+  if (bolds[0]) out.sub_total = bolds[0].textContent.trim()
+  if (bolds[1]) out.tax_price = bolds[1].textContent.trim()
+  const totalEl = box.querySelector('.text-primary-dark')
+  if (totalEl) out.total = totalEl.textContent.trim()
+  return out
 }
 
 async function fetchCart() {
@@ -94,21 +146,20 @@ async function fetchCart() {
       credentials: 'same-origin',
     })
     const d = await r.json()
-    console.log('[CartDrawer.fetchCart] response:', { status: d.status, cart_total: d.cart_total_product, htmlLength: d.html?.length || 0, sub_total: d.sub_total, final_price: d.final_price });
     if (d.status === 0 || d.status === 1) {
       cartCount.value = d.cart_total_product ?? 0
       if (d.status === 0) {
         cart.value = { empty: true, cart_total_product: 0 }
       } else {
         const items = parseCartHtml(d.html || '')
-        console.log('[CartDrawer.fetchCart] parsed items:', JSON.stringify(items.map(i => ({ cart_id: i.cart_id, product_id: i.product_id, name: i.name, qty: i.qty, variant_id: i.variant_id }))));
+        const totals = parseTotals(d.html || '')
         cart.value = {
           empty: false,
           cart_total_product: d.cart_total_product,
           product_list: items,
-          sub_total: d.sub_total || '',
-          tax_price: d.tax_price || '',
-          total: d.final_price || '',
+          sub_total: totals.sub_total || d.sub_total || '',
+          tax_price: totals.tax_price || d.tax_price || '',
+          total: totals.total || d.final_price || '',
         }
       }
     }
@@ -120,9 +171,9 @@ async function fetchCart() {
 }
 
 function openDrawer() {
-  console.log('[CartDrawer.openDrawer] called');
   isOpen.value = true
   document.body.style.overflow = 'hidden'
+  claimPanel()
   if (!cart.value) fetchCart()
 }
 
@@ -131,8 +182,11 @@ function closeDrawer() {
   document.body.style.overflow = ''
 }
 
+// Defined at setup scope so onUnmounted can remove the same references.
+function onKeydown(e) { if (e.key === 'Escape' && isOpen.value) closeDrawer() }
+function onOverlayClick(e) { if (e.target && e.target.id === 'cart-overlay') closeDrawer() }
+
 async function changeQty(item, type) {
-  console.log('[CartDrawer.changeQty] called', { cart_id: item?.cart_id, type, qty: item?.qty });
   if (!item) return
   const prevQty = item.qty
   if (type === 'increase') item.qty += 1
@@ -146,7 +200,12 @@ async function changeQty(item, type) {
     }
   }
   try {
-    const r = await fetch(endpoints.change, {
+    // Parity with the jQuery flow (front-theme.js): quantity changes go to
+    // change-cart, but removal goes to cart-remove. change-cart's guest path
+    // (Cart::cart_qty_cookie) does not handle quantity_type=remove, so using
+    // it here would update the UI while the server kept the item.
+    const isRemove = type === 'remove'
+    const r = await fetch(isRemove ? endpoints.remove : endpoints.change, {
       method: 'POST',
       headers: { 'X-CSRF-TOKEN': csrfToken(), Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
       body: buildBody({ cart_id: item.cart_id, quantity_type: type, product_id: item.product_id, variant_id: item.variant_id }),
@@ -160,18 +219,21 @@ async function changeQty(item, type) {
       if (cart.value && !cart.value.empty) fetchCart()
     } else {
       if (type === 'increase' || type === 'decrease') item.qty = prevQty
+      else if (type === 'remove') fetchCart() // roll back optimistic splice
       error.value = d.message || 'Could not update cart'
     }
   } catch (e) {
     if (type !== 'remove') item.qty = prevQty
+    else fetchCart() // roll back optimistic splice
     error.value = e.message || 'Network error'
   }
 }
 
 onMounted(() => {
-  // Override jQuery's get_cartlist to prevent it from replacing Vue-rendered
-  // content in #cart-panel. When the Vue island is active, the component
-  // manages the drawer DOM reactively.
+  // Override jQuery's get_cartlist to prevent NEW calls from replacing
+  // Vue-rendered content in #cart-panel. NOTE: an ajax call that is already
+  // in flight (page-load) still lands afterwards — ensureTeleport() below
+  // and in openDrawer() re-inserts our content if that happens.
   if (typeof window.get_cartlist === 'function') {
     window.get_cartlist = function () { /* no-op — Vue handles this */ }
   }
@@ -179,7 +241,6 @@ onMounted(() => {
   const toggle = document.getElementById('cart-toggle')
   if (toggle) {
     toggle.addEventListener('click', (e) => {
-      console.log('[CartDrawer] cart-toggle clicked, stopping propagation');
       e.preventDefault()
       // Stop propagation so jQuery's delegated .cart-header handler doesn't
       // call get_cartlist() and replace our teleported content.
@@ -192,15 +253,16 @@ onMounted(() => {
     const c = parseInt(badge.textContent)
     if (!isNaN(c)) cartCount.value = c
   }
-   const onKeydown = (e) => { if (e.key === 'Escape' && isOpen.value) closeDrawer() }
-   const onOverlayClick = (e) => { if (e.target && e.target.id === 'cart-overlay') closeDrawer() }
-   document.addEventListener('keydown', onKeydown)
-   document.addEventListener('click', onOverlayClick)
+  document.addEventListener('keydown', onKeydown)
+  document.addEventListener('click', onOverlayClick)
+  // Re-assert our teleported content in case the in-flight page-load
+  // get_cartlist() response landed after mount and wiped it (see above).
+  claimPanel()
 })
 
 onUnmounted(() => {
-   document.removeEventListener('keydown', onKeydown)
-   document.removeEventListener('click', onOverlayClick)
+  document.removeEventListener('keydown', onKeydown)
+  document.removeEventListener('click', onOverlayClick)
 })
 
 watch(isOpen, (val) => {
@@ -223,8 +285,8 @@ watch(cartCount, (val) => {
     the component on every open/close, losing reactive state). Instead, keep
     the teleport alive and switch content via a computed class.
   -->
-  <teleport to="#cart-panel">
-    <div :class="['flex', 'flex-col', 'h-full']" v-show="isOpen">
+  <teleport to="#cart-panel" :key="teleportKey">
+    <div data-vue-drawer="cart" :class="['flex', 'flex-col', 'h-full']" v-show="isOpen">
       <div class="flex justify-between items-center p-4 border-b">
         <h2 class="font-bold text-xl">Your Cart ({{ cart?.cart_total_product ?? 0 }})</h2>
         <button @click.stop="closeDrawer" class="text-2xl hover:text-primary" aria-label="Close cart">
@@ -274,7 +336,7 @@ watch(cartCount, (val) => {
                       <i class="fas fa-plus"></i>
                     </button>
                   </div>
-                  <span class="font-bold text-primary-dark">&mdash;</span>
+                  <span class="font-bold text-primary-dark">{{ item.price || '—' }}</span>
                 </div>
               </div>
             </div>

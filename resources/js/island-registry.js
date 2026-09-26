@@ -70,6 +70,15 @@ const instances = new Map();
 // only mounted once.
 const mountedElements = new WeakSet();
 
+// Serialises concurrent mount() sweeps. mount() is called from both
+// DOMContentLoaded and turbo:load on the first page, and twice per Turbo
+// navigation (snapshot preview, then the real response). Without this chain,
+// two sweeps interleave inside the awaited dynamic import: both see an
+// unmounted element, both mount an app onto it, and the loser leaves a dead
+// __vue_app__ behind while the registry map points at the other instance.
+// Every sweep therefore waits for the previous one to finish.
+let mountChain = Promise.resolve();
+
 /**
  * Mount every [data-island] element in `container` (defaults to document.body)
  * that has not already been mounted.
@@ -79,12 +88,26 @@ const mountedElements = new WeakSet();
 function mount(container = document.body) {
     if (!enabled) return;
 
+    // Chain onto the previous sweep so concurrent triggers (DOMContentLoaded
+    // + turbo:load, preview + real response) never interleave.
+    mountChain = mountChain.then(() => mountNow(container)).catch((error) => {
+        console.error('[island-registry] mount sweep failed:', error);
+    });
+    return mountChain;
+}
+
+/**
+ * One mount sweep. Runs to completion before the next sweep starts.
+ */
+async function mountNow(container = document.body) {
+    if (!enabled) return;
+
     const islands = container.querySelectorAll('[data-island]');
-    islands.forEach((el) => {
+    for (const el of islands) {
         // Skip elements already mounted — Turbo renders twice per navigation
         // (cached preview then fresh response); the element survives the
         // preview and would be double-mounted without this guard.
-        if (mountedElements.has(el)) return;
+        if (mountedElements.has(el)) continue;
 
         const name = el.getAttribute('data-island');
         const factory = components[name];
@@ -93,11 +116,11 @@ function mount(container = document.body) {
             // Graceful: no component registered for this name. The Blade
             // fallback markup is already visible, so warn and continue.
             console.warn(`[island-registry] no Vue component registered for data-island="${name}"`);
-            return;
+            continue;
         }
 
-        mountComponent(el, name, factory);
-    });
+        await mountComponent(el, name, factory);
+    }
 }
 
 /**
@@ -117,6 +140,19 @@ async function mountComponent(el, name, factory) {
     try {
         const mod = await factory();
         const Component = mod.default || mod;
+
+        // Re-check after the awaited import: a second sweep may have mounted
+        // this element while we were waiting (the chain above normally
+        // prevents this; this is the belt-and-braces check).
+        if (mountedElements.has(el) && instances.has(instanceId)) {
+            return;
+        }
+        // A previous instance for this element that is no longer live
+        // (e.g. unmounted outside the registry) must be dropped first so a
+        // stale map entry can never shadow the new mount.
+        if (instances.has(instanceId)) {
+            unmountElement(el, instanceId);
+        }
 
         // Pass props from data-* attributes on the element. The Blade layer
         // injects the initial server-rendered state here (cart count, product
@@ -225,6 +261,12 @@ document.addEventListener('turbo:load', () => mount());
 document.addEventListener('turbo:before-cache', unmountAll);
 window.addEventListener('pagehide', unmountAll);
 document.addEventListener('DOMContentLoaded', () => mount());
+
+// Immediate sweep: this module is itself dynamically imported, so it can
+// finish loading AFTER DOMContentLoaded (and the first turbo:load) already
+// fired. Without this call the islands would silently never mount on such
+// loads — a race that looks like "Vue randomly doesn't work".
+mount();
 
 // Expose for debugging / Playwright introspection
 window.__islandRegistry = {
