@@ -1,13 +1,28 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
     plugins: [
+        vue({
+            // Only process files inside resources/js/islands; everything else
+            // stays as plain Vite (no Vue compilation overhead).
+            include: [/\.vue$/],
+            // Use the template compiler only where .vue SFCs are loaded —
+            // no runtime-template compiler shipped to production.
+            template: {
+                compilerOptions: {
+                    isCustomElement: () => false,
+                },
+            },
+        }),
         laravel({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/css/store.css',
+                // CLAUDE-14-FIX: mobile app-feel polish (tap delay, dvh, safe-area)
+                'resources/css/mobile-app-feel.css',
 
                 // Admin bundle (P3): replaces 28 separate <link> tags in
                 // resources/views/layouts/app.blade.php. Four variants because
@@ -59,6 +74,12 @@ export default defineConfig({
 
                     // Shared by both entries as well (CLAUDE-6).
                     if (id.includes('turbo-script-order')) return 'turbo-script-order';
+
+                    // Vue 3 vendor chunk for islands (CLAUDE-15). Lazy-imported
+                    // by island-registry only when a [data-island] element exists,
+                    // so this chunk is downloaded only on cart / product pages.
+                    if (id.includes('vue/dist/vue.runtime-dom.esm-bundler.js') || id.includes('vue/dist/vue.runtime.esm-bundler.js')) return 'vue-vendor';
+                    if (id.includes('/vue/dist/')) return 'vue-vendor';
                 },
             },
         },

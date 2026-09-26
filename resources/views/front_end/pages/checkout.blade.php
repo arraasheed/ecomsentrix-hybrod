@@ -82,21 +82,23 @@
                                                 'class' => 'form-input',
                                                 'placeholder' => 'shop@company.com',
                                                 'id' => 'email',
-                                                'required' => true
+                                                'required' => true,
+                                                'enterkeyhint' => 'next'
                                             ]) !!}
                                         </div>
 
-                                        <!-- Phone Number -->
-                                        <div>
-                                            <label for="phone" class="block mb-2 font-medium md:text-base text-sm">{{ __('Phone Number') }} <span
-                                                class="text-red-500">*</span></label>
-                                            {!! Form::number('billing_info[billing_user_telephone]', !empty(Auth::guard('customers')->user()) ? Auth::guard('customers')->user()->mobile : '', [
-                                                'class' => 'form-input',
-                                                'placeholder' => '1234567890',
-                                                'id' => 'phone',
-                                                'required' => true
-                                            ]) !!}
-                                        </div>
+                                            <!-- Phone Number -->
+                                            <div>
+                                                <label for="phone" class="block mb-2 font-medium md:text-base text-sm">{{ __('Phone Number') }} <span
+                                                    class="text-red-500">*</span></label>
+                                                <input type="tel" inputmode="numeric" enterkeyhint="next"
+                                                    name="billing_info[billing_user_telephone]"
+                                                    value="{{ !empty(Auth::guard('customers')->user()) ? Auth::guard('customers')->user()->mobile : '' }}"
+                                                    class="form-input"
+                                                    placeholder="1234567890"
+                                                    id="phone"
+                                                    required>
+                                            </div>
                                     </div>
 
                                     @if (\App\Models\Utility::CustomerAuthCheck($store->slug) != true)

@@ -369,3 +369,68 @@ LEGACY_ASSET_TIME_BUSTER=true   # ?v=time() ফিরে আসে
 3. `orange-600` (order-detail, refund_order-এ ব্যবহৃত) এখন Tailwind-এর আসল
    কমলা রঙে render হয়। Play CDN-এ পুরো orange scale একটি shade দিয়ে
    প্রতিস্থাপিত ছিল না — শুধু `500` override ছিল, তাই এটি আগেও একই ছিল।
+
+---
+
+# Day 4 Final — Turbo + PWA + Vue islands একসাথে (CLAUDE-16)
+
+**তারিখ:** Day 4 শেষ · **পরিমাপকারী:** Muse Spark (Playwright MCP)
+**Viewport:** 412 × 915 (mobile) + 1440 × 900 (desktop spot) · **runs:** 1
+(single-run indicative — median-of-3 নয়)
+
+⚠️ **পদ্ধতির সৎ সীমা:** এই সেশনে Lighthouse চালানো যায়নি, আর cold-cache
+(`Network.setCacheDisabled`) পরিমাপের উপায় ছিল না। নিচের সংখ্যা **warm**
+(একই browser context-এ অনেক পেজ ঘোরার পর) — Day 1 Final-এর cold সংখ্যার
+সাথে সরাসরি তুলনীয় নয়। Warm-এর সাথে warm তুলনা করা হয়েছে।
+
+## Storefront — `/stylique/home` (mobile, warm)
+
+| মেট্রিক | Day 1 Final (warm) | Day 4 Final (warm) | মন্তব্য |
+|---|---|---|---|
+| TTFB | 778 ms (cold-era) | **775 ms** | server একই, APP_DEBUG=true |
+| DOMContentLoaded | — | **901 ms** | |
+| load | — | **969 ms** | |
+| Turbo back-nav (cached) | 10–17 ms (Day 2) | **~107 ms** (full check সহ) | লক্ষ্য <300 ms ✅ |
+| console error (home→list→detail→cart→checkout→login→account) | — | **0** | ৭ পেজ |
+| Vue island chunk (gzip) | — | cart 3.2 KB + variant 1.2 KB + vendor 25.8 KB | kill-switch off-এ ডাউনলোডই হয় না |
+
+## Desktop spot (1440 × 900, warm)
+
+| মেট্রিক | মান |
+|---|---|
+| transfer (cache-hit বাদে) | 293 KB (JS 257 KB, CSS 25 KB) |
+| DOMContentLoaded / load | 1206 / 1339 ms |
+| console error | 0 |
+
+## Regression সারসংক্ষেপ (CLAUDE-16, browser-verified)
+
+- Storefront: home, product-list, product-detail, cart, checkout, login→account,
+  wishlist, my-account — সব 0 console error। customer login (session) পাস।
+- Admin: superadmin login→dashboard→stores→plan-coupon (DataTable init ✅),
+  store-admin login→dashboard→product (3 rows ✅)→order (2 rows ✅) — 0 error।
+- Cart drawer (Vue): add/qty/remove/badge/reload — UI+server দুই দিকেই পাস।
+- Kill-switch: `TURBO_ENABLED=false` (Turbo বন্ধ, islands চলে, 0 error) ✅,
+  `SPA_VUE_ISLANDS=false` (পুরনো jQuery drawer অক্ষত) ✅ — দুটোই দুই দিকে।
+  `PWA_ENABLED=false` unregister পথ code-verified (CLAUDE-12-এ live-tested)।
+  `LEGACY_*` Day-1-verified, তারপর থেকে সংশ্লিষ্ট কোড ছোঁয়া হয়নি।
+- **Live bug ধরা পড়েছে ও ঠিক করা হয়েছে:** Turbo form-submit handler
+  `formSubmission.form` পড়ত (Turbo 8-এ নাম `formElement`) → customer login-এ
+  2 TypeError। defensive `submittedForm()` helper বসানো, login পুনঃযাচাই 0 error।
+- **জানা environmental noise (আমাদের কাজ নয়):** `envato.workdo.io/verify.js`
+  লাইসেন্স-ping sandbox-এ `ERR_FAILED` দেয় (ইন্টারনেট রুট নেই); baseline-এও
+  একই হবে — core licensing কোড, ছোঁয়া হয়নি।
+
+## লক্ষ্য-টেবিল (CLAUDE-16 ধাপ ৪, সৎ উত্তর)
+
+| মেট্রিক | লক্ষ্য | ফলাফল | পাস? |
+|---|---|---|---|
+| Turbo navigation (cached) | <300 ms | ~107 ms | ✅ |
+| console error (core flow) | 0 | 0 (license-ping বাদে) | ✅ |
+| PWA installable | ✅ | ✅ (manifest + SW + offline.html, Day 3) | ✅ |
+| প্রথম লোড JS <400 KB | <400 KB | ~583 KB cold-era (Day 1) + ~30 KB island | ❌ পুরোপুরি নয় — TTFB-ই বড় বাধা |
+| Lighthouse mobile ≥85 | ≥85 | মাপা হয়নি (tool নেই) | ⚠️ অজানা |
+| 90–95% SPA feel | — | no-reload nav + 107 ms back + reactive islands | ✅ অনুভূতিতে হ্যাঁ |
+
+**সৎ সারকথা:** TTFB (~775 ms, `APP_DEBUG=true` + debugbar) একাই সব স্কোর টেনে
+ধরে — production-এ (`APP_DEBUG=false` + OPcache + Redis) এটি নামবে, তখন
+Lighthouse অর্থবহ হবে। Performance কাজ blade-স্তরে শেষ; বাকিটা server config।

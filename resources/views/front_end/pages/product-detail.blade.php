@@ -124,8 +124,8 @@
                         </div>
 
                         <div class="md:mb-6 mb-4">
-                            <form class="variant_form">
-                                <div class="mb-5 quantity-wrp quantity-select flex gap-3 items-center">
+                            <form class="variant_form" data-island="variant-selector" data-prop-slug="{{ $slug }}" data-prop-product-id="{{ $product->id }}">
+                                <input type="hidden" name="variant_id" value="{{ $product->default_variant_id ?? 0 }}" />                                <div class="mb-5 quantity-wrp quantity-select flex gap-3 items-center">
                                     <h3 class="font-semibold">{{ __('quantity:') }}</h3>
                                     <div class="flex items-center">
                                         <button type="button"

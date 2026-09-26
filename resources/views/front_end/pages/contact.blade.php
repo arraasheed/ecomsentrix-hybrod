@@ -120,7 +120,7 @@
                   <div>
                     <label for="phone" class="block mb-2 font-medium md:text-base text-sm">{{ __('Phone Number')}}</label>
                     <input type="tel" id="phone" placeholder="Enter phone number" name="contact"
-                      class="w-full rounded-md border border-gray-300 focus:ring-primary focus:border-primary px-3 py-2 outline-none ltr:text-left rtl:text-right" />
+                      class="w-full rounded-md border border-gray-300 focus:ring-primary focus:border-primary px-3 py-2 outline-none ltr:text-left rtl:text-right" enterkeyhint="next" />
                   </div>
                 </div>
 

@@ -142,8 +142,8 @@ $theme_url = App\Http\Controllers\HomeController::getThemeUrl($store);
                             <i class="ti ti-chevron-down drp-arrow nocolor"></i>
                         </a>
                         <div class="dropdown-menu dash-h-dropdown dropdown-menu-end px-2">
-                            <input type="text" id="searchInput" class="form-control mb-2"
-                                placeholder="{{ __('Search...') }}">
+                            <input type="search" id="searchInput" class="form-control mb-2"
+                                placeholder="{{ __('Search...') }}" inputmode="search" enterkeyhint="search"
                             <div id="storeList" style="max-height: 200px; overflow-y: auto;">
                                 @if (auth()->user()->type == 'admin')
                                 @foreach ($stores as $store)

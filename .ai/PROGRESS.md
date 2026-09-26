@@ -356,12 +356,12 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 
 | টাস্ক | মডেল | অবস্থা | কমিট | নোট |
 |---|---|---|---|---|
-| GEMINI-4   মোবাইল UX অডিট (স্ক্রিনশট বিশ্লেষণ) | Gemini | ✅ DONE | `49e7209` | ১৫টি সমস্যা চিহ্নিত (৫ critical, ৬ medium, ৪ minor) · ১৯টি ৬+ কলামের টেবিল · রিপোর্ট → `.ai/reports/mobile-audit.md` |
-| BULK-6  Mobile bottom nav (storefront) | BULK মডেল | ⬜ PENDING | — | |
-| BULK-7  DataTable → mobile card view (CSS) | BULK মডেল | ⬜ PENDING | — | ৭০ table |
-| CLAUDE-13  Skeleton loader + Turbo preview | Claude | ⬜ PENDING | — | |
-| CLAUDE-14  Touch polish (tap delay, dvh, safe-area) | Claude | ⬜ PENDING | — | |
-| CLAUDE-15  Vue island: cart drawer + variant | Claude | ⬜ PENDING | — | `api.php` ব্যবহার |
+| GEMINI-4   মোবাইল UX অডিট (স্ক্রিনশট বিশ্লেষণ) | Gemini | ✅ DONE | `703deee` | ১৫টি সমস্যা চিহ্নিত (৫ critical, ৬ medium, ৪ minor) · ১৯টি ৬+ কলামের টেবিল · রিপোর্ট → `.ai/reports/mobile-audit.md` |
+| BULK-6  Mobile bottom nav (storefront) | BULK মডেল | ✅ DONE | `b622ee0` | ১টি নতুন ফাইল: `themes/stylique/views/front_end/partison/mobile-bottom-nav.blade.php` · route নাম customer.php থেকে যাচাইকৃত (`landing_page`/`collections`/`page.cart`/`wishlist`/`my-account.index`/`customer.login`) · `data-turbo-permanent` + turbo:load active/badge sync · vanilla JS · storefront layout-এ অন্তর্ভুক্ত · রিপোর্ট → `.ai/reports/mobile-nav.md` |
+| BULK-7  DataTable → mobile card view (CSS) | BULK মডেল | ✅ DONE | `7a64fd1` | ২টি নতুন ফাইল: `public/css/mobile-table.css` + `public/js/mobile-table.js` · শুধু `.ecom-data-table` স্কোপ, ≤767.98px, dark/RTL = theme CSS variable দিয়ে · checkbox (`:has()`), action, colspan/empty, hidden column handle · vanilla JS + body MutationObserver (rAF debounce), turbo-safe IIFE · রিপোর্ট → `.ai/reports/mobile-table.md` |
+| CLAUDE-13  Skeleton loader + Turbo preview | Gemini / Claude | ✅ DONE | `064b870` | Progress bar 150ms delay & custom gradient · Skeleton overlay debounced (150ms, 0 CLS, prefers-reduced-motion) · Instant tap :active scaling · Selective prefetch on bottom nav, main nav, pagination · fix-forward: prefetch filter, skeleton unstick, inline progress style, kill-switch [CLAUDE-13-FIX `96476ad`] + scroll `525b6a3` |
+| CLAUDE-14  Touch polish (tap delay, dvh, safe-area) | Claude | ✅ DONE | `48d60df` + vite-input fix `e35ed26` + color_flag fix `a78311b` | browser-verified by Muse Spark: storefront 200 + Turbo nav + prefetch policy + admin dashboard 200, 0 console errors |
+| CLAUDE-15  Vue island: cart drawer + variant | Claude + Muse Spark | ✅ DONE | feat commit (this task); checkpoints `1e33cf5` `e01910d` `1004506` | session-auth endpoints (`customer.php`), NOT api.php — Sanctum token would need new auth surface · 5 bugs fixed in finish pass (unmount scope, remove endpoint, teleport-wipe race, mount race, currency parity) · 12-point matrix: 8 PASS, 4 PARTIAL (4/5 variant fixtures নেই, 9 heap-snapshot নয়, 11 offline live নয়) · 0 console errors · kill-switch `SPA_VUE_ISLANDS` দুই দিকে পরীক্ষিত · রিপোর্ট → `.ai/reports/api-contract.md` + `.ai/reports/claude15-final-test.md` |
 | CLAUDE-16  চূড়ান্ত টেস্ট + master-এ merge | Claude | ⬜ PENDING | — | |
 
 **অবস্থার প্রতীক:** ⬜ PENDING · 🟨 IN PROGRESS · ✅ DONE · ❌ BLOCKED · ⏭️ SKIPPED

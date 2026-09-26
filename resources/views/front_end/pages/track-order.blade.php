@@ -33,7 +33,7 @@
                             <label for="order-number" class="block mb-2 font-medium md:text-base text-sm">{{ $themeSettings['track_form_number'] ?? '' }} <span
                                     class="text-red-500">*</span></label>
                             <input type="text" name="order_number" id="order-number" placeholder="e.g., FM-12345678" class="form-input"
-                                required />
+                                inputmode="numeric" enterkeyhint="next" required />
                             <p class="text-sm text-gray-500 mt-1">{{ $themeSettings['track_form_number_note'] ?? '' }}</p>
                         </div>
 
@@ -41,7 +41,7 @@
                             <label for="email" class="block mb-2 font-medium md:text-base text-sm">{{ $themeSettings['track_form_email'] ?? '' }} <span
                                     class="text-red-500">*</span></label>
                             <input type="email" name="email" id="email" placeholder="The email address used for the order"
-                                class="form-input" required />
+                                class="form-input" enterkeyhint="go" required />
                         </div>
 
                         <button type="submit" class="w-full btn-primary">

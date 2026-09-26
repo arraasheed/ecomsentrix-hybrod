@@ -39,7 +39,7 @@
             <div class="form-group mb-3">
                 <label class="form-label">{{ __('Email') }}</label>
                 <input id="email" class="form-control" type="email" name="email" :value="old('email')" placeholder="{{ __('Enter Email') }}" required
-                    autofocus />
+                    autofocus enterkeyhint="next" />
             </div>
             <div class="form-group mb-3">
                 <div class="d-flex align-items-center justify-content-between mb-2">

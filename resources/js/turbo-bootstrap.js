@@ -405,8 +405,20 @@ function scheduleFirstFlush() {
 // preserves across navigation. The layout's alerts.blade.php is executed by Turbo's
 // page swap and shows the toastr messages automatically.
 
+// The submitted form element. Turbo 8 exposes it as
+// formSubmission.formElement (older drafts used .form); read defensively so
+// a missing property degrades to "no button feedback" instead of a TypeError
+// on every Turbo form submit (seen live on customer login).
+function submittedForm(event) {
+    const submission = event.detail && event.detail.formSubmission;
+    if (!submission) return null;
+    const form = submission.formElement || submission.form;
+    return form && typeof form.querySelector === 'function' ? form : null;
+}
+
 document.addEventListener('turbo:submit-start', (event) => {
-    const form = event.detail.formSubmission.form;
+    const form = submittedForm(event);
+    if (!form) return;
     const submitButton = form.querySelector('button[type="submit"]');
     
     if (submitButton) {
@@ -427,7 +439,8 @@ document.addEventListener('turbo:submit-start', (event) => {
 });
 
 document.addEventListener('turbo:submit-end', (event) => {
-    const form = event.detail.formSubmission.form;
+    const form = submittedForm(event);
+    if (!form) return;
     const submitButton = form.querySelector('button[type="submit"]');
     
     if (submitButton) {
@@ -449,8 +462,9 @@ document.addEventListener('turbo:submit-end', (event) => {
     }
     
     // Check for network errors or fetch failures
-    if (event.detail.formSubmission.error) {
-        console.error('[turbo] form submission error:', event.detail.formSubmission.error);
+    const submission = event.detail && event.detail.formSubmission;
+    if (submission && submission.error) {
+        console.error('[turbo] form submission error:', submission.error);
         // Toast or alert can be shown here if needed
     }
 });
@@ -487,7 +501,7 @@ function installProgressBarStyle() {
 
     const style = document.createElement('style');
     style.id = 'turbo-progress-style';
-    style.textContent = '.turbo-progress-bar{height:3px;background:var(--turbo-progress-color,#f8796c)}';
+    style.textContent = '.turbo-progress-bar{height:3px !important;background:linear-gradient(90deg,#f8796c 0%,#ff5252 50%,#e02424 100%) !important;box-shadow:0 0 8px rgba(248,121,108,0.6) !important;z-index:999999 !important}';
     document.head.appendChild(style);
 }
 
@@ -505,7 +519,7 @@ const ready = disabled
               // (APP_DEBUG=true + file cache; CLAUDE-9 fixes that). At 500 ms the
               // bar appeared right as the page swapped, which reads as a flicker
               // rather than as feedback.
-              Turbo.config.drive.progressBarDelay = 250;
+              Turbo.config.drive.progressBarDelay = 150;
               installProgressBarStyle();
               trace('Turbo Drive started, drive =', Turbo.session.drive);
               return Turbo;

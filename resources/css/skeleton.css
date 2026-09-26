@@ -1,0 +1,146 @@
+/* ==========================================================================
+   Turbo Progress Bar, Skeleton Loader & Instant Tap Feedback (CLAUDE-13)
+   ========================================================================== */
+
+/* ── 1. Turbo Progress Bar Customization ───────────────────────────────── */
+.turbo-progress-bar {
+    height: 3px !important;
+    background: linear-gradient(90deg, #f8796c 0%, #ff5252 50%, #e02424 100%) !important;
+    box-shadow: 0 0 8px rgba(248, 121, 108, 0.6) !important;
+    z-index: 999999 !important;
+}
+
+/* ── 2. Skeleton Loader Overlay ────────────────────────────────────────── */
+.turbo-skeleton-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    z-index: 99998;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.dark .turbo-skeleton-overlay,
+[data-theme="dark"] .turbo-skeleton-overlay {
+    background: rgba(18, 18, 18, 0.82);
+}
+
+.turbo-skeleton-overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Skeleton Structure Elements */
+.turbo-skeleton-top {
+    height: 60px;
+    width: 100%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e2e2e2 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: turbo-shimmer 1.4s ease-in-out infinite;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark .turbo-skeleton-top,
+[data-theme="dark"] .turbo-skeleton-top {
+    background: linear-gradient(90deg, #222222 25%, #333333 50%, #222222 75%);
+    background-size: 200% 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.turbo-skeleton-content {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.turbo-skeleton-banner {
+    height: 160px;
+    width: 100%;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e2e2e2 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: turbo-shimmer 1.4s ease-in-out infinite;
+}
+
+.dark .turbo-skeleton-banner,
+[data-theme="dark"] .turbo-skeleton-banner {
+    background: linear-gradient(90deg, #222222 25%, #333333 50%, #222222 75%);
+    background-size: 200% 100%;
+}
+
+.turbo-skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+@media (min-width: 768px) {
+    .turbo-skeleton-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+}
+
+.turbo-skeleton-card {
+    height: 180px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e2e2e2 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: turbo-shimmer 1.4s ease-in-out infinite;
+}
+
+.dark .turbo-skeleton-card,
+[data-theme="dark"] .turbo-skeleton-card {
+    background: linear-gradient(90deg, #222222 25%, #333333 50%, #222222 75%);
+    background-size: 200% 100%;
+}
+
+@keyframes turbo-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ── 3. Accessibility: prefers-reduced-motion ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .turbo-skeleton-top,
+    .turbo-skeleton-banner,
+    .turbo-skeleton-card {
+        animation: none !important;
+        background: #e6e6e6 !important;
+    }
+    .dark .turbo-skeleton-top,
+    .dark .turbo-skeleton-banner,
+    .dark .turbo-skeleton-card,
+    [data-theme="dark"] .turbo-skeleton-top,
+    [data-theme="dark"] .turbo-skeleton-banner,
+    [data-theme="dark"] .turbo-skeleton-card {
+        background: #262626 !important;
+    }
+    .turbo-skeleton-overlay {
+        transition: none !important;
+    }
+}
+
+/* ── 4. Instant Touch & Tap Feedback ───────────────────────────────────── */
+a:active,
+button:active,
+.btn:active,
+.mnav-item:active,
+[role="button"]:active {
+    transform: scale(0.97);
+    opacity: 0.85;
+    transition: transform 0.08s ease-out, opacity 0.08s ease-out;
+}

@@ -9,7 +9,7 @@
     </div>
 
     <div class="relative mb-6">
-        <input type="text" id="search-input" placeholder="What are you looking for?" class="w-full form-input pe-10" />
+        <input type="search" id="search-input" placeholder="What are you looking for?" class="w-full form-input pe-10" inputmode="search" enterkeyhint="search" />
         <button type="button" class="absolute ltr:right-4 rtl:left-4  top-3 flex">
         <i class="fas fa-search text-gray-400"></i>
         </button>
