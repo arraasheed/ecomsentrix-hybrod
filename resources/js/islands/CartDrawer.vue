@@ -192,14 +192,15 @@ onMounted(() => {
     const c = parseInt(badge.textContent)
     if (!isNaN(c)) cartCount.value = c
   }
-  const onKeydown = (e) => { if (e.key === 'Escape' && isOpen.value) closeDrawer() }
-  const onOverlayClick = (e) => { if (e.target && e.target.id === 'cart-overlay') closeDrawer() }
-  document.addEventListener('keydown', onKeydown)
-  document.addEventListener('click', onOverlayClick)
-  onUnmounted(() => {
-    document.removeEventListener('keydown', onKeydown)
-    document.removeEventListener('click', onOverlayClick)
-  })
+   const onKeydown = (e) => { if (e.key === 'Escape' && isOpen.value) closeDrawer() }
+   const onOverlayClick = (e) => { if (e.target && e.target.id === 'cart-overlay') closeDrawer() }
+   document.addEventListener('keydown', onKeydown)
+   document.addEventListener('click', onOverlayClick)
+})
+
+onUnmounted(() => {
+   document.removeEventListener('keydown', onKeydown)
+   document.removeEventListener('click', onOverlayClick)
 })
 
 watch(isOpen, (val) => {
@@ -223,7 +224,7 @@ watch(cartCount, (val) => {
     the teleport alive and switch content via a computed class.
   -->
   <teleport to="#cart-panel">
-    <div :class="['flex', 'flex-col', 'h-full']" v-show="isOpen" style="display: none;">
+    <div :class="['flex', 'flex-col', 'h-full']" v-show="isOpen">
       <div class="flex justify-between items-center p-4 border-b">
         <h2 class="font-bold text-xl">Your Cart ({{ cart?.cart_total_product ?? 0 }})</h2>
         <button @click.stop="closeDrawer" class="text-2xl hover:text-primary" aria-label="Close cart">
