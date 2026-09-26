@@ -175,9 +175,8 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 
 ## 📊 সামগ্রিক অবস্থা
 
-**বর্তমান পর্যায়:** ✅ **Day 3 সম্পূর্ণ (merged to `master`, tag `day3-complete`) — Day 4 প্রস্তুত**
-**সর্বশেষ আপডেট:** Day 3 merged into `master`, tag `day3-complete` created. Cache & junk clean verified.
-**সক্রিয় branch:** `master`
+**বর্তমান পর্যায়:** ✅ **সম্পূর্ণ — v1.0-spa-pwa (merged to `master`, tags `day4-complete` + `v1.0-spa-pwa`)**
+**সর্বশেষ আপডেট:** CLAUDE-16 done by Muse Spark: regression (storefront+admin, 0 console errors), kill-switch spot checks, Day 4 Final benchmark, merge `3b82fbb`, HANDOVER.md লেখা। Live bug পাওয়া ও ঠিক করা হয়েছে: Turbo submit handler `formSubmission.form` → defensive `submittedForm()` (customer login-এ 2 TypeError ছিল)।
 
 **Day 1 ক্রম:** ~~GEMINI-1~~ → ~~GEMINI-2~~ → ~~CLAUDE-1~~ → ~~CLAUDE-2~~ → ~~BULK-1~~ → ~~CLAUDE-3~~ → ~~CLAUDE-4~~ ✅ **শেষ**
 
@@ -362,7 +361,7 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | CLAUDE-13  Skeleton loader + Turbo preview | Gemini / Claude | ✅ DONE | `064b870` | Progress bar 150ms delay & custom gradient · Skeleton overlay debounced (150ms, 0 CLS, prefers-reduced-motion) · Instant tap :active scaling · Selective prefetch on bottom nav, main nav, pagination · fix-forward: prefetch filter, skeleton unstick, inline progress style, kill-switch [CLAUDE-13-FIX `96476ad`] + scroll `525b6a3` |
 | CLAUDE-14  Touch polish (tap delay, dvh, safe-area) | Claude | ✅ DONE | `48d60df` + vite-input fix `e35ed26` + color_flag fix `a78311b` | browser-verified by Muse Spark: storefront 200 + Turbo nav + prefetch policy + admin dashboard 200, 0 console errors |
 | CLAUDE-15  Vue island: cart drawer + variant | Claude + Muse Spark | ✅ DONE | feat commit (this task); checkpoints `1e33cf5` `e01910d` `1004506` | session-auth endpoints (`customer.php`), NOT api.php — Sanctum token would need new auth surface · 5 bugs fixed in finish pass (unmount scope, remove endpoint, teleport-wipe race, mount race, currency parity) · 12-point matrix: 8 PASS, 4 PARTIAL (4/5 variant fixtures নেই, 9 heap-snapshot নয়, 11 offline live নয়) · 0 console errors · kill-switch `SPA_VUE_ISLANDS` দুই দিকে পরীক্ষিত · রিপোর্ট → `.ai/reports/api-contract.md` + `.ai/reports/claude15-final-test.md` |
-| CLAUDE-16  চূড়ান্ত টেস্ট + master-এ merge | Claude | ⬜ PENDING | — | |
+| CLAUDE-16  চূড়ান্ত টেস্ট + master-এ merge | Muse Spark | ✅ DONE | merge `3b82fbb` · tags `day4-complete` + `v1.0-spa-pwa` | regression: 7 storefront + 5 admin পেজ, 0 console error · kill-switch TURBO/ISLANDS দুই দিকে ✅ · Day 4 Final benchmark · HANDOVER.md · রিপোর্ট → `.ai/reports/benchmark.md` ("Day 4 Final") |
 
 **অবস্থার প্রতীক:** ⬜ PENDING · 🟨 IN PROGRESS · ✅ DONE · ❌ BLOCKED · ⏭️ SKIPPED
 
