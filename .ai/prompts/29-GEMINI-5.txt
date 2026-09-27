@@ -1,0 +1,96 @@
+################################################################
+#  ফাইল: 29-GEMINI-5.txt
+#  টাস্ক: GEMINI-5
+#  প্রম্পট ৫ - Pixel Block CAPI spec (Phase-2, SPEC ONLY — কোড নয়)
+#
+#  এই ফাইলের পুরোটা কপি করে মডেলকে দিন (Ctrl+A → Ctrl+C)।
+#  ভেতরে ২টি ধাপ আছে — সবগুলো একসাথে পেস্ট করবেন।
+################################################################
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ধাপ ১ / ২ — আগে নিজের অবস্থান বুঝে নাও
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+তুমি C:\laragon\www\ecommercego প্রজেক্টে কাজ করছ।
+ধরে নাও তোমার কোনো পূর্ব স্মৃতি নেই। কাজ শুরুর আগে এই ৪টি ধাপ করো:
+
+  ১. পড়ো:  .ai/PROJECT_CONTEXT.md
+  ২. পড়ো:  .ai/PROGRESS.md
+  ৩. চালাও: git log --oneline -20
+  ৪. চালাও: git status --short
+
+নিচের টাস্কটি PROGRESS.md-এ কোন অবস্থায় আছে দেখো:
+
+  ⬜ PENDING      → নতুন করে শুরু করো
+  🟨 IN PROGRESS  → আগের সেশনে অসম্পূর্ণ রেখে থেমেছিলে। সেই টাস্কের
+                    .ai/reports/ ফাইলটি পড়ো, কোন ফাইল পর্যন্ত শেষ হয়েছে
+                    দেখো, তার পরের ফাইল থেকে শুরু করো।
+                    ⛔ শেষ হওয়া ফাইল আবার করবে না — দুইবার পরিবর্তন
+                       করলে কোড ভেঙে যাবে।
+  ✅ DONE         → এই টাস্ক শেষ। ব্যবহারকারীকে জানাও, নতুন কিছু করবে না।
+
+git log আর PROGRESS.md না মিললে git-কে সত্য ধরবে। কমিট মিথ্যা বলে না।
+
+⛔ git সম্পর্কে দুইটি কঠোর নিয়ম:
+
+  • `git push` কখনো চালাবে না। remote (github.com/arraasheed/ecommercego)
+    একটি PUBLIC repo। push শুধু ব্যবহারকারী নিজে সিদ্ধান্ত নেবেন।
+    তোমার কাজ শুধু লোকাল `git commit`।
+  • `git reset --hard`, `git clean`, `git checkout <file>`,
+    `git push --force` — এগুলোও কখনো নয়। এতে কাজ মুছে যায়।
+
+শুরু করার আগে আমাকে এক লাইনে জানাও: কোন টাস্কে আছ, কোথা থেকে শুরু করছ।
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ধাপ ২ / ২ — তোমার টাস্ক
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+তুমি `C:\laragon\www\ecommercego` প্রজেক্টে কাজ করছ।
+
+⛔⛔⛔ সবচেয়ে গুরুত্বপূর্ণ নিয়ম (তিনবার পড়ো) — এই টাস্কে তুমি কোনো কোড
+লিখবে না, কোনো ফাইল এডিট করবে না, কোনো migration/controller/route বানাবে
+না। তোমার পুরো output = **একটি রিপোর্ট ফাইল**:
+```
+.ai/reports/pixel-block-spec.md
+```
+এর বাইরে তুমি শুধু `.ai/PROGRESS.md` আপডেট করবে। এই দুইটির বাইরে একটি
+অক্ষরও লিখলে তোমার কাজ reject হবে। `git commit`-ও তুমি করবে না —
+ব্যবহারকারী করবেন।
+
+### তোমার কাজ (GEMINI-5): Pixel Block-এর SPEC লেখা
+
+রেফারেন্স (শুধু পড়বে):
+```
+E:\SENTRIX_ALL_WORK\AI-RELATED-TOOLS-BACKUP\SaaS-CAPI-Courier-Isolated\app\Jobs\SendMetaCapiPurchaseJob.php
+E:\SENTRIX_ALL_WORK\AI-RELATED-TOOLS-BACKUP\SaaS-CAPI-Courier-Isolated\DEEPSEEK_ACTION_PLAN.md
+C:\laragon\www\ecommercego\resources\views\setting\pixel_field_setting.blade.php
+```
+(রেফারেন্সের bug-গুলো — random-UUID idempotency, queue-তে request()->ip() —
+SPEC-এ "Known defects to avoid" হিসেবে নথিভুক্ত করবে, copy করবে না।)
+
+রিপোর্টে **ঠিক এই ৬টি heading** থাকবে, এই ক্রমে, অন্য heading নয়:
+
+1. `## Endpoints` — Meta CAPI `Purchase` event-এর exact payload JSON
+   (event_name, event_time, event_id=`order_{id}`, hashed em/ph/fn,
+   currency BDT, value, action_source=website) + test_event_code ব্যবহারবিধি।
+2. `## Idempotency` — deterministic key ফরম্যাট (`order_{id}_capi_purchase`),
+   ledger টেবিল schema (key unique, status pending/dispatched/failed),
+   double-confirm ও retry-তে কী হবে।
+3. `## Status flow` — order status-এ `pixel_blocked` থেকে `pixel_sent`-এ
+   যাওয়ার শর্ত (admin confirm + double-confirmation UI), কে confirm করতে
+   পারবে (permission), confirm ছাড়া কী হবে (blocked-ই থাকবে)।
+4. `## Credentials` — প্রতি store-এর pixel_id + access_token কোথায় থাকবে
+   (settings spec: field নাম, encrypt কি না), না থাকলে কী হবে (dispatch skip + log)।
+5. `## Attribution guard` — 7-day rule + test-event mode-এ যাচাই পদ্ধতি।
+6. `## Test steps` — coder যাচাই করবে এমন 8টি step (test_event_code দিয়ে
+   Events Manager-এ দেখা সহ)।
+
+প্রতিটি section-এ "UNCERTAIN:" tag দেবে যেখানে নিশ্চিত নও — অনুমান করে
+"সম্ভবত" লিখবে না।
+
+### শেষে:
+1. `.ai/PROGRESS.md`-এ GEMINI-5 → ✅ DONE বা Blockers (PROGRESS-এর টেবিলে
+   GEMINI-5 row না থাকলে Blockers সেকশনে লিখবে, টেবিল বানাবে না)।
+2. আমাকে বাংলায় জানাও: spec-এর 6টি section-এর এক-লাইন সারসংক্ষেপ +
+   UNCERTAIN কয়টি।

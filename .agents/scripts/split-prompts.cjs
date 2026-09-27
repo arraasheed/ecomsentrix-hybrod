@@ -50,6 +50,8 @@ const ORDER = [
   ['CLAUDE', 14, 'CLAUDE-14'],
   ['CLAUDE', 15, 'CLAUDE-15'],
   ['CLAUDE', 16, 'CLAUDE-16'],
+  ['BULK', 8, 'BULK-8'],
+  ['GEMINI', 5, 'GEMINI-5'],
 ];
 
 const BOOT = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -339,6 +339,65 @@ git commit -m "docs(audit): mobile UX audit  [GEMINI-4]"
 
 ---
 
+## প্রম্পট ৫ - Pixel Block CAPI spec (Phase-2, SPEC ONLY — কোড নয়)
+
+```
+তুমি `C:\laragon\www\ecommercego` প্রজেক্টে কাজ করছ।
+
+⛔⛔⛔ সবচেয়ে গুরুত্বপূর্ণ নিয়ম (তিনবার পড়ো) — এই টাস্কে তুমি কোনো কোড
+লিখবে না, কোনো ফাইল এডিট করবে না, কোনো migration/controller/route বানাবে
+না। তোমার পুরো output = **একটি রিপোর্ট ফাইল**:
+```
+.ai/reports/pixel-block-spec.md
+```
+এর বাইরে তুমি শুধু `.ai/PROGRESS.md` আপডেট করবে। এই দুইটির বাইরে একটি
+অক্ষরও লিখলে তোমার কাজ reject হবে। `git commit`-ও তুমি করবে না —
+ব্যবহারকারী করবেন।
+
+### তোমার কাজ (GEMINI-5): Pixel Block-এর SPEC লেখা
+
+রেফারেন্স (শুধু পড়বে):
+```
+E:\SENTRIX_ALL_WORK\AI-RELATED-TOOLS-BACKUP\SaaS-CAPI-Courier-Isolated\app\Jobs\SendMetaCapiPurchaseJob.php
+E:\SENTRIX_ALL_WORK\AI-RELATED-TOOLS-BACKUP\SaaS-CAPI-Courier-Isolated\DEEPSEEK_ACTION_PLAN.md
+C:\laragon\www\ecommercego\resources\views\setting\pixel_field_setting.blade.php
+```
+(রেফারেন্সের bug-গুলো — random-UUID idempotency, queue-তে request()->ip() —
+SPEC-এ "Known defects to avoid" হিসেবে নথিভুক্ত করবে, copy করবে না।)
+
+রিপোর্টে **ঠিক এই ৬টি heading** থাকবে, এই ক্রমে, অন্য heading নয়:
+
+1. `## Endpoints` — Meta CAPI `Purchase` event-এর exact payload JSON
+   (event_name, event_time, event_id=`order_{id}`, hashed em/ph/fn,
+   currency BDT, value, action_source=website) + test_event_code ব্যবহারবিধি।
+2. `## Idempotency` — deterministic key ফরম্যাট (`order_{id}_capi_purchase`),
+   ledger টেবিল schema (key unique, status pending/dispatched/failed),
+   double-confirm ও retry-তে কী হবে।
+3. `## Status flow` — order status-এ `pixel_blocked` থেকে `pixel_sent`-এ
+   যাওয়ার শর্ত (admin confirm + double-confirmation UI), কে confirm করতে
+   পারবে (permission), confirm ছাড়া কী হবে (blocked-ই থাকবে)।
+4. `## Credentials` — প্রতি store-এর pixel_id + access_token কোথায় থাকবে
+   (settings spec: field নাম, encrypt কি না), না থাকলে কী হবে (dispatch skip + log)।
+5. `## Attribution guard` — 7-day rule + test-event mode-এ যাচাই পদ্ধতি।
+6. `## Test steps` — coder যাচাই করবে এমন 8টি step (test_event_code দিয়ে
+   Events Manager-এ দেখা সহ)।
+
+প্রতিটি section-এ "UNCERTAIN:" tag দেবে যেখানে নিশ্চিত নও — অনুমান করে
+"সম্ভবত" লিখবে না।
+
+### শেষে:
+1. `.ai/PROGRESS.md`-এ GEMINI-5 → ✅ DONE বা Blockers (PROGRESS-এর টেবিলে
+   GEMINI-5 row না থাকলে Blockers সেকশনে লিখবে, টেবিল বানাবে না)।
+2. আমাকে বাংলায় জানাও: spec-এর 6টি section-এর এক-লাইন সারসংক্ষেপ +
+   UNCERTAIN কয়টি।
+```
+
+---
+
+## ⚠️ Gemini-র জন্য সাধারণ নিয়ম
+
+---
+
 ## ⚠️ Gemini-র জন্য সাধারণ নিয়ম
 
 1. **কোনো টাস্কে কোড পরিবর্তন করবে না।** শুধু `.ai/reports/` ফোল্ডারে ফাইল তৈরি করবে এবং `.ai/PROGRESS.md` আপডেট করবে।

@@ -719,6 +719,99 @@ git commit -m "feat(mobile): CSS card view for admin datatables on mobile  [BULK
 
 ---
 
+## প্রম্পট ৮ - FraudPixelShield মডিউল scaffold + BD Courier rotation engine (Phase-2)
+
+```
+তুমি `C:\laragon\www\ecommercego` প্রজেক্টে কাজ করছ।
+
+⛔⛔⛔ সবচেয়ে গুরুত্বপূর্ণ নিয়ম (তিনবার পড়ো) — এই প্রম্পটে যেই ফাইল/ফোল্ডারের
+নাম স্পষ্টভাবে লেখা আছে, শুধু সেগুলোতেই হাত দেবে। অন্য কোনো ফাইল,
+অন্য কোনো ফোল্ডার — পড়া যাবে, ছোঁয়া যাবে না। ESPECIALLY:
+`app/`, `routes/`, `database/`, `vendor/`, `packages/workdo/*`
+(শুধু নিচে অনুমোদিত নতুন ফোল্ডার ছাড়া), `resources/`, `themes/` —
+এগুলোতে নতুন ফাইল বানানোও নিষেধ, এডিট তো দূরের কথা। এই নিয়ম ভাঙলে তোমার
+পুরো কাজ reject হবে।
+
+### ALLOWED (শুধু এগুলো):
+
+```
+packages/workdo/FraudPixelShield/     ← নতুন মডিউল, সবকিছু এর ভেতরে
+.ai/reports/fraud-shield-build.md     ← তোমার রিপোর্ট
+```
+
+নতুন branch-এ কাজ করবে:
+```
+git checkout -b feat/fraud-shield
+```
+(main/master branch-এ সরাসরি commit নয়।)
+
+### তোমার কাজ (BULK-8): দুই ধাপ
+
+**ধাপ ১ — scaffold (PwaManifest-কে হুবহু template ধরো):**
+`packages/workdo/PwaManifest/` ফোল্ডারের প্রতিটি ফাইল পড়ো (module.json,
+composer.json, src/Providers/*, src/Routes/web.php, src/Http/Controllers/*)।
+ঠিক একই কাঠামোতে বানাও:
+```
+packages/workdo/FraudPixelShield/
+├── module.json                 (name: FraudPixelShield)
+├── composer.json
+└── src/
+    ├── Providers/
+    │   ├── FraudPixelShieldServiceProvider.php
+    │   └── RouteServiceProvider.php
+    ├── Routes/web.php          (শুধু POST /fraud-check, throttle 10/min — নিচে)
+    ├── Http/Controllers/FraudCheckController.php   (stub: validate → JSON)
+    ├── Services/RiskScorer.php                     (নিচের algorithm)
+    └── Database/Migrations/    (৩টি migration — নিচে)
+```
+প্রতিটি PHP ফাইলের namespace `Workdo\FraudPixelShield\...` হতে হবে —
+`App\...` লিখলে কাজ বাতিল।
+
+**ধাপ ২ — RiskScorer algorithm (E:\ রেফারেন্স থেকে PORT, copy নয়):**
+বাইরের রেফারেন্স পাথ (শুধু পড়বে, copy করবে না):
+```
+E:\SENTRIX_ALL_WORK\AI-RELATED-TOOLS-BACKUP\Ai-Customer-Data-Checker\courierApiManager.js
+E:\SENTRIX_ALL_WORK\AI-RELATED-TOOLS-BACKUP\Ai-Customer-Data-Checker\fraudChecker.js (শুধু fetchBdCourierApi অংশ, লাইন ~170-211)
+```
+PORT করবে (PHP/Laravel HTTP client দিয়ে নতুন করে লিখবে):
+1. key rotation: store-এর key pool থেকে random active key (daily limit 50),
+   ব্যবহারের পর usage_count++ — `courierApiManager.js`-এর logic।
+2. BD Courier `POST /courier-check` (Bearer) → total/delivered/cancelled parse।
+3. risk score 0-100: `100 - success_rate`, threshold env থেকে।
+⛔ PORT করবে না (নিষেধ): Puppeteer scraper, SQLite, Express, Socket.io,
+   whatsapp-web.js, Excel, UI/sound — এগুলোর এক লাইনও আনবে না।
+
+**Migration (৩টি, মডিউলের ভেতরে — core `database/` ছোঁয়া নিষেধ):**
+1. `fraud_phone_cache` — phone_hash CHAR(64) PK, risk_score, totals, last_synced_at
+2. `fraud_lead_logs` — store_id, phone_hash, phone_last4, name NULL, cart_snapshot JSON NULL, risk_score, decision ENUM(allowed,soft_blocked)
+3. `fraud_api_keys` — store_id, courier_name, key_value (encrypted), status, usage_count, last_reset_at
+কাঁচা ফোন নম্বর plain-text-এ রাখা নিষেধ — শুধু sha256 hash + last4।
+
+**Kill-switch (বাধ্যতামূলক):** Controller-এর প্রথম লাইনে
+`if (!env('FRAUD_PIXEL_SHIELD_ENABLED', true)) abort(404);`
+এটা ছাড়া কাজ অসম্পূর্ণ।
+
+### যাচাই (কোড চালিয়ে, অনুমান নয়):
+1. `php -l` প্রতিটি PHP ফাইলে — syntax error শূন্য হতে হবে।
+2. `php artisan migrate --pretend` — SQL দেখাবে, error দেবে না।
+   (আসল migrate চালাবে না — শুধু pretend।)
+3. RiskScorer-এর পিওর function (score calculation) — ৩টি sample input দিয়ে
+   হাতে হিসাব মিলিয়ে রিপোর্টে লেখো।
+
+### শেষে:
+1. `.ai/reports/fraud-shield-build.md` — কোন ফাইল বানালে, rotation logic
+   কীভাবে port করলে, কী বাদ দিলে (scraper/UI), pretend output।
+2. `.ai/PROGRESS.md`-এ BULK-8 → ✅ DONE বা Blockers (PROGRESS-এর টেবিলে
+   BULK-8 row না থাকলে Blockers সেকশনে লিখবে, টেবিল বানাবে না)।
+3. commit (feat/fraud-shield branch-এ):
+git add packages/workdo/FraudPixelShield .ai/reports/fraud-shield-build.md
+git commit -m "feat(fraud): shield scaffold + BD courier rotation engine  [BULK-8]"
+⛔ `git add -A` দেবে না — শুধু উপরের দুইটি path। `git push` কখনো নয়।
+4. বাংলায় জানাও: কী বানালে, কী বাদ দিলে, pretend পাস কি না।
+```
+
+---
+
 ## ⚠️ BULK মডেলের জন্য সাধারণ নিয়ম
 
 1. **প্রতিটি প্রম্পটে যে ফাইলগুলোর নাম বলা হয়েছে, শুধু সেগুলোতেই কাজ করবে।** আর কিছুতে নয়।

@@ -363,6 +363,13 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | CLAUDE-15  Vue island: cart drawer + variant | Claude + Muse Spark | ✅ DONE | feat commit (this task); checkpoints `1e33cf5` `e01910d` `1004506` | session-auth endpoints (`customer.php`), NOT api.php — Sanctum token would need new auth surface · 5 bugs fixed in finish pass (unmount scope, remove endpoint, teleport-wipe race, mount race, currency parity) · 12-point matrix: 8 PASS, 4 PARTIAL (4/5 variant fixtures নেই, 9 heap-snapshot নয়, 11 offline live নয়) · 0 console errors · kill-switch `SPA_VUE_ISLANDS` দুই দিকে পরীক্ষিত · রিপোর্ট → `.ai/reports/api-contract.md` + `.ai/reports/claude15-final-test.md` |
 | CLAUDE-16  চূড়ান্ত টেস্ট + master-এ merge | Muse Spark | ✅ DONE | merge `3b82fbb` · tags `day4-complete` + `v1.0-spa-pwa` | regression: 7 storefront + 5 admin পেজ, 0 console error · kill-switch TURBO/ISLANDS দুই দিকে ✅ · Day 4 Final benchmark · HANDOVER.md · রিপোর্ট → `.ai/reports/benchmark.md` ("Day 4 Final") |
 
+### Phase-2 — FraudPixelShield + Admin SPA coverage (branch: `feat/fraud-shield` for C/D)
+
+| টাস্ক | মডেল | অবস্থা | কমিট | নোট |
+|---|---|---|---|---|
+| BULK-8  FraudPixelShield scaffold + rotation engine | DeepSeek (GLM backup) | ⬜ PENDING | — | prompt → `.ai/prompts/28-BULK-8.txt` · allowed: `packages/workdo/FraudPixelShield/` + report শুধু |
+| GEMINI-5  Pixel Block CAPI spec (SPEC ONLY) | Gemini | ⬜ PENDING | — | prompt → `.ai/prompts/29-GEMINI-5.txt` · কোড নিষেধ, ৬-heading spec |
+
 **অবস্থার প্রতীক:** ⬜ PENDING · 🟨 IN PROGRESS · ✅ DONE · ❌ BLOCKED · ⏭️ SKIPPED
 
 ---
