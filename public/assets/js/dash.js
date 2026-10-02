@@ -300,6 +300,21 @@ if (typeof window.onTurboLoad === "function") {
   dashInit();
 }
 
+// Turbo Drive (SIDEBAR-FIX) helpers ──────────────────────────────────────────
+// Sidebar menu handlers used to call event.stopPropagation() on every click.
+// Turbo listens for clicks in the bubble phase, so it never saw sidebar
+// navigation and each click caused a full page reload. These helpers keep the
+// accordion behavior (parents still stop propagation) while letting leaf-link
+// clicks bubble to document for Turbo SPA navigation.
+function dashLiHasSubmenu(li) {
+  if (!li || li.tagName != "LI") return true; // unknown → keep old behavior
+  var kids = li.children;
+  for (var k = 0; k < kids.length; k++) {
+    if (kids[k].tagName == "UL") return true;
+  }
+  return false;
+}
+
 function horizontalmobilemenuclick() {
   var vw = window.innerWidth;
   var pcnavlinklist = document.querySelector(".dash-navbar li");
@@ -311,6 +326,8 @@ function horizontalmobilemenuclick() {
     ".dash-navbar > li:not(.dash-caption)"
   );
   for (var i = 0; i < pclinkclick.length; i++) {
+    if (pclinkclick[i].dataset.menuclickBound) continue;
+    pclinkclick[i].dataset.menuclickBound = "1";
     pclinkclick[i].addEventListener("click", function (event) {
       var targetElement = event.target;
       if (targetElement.tagName == "SPAN") {
@@ -333,8 +350,13 @@ function horizontalmobilemenuclick() {
     ".dash-navbar > li:not(.dash-caption) > .dash-submenu > li"
   );
   for (var n = 0; n < pcsublinkclick.length; n++) {
+    if (pcsublinkclick[n].dataset.menuclickBound) continue;
+    pcsublinkclick[n].dataset.menuclickBound = "1";
     pcsublinkclick[n].addEventListener("click", function (event) {
-      event.stopPropagation();
+      // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+      if (dashLiHasSubmenu(this)) {
+        event.stopPropagation();
+      }
       var targetElement = event.target;
       if (targetElement.tagName == "SPAN") {
         targetElement = targetElement.parentNode;
@@ -356,8 +378,13 @@ function horizontalmobilemenuclick() {
     ".dash-navbar > li:not(.dash-caption) > .dash-submenu >  li > .dash-submenu >  li"
   );
   for (var n = 0; n < pcsubchildlinkclick.length; n++) {
+    if (pcsubchildlinkclick[n].dataset.menuclickBound) continue;
+    pcsubchildlinkclick[n].dataset.menuclickBound = "1";
     pcsubchildlinkclick[n].addEventListener("click", function (event) {
-      event.stopPropagation();
+      // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+      if (dashLiHasSubmenu(this)) {
+        event.stopPropagation();
+      }
       var targetElement = event.target;
       if (targetElement.tagName == "SPAN") {
         targetElement = targetElement.parentNode;
@@ -417,8 +444,13 @@ function menuclick() {
       ".dash-navbar > li:not(.dash-caption)"
     );
     for (var i = 0; i < pclinkclick.length; i++) {
+      if (pclinkclick[i].dataset.menuclickBound) continue;
+      pclinkclick[i].dataset.menuclickBound = "1";
       pclinkclick[i].addEventListener("click", function (event) {
-        event.stopPropagation();
+        // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+        if (dashLiHasSubmenu(this)) {
+          event.stopPropagation();
+        }
         var targetElement = event.target;
         if (targetElement.tagName == "SPAN") {
           targetElement = targetElement.parentNode;
@@ -446,12 +478,17 @@ function menuclick() {
       ".dash-navbar > li:not(.dash-caption) li"
     );
     for (var i = 0; i < pcsublinkclick.length; i++) {
+      if (pcsublinkclick[i].dataset.menuclickBound) continue;
+      pcsublinkclick[i].dataset.menuclickBound = "1";
       pcsublinkclick[i].addEventListener("click", function (event) {
+        // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+        if (dashLiHasSubmenu(this)) {
+          event.stopPropagation();
+        }
         var targetElement = event.target;
         if (targetElement.tagName == "SPAN") {
           targetElement = targetElement.parentNode;
         }
-        event.stopPropagation();
         if (targetElement.parentNode.classList.contains("dash-trigger")) {
           targetElement.parentNode.classList.remove("dash-trigger");
           slideUp(targetElement.parentNode.children[1], 200);

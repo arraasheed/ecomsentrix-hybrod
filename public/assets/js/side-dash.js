@@ -1,5 +1,16 @@
 "use strict";
 var flg = "0";
+// Turbo Drive (SIDEBAR-FIX) helper — see public/assets/js/dash.js for rationale:
+// only accordion parents (LI owning a submenu UL) stop propagation; leaf links
+// bubble to document so Turbo intercepts them (SPA navigation).
+function dashLiHasSubmenu(li) {
+    if (!li || li.tagName != "LI") return true; // unknown → keep old behavior
+    var kids = li.children;
+    for (var k = 0; k < kids.length; k++) {
+        if (kids[k].tagName == "UL") return true;
+    }
+    return false;
+}
 document.addEventListener("DOMContentLoaded", function () {
     // feather icon start
     feather.replace();
@@ -298,7 +309,10 @@ function horizontalmobilemenuclick() {
     );
     for (var n = 0; n < pcsublinkclick.length; n++) {
         pcsublinkclick[n].addEventListener("click", function (event) {
-            event.stopPropagation();
+            // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+            if (typeof dashLiHasSubmenu === "function" && dashLiHasSubmenu(this)) {
+                event.stopPropagation();
+            }
             var targetElement = event.target;
             if (targetElement.tagName == "SPAN") {
                 targetElement = targetElement.parentNode;
@@ -321,7 +335,10 @@ function horizontalmobilemenuclick() {
     );
     for (var n = 0; n < pcsubchildlinkclick.length; n++) {
         pcsubchildlinkclick[n].addEventListener("click", function (event) {
-            event.stopPropagation();
+            // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+            if (typeof dashLiHasSubmenu === "function" && dashLiHasSubmenu(this)) {
+                event.stopPropagation();
+            }
             var targetElement = event.target;
             if (targetElement.tagName == "SPAN") {
                 targetElement = targetElement.parentNode;
@@ -383,8 +400,10 @@ function menuclick() {
         );
         for (var i = 0; i < pclinkclick.length; i++) {
             pclinkclick[i].addEventListener("click", function (event) {
-
-                event.stopPropagation();
+                // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+                if (typeof dashLiHasSubmenu === "function" && dashLiHasSubmenu(this)) {
+                    event.stopPropagation();
+                }
                 var targetElement = event.target;
                 if (targetElement.tagName == "SPAN" || targetElement.tagName == 'svg') {
                     targetElement = targetElement.parentNode;
@@ -441,11 +460,14 @@ function menuclick() {
 
         for (var i = 0; i < pcsublinkclick.length; i++) {
             pcsublinkclick[i].addEventListener("click", function (event) {
+                // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+                if (typeof dashLiHasSubmenu === "function" && dashLiHasSubmenu(this)) {
+                    event.stopPropagation();
+                }
                 var targetElement = event.target;
                 if (targetElement.tagName == 'svg') {
                     targetElement = targetElement.parentNode;
                 }
-                event.stopPropagation();
                 if (targetElement.parentNode.classList.contains("dash-trigger")) {
                     if (!document.querySelector(".collapse-sidebar")) {
                         targetElement.parentNode.classList.remove("dash-trigger");
