@@ -85,7 +85,9 @@
     @endguest
 </nav>
 
-@push('page-style')
+{{-- THEME-15 FIX: was @push('page-style') — pushes from a body-end include
+     render AFTER the head @stack, so the CSS was silently lost (giant icons).
+     Inline <style> applies document-wide wherever it sits. --}}
 <style>
     /* ---- Mobile bottom navigation (BULK-6) ---- */
     #mobile-bottom-nav {
@@ -189,9 +191,10 @@
         }
     }
 </style>
-@endpush
 
-@push('page-script')
+{{-- THEME-15 FIX: was @push('page-script') — same lost-push bug (no badge/
+     active sync). Inline instead; the IIFE + onTurboLoad(init) below are
+     re-execution safe (observer disconnects, page-scoped registry). --}}
 <script>
     /* ---- Mobile bottom navigation (BULK-6) — vanilla JS, no jQuery ----
        The nav root is data-turbo-permanent, so on every navigation the
@@ -276,4 +279,3 @@
         }
     })();
 </script>
-@endpush
