@@ -1,6 +1,16 @@
-<header class="bg-white sticky-header site-header">
-     <!-- Middle Section -->
-    <div class="py-4 border-b border-gray-200">
+{{-- Levo Leather header (THEME-15): demo-style leather skin.
+     All Blade logic/routes/toggles kept identical to the stylique base;
+     only markup classes changed (+ category URL fixed to collections.all). --}}
+<header class="bg-white sticky-header site-header levo-header">
+    {{-- Top announcement bar (leather) --}}
+    <div class="levo-topbar">
+      <div class="md:container mx-auto px-4 w-full flex items-center justify-center gap-2 py-1.5">
+        <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M10 1.5L12.6 7l6 .5-4.6 3.9 1.4 5.9L10 14l-5.4 3.3 1.4-5.9L1.4 7.5l6-.5z" fill="#c9a24b"/></svg>
+        <span>{{ $themeSettings['topbar_text'] ?? __('Genuine Leather — Cash on Delivery Available') }}</span>
+      </div>
+    </div>
+    <!-- Middle Section -->
+    <div class="py-3 border-b border-gray-200">
       <div class="md:container mx-auto px-4 w-full">
         <div class="flex items-center justify-between gap-2">
             @if(isset($themeSettings['header_logo']) && !empty($themeSettings['header_logo']))
@@ -27,24 +37,21 @@
                     </div>
 
                     <div class="flex-grow relative search-input">
-                      <input type="text" id="desktop-search-input" class="w-full border-t border-b border-gray-300 px-4 py-2 outline-none" placeholder="{{ __('Search...') }}" aria-label="Search" list="products" name="search_product" id="product">
+                      <input type="text" id="desktop-search-input" class="w-full border-t border-b border-gray-300 px-4 py-2 outline-none" placeholder="{{ __('Search leather goods...') }}" aria-label="Search" list="products" name="search_product" id="product">
                       <datalist id="products">
                           @foreach ($search_products as $pro_id => $pros)
                               <option value="{{ $pros }}"></option>
                           @endforeach
                       </datalist>
                       </div>
-                      <button type="submit" class="btn-primary px-4 py-2 rounded-l-none rtl:rounded-l-lg rtl:rounded-r-none">
+                      <button type="submit" class="levo-search-btn btn-primary px-4 py-2 rounded-l-none rtl:rounded-l-lg rtl:rounded-r-none">
                         <i class="fas fa-search"></i>
                       </button>
                 </form>
               </div>
             @endif
-          <!-- Icons (Wishlist, Compare, Cart) -->
-
-
+          <!-- Icons (Wishlist, Cart, Account) -->
           <div class="flex items-center gap-3">
-
             @if(isset($themeSettings['header_search_status']) && $themeSettings['header_search_status'] == 1)
               <!-- Search Button for Mobile -->
               <button id="search-toggle" class="lg:hidden text-gray-700 hover:text-orange-500">
@@ -54,8 +61,6 @@
                   </svg>
               </button>
             @endif
-
-
 
             @if(isset($themeSettings['header_login_status']) && $themeSettings['header_login_status'] == 1)
                   @auth('customers')
@@ -76,7 +81,7 @@
                   @endguest
             @endif
             @stack('marketPlaceListButton')
-            @if(isset($themeSettings['header_wishlist_status']) && $themeSettings['header_wishlist_status'] == 1) 
+            @if(isset($themeSettings['header_wishlist_status']) && $themeSettings['header_wishlist_status'] == 1)
                 @auth('customers')
                 <a href="{{ route('wishlist', $slug) }}" class="relative text-gray-700 hover:text-orange-500 wishlist-header wish-header">
                     <svg class="w-5 h-5" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,14 +89,11 @@
                     </svg>
                     <span class="cart-badge">{!! \App\Models\Wishlist::WishCount() !!}</span>
                 </a>
-                <!-- @include('front_end.hooks.header_button') -->
                 @endauth
-
             @endif
- 
+
             @if(isset($themeSettings['header_cart_status']) && $themeSettings['header_cart_status'] == 1)
               <a href="javascript:void(0);" class="cart-header relative text-gray-700 hover:text-orange-500" id="cart-toggle">
-                
                   <svg class="w-5 h-5" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M7.03809 7.26663V6.45282C7.03809 4.56511 8.55665 2.71095 10.4444 2.53477C12.6928 2.31663 14.5889 4.08689 14.5889 6.29341V7.45121" stroke="#1A1616" stroke-width="1.2305" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
                       <path d="M8.29748 19.2897H13.3314C16.7041 19.2897 17.3082 17.9389 17.4844 16.2945L18.1136 11.2606C18.3401 9.21348 17.7528 7.5439 14.1704 7.5439H7.4585C3.87604 7.5439 3.28875 9.21348 3.51528 11.2606L4.14452 16.2945C4.3207 17.9389 4.92477 19.2897 8.29748 19.2897Z" stroke="#1A1616" stroke-width="1.2305" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -113,7 +115,7 @@
                   </a>
             </form>
             @endauth
- 
+
             <!-- Mobile Menu Button (Hidden on desktop) -->
             <div class="lg:hidden flex">
               <button id="mobile-menu-toggle">
@@ -128,17 +130,16 @@
         </div>
       </div>
     </div>
- 
+
     <!-- Desktop Navigation -->
     <nav class="bg-white hidden lg:block">
       @if(isset($themeSettings['header_search_status']) && $themeSettings['header_search_status'] == 1)
         <div class="md:container mx-auto px-4 w-full">
           <div class="flex justify-between items-center">
             <div class="flex">
-
               <!-- Categories Dropdown -->
               <div class="relative categories-wrap me-6">
-                <button class="btn btn-primary px-6 py-3 rounded-none flex items-center">
+                <button class="levo-nav-cats btn btn-primary px-6 py-3 rounded-none flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="14" viewBox="0 0 14 10" fill="none" class="ltr:mr-2 rtl:ml-2">
                     <path d="M9.66667 1.5H1C0.867392 1.5 0.740215 1.44732 0.646447 1.35355C0.552678 1.25979 0.5 1.13261 0.5 1C0.5 0.867392 0.552678 0.740215 0.646447 0.646447C0.740215 0.552678 0.867392 0.5 1 0.5H9.66667C9.79928 0.5 9.92645 0.552678 10.0202 0.646447C10.114 0.740215 10.1667 0.867392 10.1667 1C10.1667 1.13261 10.114 1.25979 10.0202 1.35355C9.92645 1.44732 9.79928 1.5 9.66667 1.5ZM13.5 5C13.5 4.86739 13.4473 4.74022 13.3536 4.64645C13.2598 4.55268 13.1326 4.5 13 4.5H1C0.867392 4.5 0.740215 4.55268 0.646447 4.64645C0.552678 4.74022 0.5 4.86739 0.5 5C0.5 5.13261 0.552678 5.25979 0.646447 5.35355C0.740215 5.44732 0.867392 5.5 1 5.5H13C13.1326 5.5 13.2598 5.44732 13.3536 5.35355C13.4473 5.25979 13.5 5.13261 13.5 5ZM7.5 9C7.5 8.86739 7.44732 8.74021 7.35355 8.64645C7.25979 8.55268 7.13261 8.5 7 8.5H1C0.867392 8.5 0.740215 8.55268 0.646447 8.64645C0.552678 8.74021 0.5 8.86739 0.5 9C0.5 9.13261 0.552678 9.25979 0.646447 9.35355C0.740215 9.44732 0.867392 9.5 1 9.5H7C7.13261 9.5 7.25979 9.44732 7.35355 9.35355C7.44732 9.25979 7.5 9.13261 7.5 9Z" fill="white" />
                   </svg>
@@ -148,7 +149,8 @@
                 <ul class="category-dropdown">
                   @foreach ($MainCategoryList as $category)
                     <li class="relative">
-                      <a href="{{ url($slug . '/' . $category->slug) }}" class="flex no-wrap" id="MainCategory_preview" tabindex="0">
+                      {{-- THEME-15 FIX: use the real collections route (was 404). --}}
+                      <a href="{{ route('collections.all', [$slug, $category->slug]) }}" class="flex no-wrap" id="MainCategory_preview" tabindex="0">
                         <img src="{{ get_file($category->icon_path) }}" width="18" height="18" alt="category-img" loading="lazy" />
                         {{ $category->name }}
                       </a>
@@ -160,8 +162,7 @@
               <!-- Main Navigation -->
               <ul class="main-nav flex gap-6">
                 @if(isset($themeSettings['menu_bar_status']) && $themeSettings['menu_bar_status'] == 1)
-                  @include('front_end.hooks.header_button') 
-                <!-- Desktop Navigation -->
+                  @include('front_end.hooks.header_button')
                       @php
                         $menuItems = getNavMenu($themeSettings['menu_bar_menu'] ?? '');
                       @endphp
@@ -171,8 +172,7 @@
                           @include('front_end.common.menu', ['item' => $item, 'key' => $key])
                       @endforeach
                   </ul>
-
-                      @endif        
+                      @endif
                 @endif
               </ul>
             </div>
@@ -193,11 +193,8 @@
                   </div>
               </div>
             </div>
-
-
           </div>
         </div>
       @endif
     </nav>
-
 </header>

@@ -1,6 +1,6 @@
   <!-- Footer -->
   @if ($themeSettings['footer_status'] && $themeSettings['footer_status'] == '1')
-    <footer class="bg-gray-900 text-white pt-12 pb-8 site-footer">
+    <footer class="levo-footer site-footer pt-12 pb-8">
       <div class="md:container mx-auto px-4 w-full">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-8 gap-4">
           <!-- About Column -->
@@ -66,7 +66,7 @@
 
         @if(isset($themeSettings['copy_right_status']) && $themeSettings['copy_right_status'] == 1)
           <div
-              class="md:mt-10 mt-6 pt-6 border-t border-gray-800 text-center text-gray-400 text-sm flex flex-wrap gap-4 sm:justify-between justify-center">
+              class="levo-footer-bottom md:mt-10 mt-6 pt-6 border-t border-gray-800 text-center text-sm flex flex-wrap gap-4 sm:justify-between justify-center">
               <p>{{ $themeSettings['copy_right_description'] ?? __('© 2025, eCommerce Theme Powered by:workdo.io') }}</p>
               <div class="flex justify-center gap-2">
               <img src="{{ get_file($themeSettings['copy_right_footer_image_1']) }}" alt="Visa" class="h-6 object-cover" loading="lazy" decoding="async" />

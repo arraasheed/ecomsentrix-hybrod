@@ -11,7 +11,7 @@
             <section class="section-spacing pb-0">
                 <div class="md:container mx-auto px-4 w-full">
                     <div class="flex flex-wrap gap-4 banner-wrp">
-                        <div class="swiper hero-slider lg:flex-1 rounded-lg overflow-hidden">
+                        <div class="swiper hero-slider lg:flex-1 rounded-lg overflow-hidden levo-hero">
                             <div class="swiper-wrapper">
                                     @php
                                         $sliders = json_decode($themeSettings['slider_repeater'] ?? '[]', true);
@@ -51,7 +51,7 @@
                             <div class="swiper-pagination text-start"></div>
                         </div>
                         @if (isset($themeSettings['more_offer_status']) && $themeSettings['more_offer_status'] == 1)
-                            <div class="lg:h-auto h-96 w-full offer-banner overflow-hidden">
+                            <div class="lg:h-auto h-96 w-full offer-banner levo-offer-banner overflow-hidden">
                                 <a href="{{ $themeSettings['more_offer_button_link'] ?? route('page.product-list', ['storeSlug' => $slug]) }}" tabindex="0">
                                     <img src="{{ get_file($themeSettings['more_offer_image']) }}" width="300" height="400" alt="offer-image"
                                         class="w-full h-full object-cover object-top rounded-lg" loading="lazy">
@@ -122,7 +122,7 @@
                                                 <!-- Optional description, if available -->
                                                 {{ $category->description ?? 'Explore our latest ' . $category->name . ' collection.' }}
                                             </p>
-                                            <a href="{{ url($store->slug . '/' . $category->slug) }}" class="btn-primary inline-block">
+                                            <a href="{{ route('collections.all', [$slug, $category->slug]) }}" class="btn-primary inline-block">
                                                 {{__("Shop Collection")}}
                                             </a>
                                         </div>
@@ -139,7 +139,7 @@
             <section class="section-spacing">
                 <div class="md:container mx-auto px-4 w-full">
                 <div class="text-center md:mb-10 mb-6">
-                    <h2 class="md:text-4xl text-3xl font-bold mb-4">{{ $themeSettings['product_title'] ?? 'Featured Products' }}</h2>
+                <h2 class="levo-section-title md:text-4xl text-3xl font-bold mb-4">{{ $themeSettings['product_title'] ?? 'Featured Products' }}</h2>
                     <p class="text-gray-600 max-w-2xl mx-auto">
                     {!! $themeSettings['product_description'] ?? 'Discover our carefully curated selection of premium fashion items' !!}
                     </p>
@@ -165,7 +165,7 @@
             <section class="section-spacing bg-gray-50">
                 <div class="md:container mx-auto px-4 w-full">
                     <div class="text-center md:mb-10 mb-6">
-                        <h2 class="md:text-4xl text-3xl font-bold mb-4">
+                        <h2 class="levo-section-title md:text-4xl text-3xl font-bold mb-4">
                         {!! $themeSettings['category_title'] ?? '__("Shop by Category")' !!}    </h2>
                         <p class="text-gray-600 max-w-2xl mx-auto">
                             {!! $themeSettings['category_description'] ?? 'Explore our diverse range of categories to find exactly what you need.' !!}
@@ -174,7 +174,7 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-4 md:gap-6">
                         @foreach (collect($MainCategoryList)->take(3) as $category)
-                            <div class="group relative rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                            <div class="levo-cat-tile group relative rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
                                 <img
                                     src="{{ get_file($category->image_path) }}"
                                     alt="{{ $category->name }}"
@@ -186,7 +186,7 @@
                                 <div class="absolute inset-0 flex items-end md:p-6 p-4">
                                     <div>
                                         <h3 class="text-white text-2xl font-bold mb-3">{{ $category->name }}</h3>
-                                        <a href="{{ url($store->slug . '/' . $category->slug) }}"
+                                        <a href="{{ route('collections.all', [$slug, $category->slug]) }}"
                                         class="btn-primary px-4 py-2 text-sm">
                                            {{ __("Shop Now") }}
                                         </a>
@@ -204,7 +204,7 @@
             <section class="section-spacing collection-sec">
                 <div class="md:container mx-auto px-4 w-full">
                     <div class="text-center items-center md:mb-10 mb-6 flex flex-wrap gap-3 justify-center lg:justify-between">
-                    <h2 class="md:text-4xl text-3xl font-bold">
+                    <h2 class="levo-section-title md:text-4xl text-3xl font-bold">
                         {!! $themeSettings['bestseller_title'] ?? 'Explore Our Products' !!}
                     </h2>
                     <div class="overflow-x-auto">

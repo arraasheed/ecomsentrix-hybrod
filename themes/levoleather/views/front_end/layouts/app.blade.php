@@ -24,7 +24,8 @@
     <script src="{{ asset('themes/' . $currentTheme . '/assets/js/tailwind.js') }}"></script>
   @else
     {{-- Use Vite-compiled CSS bundle (production default) --}}
-    @vite(['resources/css/store.css'])
+    {{-- THEME-15: levoleather has its own bundle (leather skin). --}}
+    @vite(['resources/css/store-levoleather.css'])
   @endif
  
     <meta name="mobile-wep-app-capable" content="yes">

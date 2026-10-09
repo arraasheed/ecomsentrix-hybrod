@@ -1,0 +1,195 @@
+/* ==========================================================================
+   Levo Leather theme skin (THEME-15)
+   Brand tokens taken from the reference demo (:root --shop-color-*), mapped
+   onto this codebase's --primary-color contract used by product cards,
+   buttons and badges. Loaded ONLY by the levoleather layout via
+   resources/css/store-levoleather.css (after main-style.css, so these win).
+   Kill-switch: switch the store back to the stylique theme in admin.
+   ========================================================================== */
+
+:root {
+  --levo-primary: #e8007c;
+  --levo-primary-dark: #b80062;
+  --levo-secondary: #00c153;
+  --levo-accent: #ff00ae;
+  --levo-leather: #2b1a12;
+  --levo-leather-soft: #4a2f23;
+  --levo-cream: #faf5ef;
+  --levo-gold: #c9a24b;
+
+  /* codebase contract (product-card, btn-primary, badges read these) */
+  --primary-color: #e8007c;
+  --primary-dark: #b80062;
+  --secondary-color: #00c153;
+}
+
+body {
+  background: var(--levo-cream);
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+.levo-topbar {
+  background: var(--levo-leather);
+  color: #f5e9dc;
+  font-size: 12px;
+}
+.levo-header {
+  background: #fff;
+  border-bottom: 3px solid var(--levo-primary);
+}
+.levo-header .logo-col img {
+  max-height: 52px;
+}
+.levo-search-btn {
+  background: var(--levo-primary) !important;
+}
+.levo-search-btn:hover {
+  background: var(--levo-primary-dark) !important;
+}
+.levo-nav-cats {
+  background: var(--levo-leather);
+  color: #fff;
+}
+.levo-nav-cats:hover {
+  background: var(--levo-leather-soft);
+}
+.site-header .main-nav a.nav-link,
+.site-header .main-nav a {
+  font-weight: 600;
+  color: var(--levo-leather);
+}
+.site-header .main-nav a:hover {
+  color: var(--levo-primary);
+}
+
+/* ── Buttons / badges ───────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--levo-primary);
+  border-color: var(--levo-primary);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.btn-primary:hover {
+  background: var(--levo-primary-dark);
+  border-color: var(--levo-primary-dark);
+  color: #fff;
+}
+.cart-badge,
+.mnav-badge {
+  background: var(--levo-primary) !important;
+}
+
+/* ── Product cards (demo look: rounded, soft shadow, pink price) ────── */
+.product-card {
+  border-radius: 14px !important;
+  border: 1px solid #f0e4d8;
+  box-shadow: 0 2px 10px rgba(43, 26, 18, 0.07) !important;
+}
+.product-card:hover {
+  box-shadow: 0 8px 24px rgba(232, 0, 124, 0.16) !important;
+  transform: translateY(-2px);
+}
+.product-card .product-image {
+  border-radius: 14px 14px 0 0;
+  background: #f6efe7;
+}
+.product-card .font-bold.text-lg,
+.product-card ins {
+  color: var(--levo-primary);
+}
+.addtocart-btn {
+  background: var(--levo-primary) !important;
+  border-radius: 8px !important;
+  font-weight: 600;
+}
+.addtocart-btn:hover {
+  background: var(--levo-primary-dark) !important;
+}
+.wishlist-btn.active i {
+  color: var(--levo-primary);
+}
+
+/* ── Section titles ─────────────────────────────────────────────────── */
+.levo-section-title {
+  color: var(--levo-leather);
+  font-weight: 800;
+}
+.levo-section-title::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  background: var(--levo-primary);
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* ── Hero / banners ─────────────────────────────────────────────────── */
+.levo-hero .swiper-slide img {
+  border-radius: 14px;
+}
+.levo-offer-banner img {
+  border-radius: 14px;
+  border: 2px solid var(--levo-gold);
+}
+
+/* ── Category tiles ─────────────────────────────────────────────────── */
+.levo-cat-tile {
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+.levo-cat-tile .btn-primary {
+  background: #fff !important;
+  color: var(--levo-primary) !important;
+  border: none;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────── */
+.levo-footer {
+  background: var(--levo-leather);
+  color: #e9d9c8;
+}
+.levo-footer a {
+  color: #e9d9c8;
+}
+.levo-footer a:hover {
+  color: #fff;
+}
+.levo-footer h4 {
+  color: #fff;
+}
+.levo-footer-bottom {
+  background: #1d110b;
+  color: #b9a48f;
+  font-size: 13px;
+}
+
+/* ── Mobile bottom nav ──────────────────────────────────────────────── */
+#mobile-bottom-nav {
+  border-top: 2px solid var(--levo-primary);
+}
+#mobile-bottom-nav .mnav-item.is-active,
+#mobile-bottom-nav .mnav-item.is-active .mnav-label {
+  color: var(--levo-primary);
+}
+
+/* ── Checkout / cart accents ────────────────────────────────────────── */
+.levo-step-active {
+  background: var(--levo-primary) !important;
+  color: #fff !important;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--levo-primary) !important;
+}
+
+/* ── Mobile polish (BD low-end first) ───────────────────────────────── */
+@media (max-width: 767px) {
+  .product-card .product-image {
+    height: 220px !important;
+  }
+  .levo-header .logo-col img {
+    max-height: 40px;
+  }
+}

@@ -21,6 +21,8 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/css/store.css',
+                // THEME-15: per-theme bundle for the Levo Leather storefront.
+                'resources/css/store-levoleather.css',
                 // CLAUDE-14-FIX: mobile app-feel polish (tap delay, dvh, safe-area)
                 'resources/css/mobile-app-feel.css',
 
