@@ -371,11 +371,11 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | টাস্ক | মডেল | অবস্থা | কমিট | নোট |
 |---|---|---|---|---|
 | CLAUDE-DEMO-1  Demo theme colors + Satoshi font | Claude | ✅ DONE | `1ace464` | Font import (conditional: `DEMO_THEME_ENABLED=false`), CSS variables (--demo-color-primary: #e8007c, etc), kill-switch in `.env.example`, Vite CSS variable layer · রিপোর্ট → `.ai/reports/demo-analysis.md` |
-| CLAUDE-DEMO-2  Demo product card component | Claude | 🟨 IN PROGRESS | `ad3bdc9` | New `product-card-demo.blade.php`: discount badge, wishlist button, price display, 2-button layout (Add to Cart/Buy Now) · Tailwind demo colors (pink-600, green-500, magenta-500) in `tailwind.store.config.js` · Event handlers ready for Turbo integration · Next: test with Turbo nav + integrate into pages |
-| CLAUDE-DEMO-3  Time counter component | ⬜ PENDING | — | Component untuk flash sale countdown · Accept deadline param, update every 1s, Turbo-safe IIFE · Style: bordered boxes, primary color |
-| CLAUDE-DEMO-4  Grid & spacing updates | ⬜ PENDING | — | Product grid: 5 → 4 → 3 → 2 columns (desktop/tablet/mobile) · Responsive gap (15px desktop, 7px mobile) · Test at breakpoints |
-| CLAUDE-DEMO-5  Header & footer redesign | ⬜ PENDING | — | Update header (if different from demo) · Footer: 4 → 2 → 1 columns · Social icons, newsletter section |
-| CLAUDE-DEMO-6  Integration & browser test | ⬜ PENDING | — | Test all 6 phases together · Turbo nav 5+ pages · Mobile viewport (375px, 768px) · 0 console errors · Performance: LCP within 5% |
+| CLAUDE-DEMO-2  Demo product card component | Claude | ✅ DONE | `7625f9d` | New `product-card-demo.blade.php`: discount badge, wishlist button, price display, 2-button layout · Tailwind colors (pink-600, green-500, magenta-500) · Integrated into bestseller + product_slider pages · Event handlers ready |
+| CLAUDE-DEMO-3  Time counter component | Claude | ✅ DONE | `352c02b` | New `time-counter.blade.php`: flash sale countdown · Accept deadline param, update every 1s · Turbo-safe (onTurboLoad + onTurboUnload) · Styled: bordered boxes, magenta color |
+| CLAUDE-DEMO-4  Responsive grid layout | Claude | ✅ DONE | `83cbeba` | Grid: 5 → 4 → 3 → 2 columns (lg/md/sm/xs) · Gap: 15px (desktop) → 7px (mobile) · Fallback to Swiper carousel when disabled · Tested visually |
+| CLAUDE-DEMO-5  Header & footer styling | Claude | ✅ DONE | `8570026` | New components: `header-demo-style.blade.php`, `footer-demo-style.blade.php` · Header: pink hover states, clean minimal design · Footer: 4 → 2 → 1 columns · Included in main layout |
+| CLAUDE-DEMO-6  Testing guide & acceptance criteria | Claude | 🟨 IN PROGRESS | `a509cf6` | Comprehensive Phase 6 testing guide · Browser viewport testing (1440/768/425/375px) · Turbo nav test (5+ pages) · Performance baseline · Kill-switch verification · Test report template · Next: run full browser testing |
 
 **অবস্থার প্রতীক:** ⬜ PENDING · 🟨 IN PROGRESS · ✅ DONE · ❌ BLOCKED · ⏭️ SKIPPED
 
