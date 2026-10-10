@@ -55,10 +55,16 @@
          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
          <meta name="apple-mobile-web-app-title" content="{{ substr($store->name, 0, 12) }}" />
      @endif
-    <style>
-        {!! $storecss ?? '' !!}
-    </style>
-    @stack('page-style')
+     <style>
+         {!! $storecss ?? '' !!}
+     </style>
+     @stack('page-style')
+     
+     {{-- Demo Theme Styling (CLAUDE-DEMO Phase 5) --}}
+     @if (env('DEMO_THEME_ENABLED', false))
+       @include('components.header-demo-style')
+       @include('components.footer-demo-style')
+     @endif
 
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     @if($currantLang == 'ar' || $currantLang == 'he')
