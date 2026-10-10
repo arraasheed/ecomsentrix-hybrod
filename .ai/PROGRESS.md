@@ -366,6 +366,17 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | SIDEBAR-FIX  Sidebar leaf-links → Turbo (stopPropagation শুধু parent-toggle) | Muse Spark | ✅ DONE | `e3f284e` | browser-verified: leaf-click→turbo:visit (same-window) · submenu toggle OK · 0 নতুন error (শুধু pre-existing ApexCharts-NaN) · revert = `git revert e3f284e` |
 | THEME-15  Levoleather theme clone & skin | Claude | ✅ DONE | `4c62b43` | Cloned stylique to levoleather · leather palette & product override · inline bottom-nav |
 
+### Day 5 — Demo Site Theme Migration (branch: `day4/mobile-polish`)
+
+| টাস্ক | মডেল | অবস্থা | কমিট | নোট |
+|---|---|---|---|---|
+| CLAUDE-DEMO-1  Demo theme colors + Satoshi font | Claude | ✅ DONE | `1ace464` | Font import (conditional: `DEMO_THEME_ENABLED=false`), CSS variables (--demo-color-primary: #e8007c, etc), kill-switch in `.env.example`, Vite CSS variable layer · রিপোর্ট → `.ai/reports/demo-analysis.md` |
+| CLAUDE-DEMO-2  Demo product card component | Claude | 🟨 IN PROGRESS | `ad3bdc9` | New `product-card-demo.blade.php`: discount badge, wishlist button, price display, 2-button layout (Add to Cart/Buy Now) · Tailwind demo colors (pink-600, green-500, magenta-500) in `tailwind.store.config.js` · Event handlers ready for Turbo integration · Next: test with Turbo nav + integrate into pages |
+| CLAUDE-DEMO-3  Time counter component | ⬜ PENDING | — | Component untuk flash sale countdown · Accept deadline param, update every 1s, Turbo-safe IIFE · Style: bordered boxes, primary color |
+| CLAUDE-DEMO-4  Grid & spacing updates | ⬜ PENDING | — | Product grid: 5 → 4 → 3 → 2 columns (desktop/tablet/mobile) · Responsive gap (15px desktop, 7px mobile) · Test at breakpoints |
+| CLAUDE-DEMO-5  Header & footer redesign | ⬜ PENDING | — | Update header (if different from demo) · Footer: 4 → 2 → 1 columns · Social icons, newsletter section |
+| CLAUDE-DEMO-6  Integration & browser test | ⬜ PENDING | — | Test all 6 phases together · Turbo nav 5+ pages · Mobile viewport (375px, 768px) · 0 console errors · Performance: LCP within 5% |
+
 **অবস্থার প্রতীক:** ⬜ PENDING · 🟨 IN PROGRESS · ✅ DONE · ❌ BLOCKED · ⏭️ SKIPPED
 
 ---
