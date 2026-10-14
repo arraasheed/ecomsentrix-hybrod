@@ -79,7 +79,7 @@
                                 </span>
                             </div>
                         @endif
-                        <h2 class="font-extrabold text-2xl md:text-3xl mb-2" style="color: var(--levo-leather, #2b1a12);">{{ $product->name }}</h2>
+                        <h2 class="font-extrabold text-2xl md:text-3xl mb-2" style="color: var(--levo-leather, #1a1a1a);">{{ $product->name }}</h2>
 
                         {{-- <div class="flex flex-wrap items-center gap-2 mb-4">
                             <div class="flex text-yellow-400">
