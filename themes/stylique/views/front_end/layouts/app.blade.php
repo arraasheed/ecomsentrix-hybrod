@@ -15,14 +15,6 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
     rel="stylesheet">
-  
-  {{-- Demo Site Typography (CLAUDE-DEMO). Kill-switch: DEMO_THEME_ENABLED=false --}}
-  @if (env('DEMO_THEME_ENABLED', false))
-    <link
-      href="https://fonts.googleapis.com/css2?family=Satoshi:wght@300;400;500;700;900&display=swap"
-      rel="stylesheet">
-  @endif
-  
   <link rel="stylesheet" href="{{ asset('themes/' . $currentTheme . '/assets/css/all.min.css') }}">
   
   @if (env('LEGACY_TAILWIND_CDN', false))
@@ -55,16 +47,10 @@
          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
          <meta name="apple-mobile-web-app-title" content="{{ substr($store->name, 0, 12) }}" />
      @endif
-     <style>
-         {!! $storecss ?? '' !!}
-     </style>
-     @stack('page-style')
-     
-     {{-- Demo Theme Styling (CLAUDE-DEMO Phase 5) --}}
-     @if (env('DEMO_THEME_ENABLED', false))
-       @include('components.header-demo-style')
-       @include('components.footer-demo-style')
-     @endif
+    <style>
+        {!! $storecss ?? '' !!}
+    </style>
+    @stack('page-style')
 
     <script src="{{ asset('js/jquery.min.js') }}"></script>
     @if($currantLang == 'ar' || $currantLang == 'he')
