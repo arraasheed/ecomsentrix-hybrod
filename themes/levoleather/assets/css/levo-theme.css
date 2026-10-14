@@ -205,8 +205,28 @@ body {
 input:focus, select:focus, textarea:focus {
   border-color: var(--levo-primary) !important;
 }
+/* Cart drawer — levoleather skin (cream bg, pink total, 14px) */
+.levo-cart-drawer {
+  background: var(--levo-cream);
+}
+.levo-cart-drawer .text-primary-dark {
+  color: var(--levo-primary) !important;
+}
+.levo-cart-drawer .btn-primary {
+  border-radius: 10px;
+}
+/* Checkout — cream wrapper already via Blade, form cards get 14px */
+.levo-checkout .bg-gray-50 {
+  background: #fff !important;
+  border-radius: 14px !important;
+  border: 1px solid #f0e4d8;
+}
+/* Auth (login/register) — generic, cream bg */
+.levo-auth .bg-white {
+  border-radius: 14px;
+}
 
-/* ── Category grid — demo Products page (4→3→2, gap 15/13/8) ─────────── */
+/* ── Listing grids — demo Products (4→3→2, gap 15/8) + Collections ──── */
 .products-cards-demo {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -219,6 +239,23 @@ input:focus, select:focus, textarea:focus {
     gap: 8px;
     padding: 0 8px;
   }
+}
+/* Shared listing (#products-container) — only when levoleather layout is active */
+.levo-listing #products-container.grid-view {
+  gap: 15px !important;
+}
+@media (max-width: 599px) {
+  .levo-listing #products-container.grid-view {
+    gap: 8px !important;
+    padding: 0 4px;
+  }
+}
+.levo-listing .collection-card {
+  border-radius: 14px !important;
+  border: 1px solid #f0e4d8;
+}
+.levo-listing .collection-card:hover {
+  box-shadow: 0 8px 24px rgba(232,0,124,.12);
 }
 
 /* ── Mobile polish (BD low-end first) ───────────────────────────────── */

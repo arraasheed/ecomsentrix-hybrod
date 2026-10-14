@@ -13,8 +13,8 @@
         <div class="md:container w-full mx-auto px-4">
             <div class="bg-white rounded-2xl shadow-sm overflow-hidden" style="border: 1px solid #f0e4d8;">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 md:p-8">
-                    <!-- Product Images -->
-                     <div>
+                    <!-- Product Images — generic (no niche alt text) -->
+                      <div>
                         <!-- Main Image -->
                         <div class="swiper main-image-slider mb-4">
                             <div class="swiper-wrapper">
@@ -22,7 +22,7 @@
                                     @foreach ($product->Sub_image($product->id)['data'] as $item)
                                     <div class="swiper-slide">
                                         <div class="relative pt-[65%] border rounded-2xl overflow-hidden" style="background: #f6efe7; border-color: #e8d5c0;">
-                                        <img src="{{ get_file($item->image_path) }}" alt="Organic Vegetable Box"
+                                        <img src="{{ get_file($item->image_path) }}" alt="{{ $product->name }}"
                                             class="w-full h-full absolute top-0 left-0 object-contain" loading="eager" fetchpriority="high" decoding="async" />
                                         </div>
                                     </div>
@@ -30,7 +30,7 @@
                                 @else
                                     <div class="swiper-slide">
                                         <div class="relative pt-[65%] border rounded-2xl overflow-hidden" style="background: #f6efe7; border-color: #e8d5c0;">
-                                        <img src="{{ get_file($product->cover_image_path) }}" alt="Organic Vegetable Box"
+                                        <img src="{{ get_file($product->cover_image_path) }}" alt="{{ $product->name }}"
                                             class="w-full h-full absolute top-0 left-0 object-contain" loading="eager" fetchpriority="high" decoding="async" />
                                         </div>
                                     </div>
@@ -52,7 +52,7 @@
                                     <div class="swiper-slide">
                                         <div
                                         class="relative pt-[90%] thumb-image rounded-xl overflow-hidden border cursor-pointer" style="background: #f6efe7; border-color: #e8d5c0;">
-                                        <img src="{{ get_file($item->image_path) }}" alt="Organic Vegetable Box - View 1"
+                                        <img src="{{ get_file($item->image_path) }}" alt="{{ $product->name }}"
                                             class="absolute top-0 left-0 w-full h-full object-contain" loading="eager" fetchpriority="high" decoding="async" />
                                         </div>
                                     </div>
@@ -60,7 +60,7 @@
                                 @else
                                 <div class="swiper-slide">
                                     <div class="relative pt-[90%] thumb-image rounded-lg overflow-hidden border bg-gray-100 cursor-pointer">
-                                    <img src="{{ get_file($product->cover_image_path) }}" alt="Organic Vegetable Box - View 2"
+                                    <img src="{{ get_file($product->cover_image_path) }}" alt="{{ $product->name }}"
                                         class="absolute top-0 left-0 w-full h-full object-contain" loading="eager" fetchpriority="high" decoding="async" />
                                     </div>
                                 </div>
@@ -155,13 +155,13 @@
                                 {!! \App\Models\Product::ProductcardButton($slug, $product) !!}
                             @endif
                         </div>
-                        {{-- Levo trust badges (demo look, static info only) --}}
-                        <div class="grid grid-cols-3 gap-2 mt-4 text-center text-xs" style="color: var(--levo-leather-soft, #4a2f23);">
+                        {{-- Trust badges — generic (niche-agnostic) --}}
+                        <div class="grid grid-cols-3 gap-2 mt-4 text-center text-xs" style="color: var(--levo-leather-soft, #333333);">
                             <div class="rounded-lg py-2 px-1" style="background: #faf5ef;">
                                 <div class="font-bold">{{ __('Cash on Delivery') }}</div>
                             </div>
                             <div class="rounded-lg py-2 px-1" style="background: #faf5ef;">
-                                <div class="font-bold">{{ __('Genuine Leather') }}</div>
+                                <div class="font-bold">{{ __('Genuine Product') }}</div>
                             </div>
                             <div class="rounded-lg py-2 px-1" style="background: #faf5ef;">
                                 <div class="font-bold">{{ __('Easy Return') }}</div>
