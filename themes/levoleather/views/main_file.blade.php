@@ -6,59 +6,72 @@
 
 @section('content')
     <main>
-        <!-- Hero Slider Section -->
+        {{-- Demo Showcase 3 — left: TOP CATEGORIES menu + right: hero carousel (levoleather) --}}
         @if (isset($themeSettings['slider_status']) && $themeSettings['slider_status'] == 1)
-            <section class="section-spacing pb-0">
+            <section class="levo-showcase section-spacing pb-0" style="background: var(--levo-cream, #faf5ef);">
                 <div class="md:container mx-auto px-4 w-full">
-                    <div class="flex flex-wrap gap-4 banner-wrp">
-                        <div class="swiper hero-slider lg:flex-1 rounded-lg overflow-hidden levo-hero">
-                            <div class="swiper-wrapper">
-                                    @php
-                                        $sliders = json_decode($themeSettings['slider_repeater'] ?? '[]', true);
-
-                                        if (!is_array($sliders)) {
-                                            $sliders = [];
-                                        }
-                                    @endphp
-
+                    <div class="flex flex-col lg:flex-row gap-4 lg:gap-6">
+                        {{-- Left: TOP CATEGORIES (demo Showcase 3) --}}
+                        <div class="hidden lg:block lg:w-[260px] shrink-0">
+                            <div class="bg-white rounded-xl border overflow-hidden" style="border-color:#f0e4d8;">
+                                <div class="flex items-center gap-2 px-4 py-3 text-white" style="background: var(--levo-leather,#1a1a1a);">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+                                    <span class="font-bold text-sm tracking-wide">{{ __('TOP CATEGORIES') }}</span>
+                                </div>
+                                <ul class="divide-y" style="border-color:#f0e4d8;">
+                                    @foreach (collect($MainCategoryList)->take(10) as $cat)
+                                        <li>
+                                            <a href="{{ route('collections.all', [$slug, $cat->slug]) }}" class="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-[#faf5ef] transition">
+                                                <span class="text-gray-800">{{ $cat->name }}</span>
+                                                <svg width="14" height="14" viewBox="0 0 330 330" fill="#999"><path d="M250.6 154.4l-150-150c-5.9-5.9-15.4-5.9-21.2 0 -5.9 5.9-5.9 15.4 0 21.2l139.4 139.4 -139.4 139.4c-5.9 5.9-5.9 15.4 0 21.2 2.9 2.9 6.7 4.4 10.6 4.4s7.7-1.5 10.6-4.4l150-150c2.8-2.8 4.4-6.6 4.4-10.6S253.4 157 250.6 154.4z"/></svg>
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                    <li>
+                                        <a href="{{ route('collections', $slug) }}" class="flex items-center justify-between px-4 py-2.5 text-sm font-semibold hover:bg-[#faf5ef] transition" style="color: var(--levo-primary,#e8007c);">
+                                            <span>{{ __('All Categories') }}</span>
+                                            <svg width="14" height="14" viewBox="0 0 330 330" fill="currentColor"><path d="M250.6 154.4l-150-150c-5.9-5.9-15.4-5.9-21.2 0 -5.9 5.9-5.9 15.4 0 21.2l139.4 139.4 -139.4 139.4c-5.9 5.9-5.9 15.4 0 21.2 2.9 2.9 6.7 4.4 10.6 4.4s7.7-1.5 10.6-4.4l150-150c2.8-2.8 4.4-6.6 4.4-10.6S253.4 157 250.6 154.4z"/></svg>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        {{-- Right: Hero carousel (existing slider data, rounded 14px) --}}
+                        <div class="flex-1 min-w-0">
+                            <div class="swiper hero-slider rounded-xl overflow-hidden levo-hero border" style="border-color:#f0e4d8;">
+                                <div class="swiper-wrapper">
+                                    @php $sliders = json_decode($themeSettings['slider_repeater'] ?? '[]', true); if (!is_array($sliders)) $sliders = []; @endphp
                                     @foreach ($sliders as $slider_repeater)
                                         <div class="swiper-slide h-auto relative">
-                                            <img src="{{ get_file($slider_repeater['image']) }}"
-                                                width="500"
-                                                height="500"
-                                                alt="{{ $slider_repeater['big_text'] ?? 'New arrivals' }}"
-                                                loading="lazy"
-                                                class="w-full h-full object-cover object-left absolute rounded-lg" />
-
-                                            <div class="relative z-10 flex items-center md:py-[130px] py-[60px]">
-                                                <div class="text-white px-4 md:px-6 max-w-[500px]">
-                                                    <h2 class="text-3xl md:text-5xl text-black font-bold mb-4">
-                                                        {!! $slider_repeater['big_text'] ?? __('Step Into a World of Effortless Elegance') !!}
+                                            <img src="{{ get_file($slider_repeater['image']) }}" width="900" height="400" alt="{{ $slider_repeater['big_text'] ?? 'New arrivals' }}" loading="lazy" class="w-full h-full object-cover object-center absolute inset-0 rounded-xl" />
+                                            <div class="relative z-10 flex items-center md:py-[90px] py-[60px]">
+                                                <div class="px-4 md:px-8 max-w-[520px]">
+                                                    <h2 class="text-3xl md:text-4xl text-black font-extrabold mb-3 leading-tight" style="font-family:'Satoshi', sans-serif;">
+                                                        {!! $slider_repeater['big_text'] ?? __('New Arrivals') !!}
                                                     </h2>
-                                                    <p class="md:mb-8 mb-4 text-black max-w-sm">
-                                                        {!! $slider_repeater['content'] ?? __('Simple cuts. Solid tones. Elevated basics. Our mens lineup is designed for effortless dressing with a modern edge.') !!}
+                                                    <p class="md:mb-6 mb-4 text-black/80 max-w-sm text-sm md:text-base">
+                                                        {!! $slider_repeater['content'] ?? '' !!}
                                                     </p>
-                                                    <a href="{{ url($slider_repeater['button_link'] ?? '/' . $slug . '/product-list') }}" class="btn-primary">
+                                                    <a href="{{ url($slider_repeater['button_link'] ?? '/' . $slug . '/product-list') }}" class="btn-primary inline-block">
                                                         {{ $slider_repeater['button_text'] ?? __('Shop Now') }}
                                                     </a>
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
+                                </div>
+                                <div class="swiper-pagination"></div>
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
                             </div>
-
-                            <!-- Pagination -->
-                            <div class="swiper-pagination text-start"></div>
+                            @if (isset($themeSettings['more_offer_status']) && $themeSettings['more_offer_status'] == 1)
+                                <div class="mt-4 rounded-xl overflow-hidden border levo-offer-banner" style="border-color:#f0e4d8;">
+                                    <a href="{{ $themeSettings['more_offer_button_link'] ?? route('page.product-list', ['storeSlug' => $slug]) }}">
+                                        <img src="{{ get_file($themeSettings['more_offer_image']) }}" width="900" height="260" alt="offer" class="w-full h-auto object-cover" loading="lazy">
+                                    </a>
+                                </div>
+                            @endif
                         </div>
-                        @if (isset($themeSettings['more_offer_status']) && $themeSettings['more_offer_status'] == 1)
-                            <div class="lg:h-auto h-96 w-full offer-banner levo-offer-banner overflow-hidden">
-                                <a href="{{ $themeSettings['more_offer_button_link'] ?? route('page.product-list', ['storeSlug' => $slug]) }}" tabindex="0">
-                                    <img src="{{ get_file($themeSettings['more_offer_image']) }}" width="300" height="400" alt="offer-image"
-                                        class="w-full h-full object-cover object-top rounded-lg" loading="lazy">
-                                </a>
-                            </div>
-                        @endif
-
                     </div>
                 </div>
             </section>
@@ -131,132 +144,74 @@
             </section>
         @endif
 
-        <!-- Products Section -->
-        @if (!empty($themeSettings['product_status']) && $themeSettings['product_status'] == 1)
-            <section class="section-spacing">
-                <div class="md:container mx-auto px-4 w-full">
-                <div class="text-center md:mb-10 mb-6">
-                <h2 class="levo-section-title md:text-4xl text-3xl font-bold mb-4">{{ $themeSettings['product_title'] ?? 'Featured Products' }}</h2>
-                    <p class="text-gray-600 max-w-2xl mx-auto">
-                    {!! $themeSettings['product_description'] ?? 'Discover our carefully curated selection of premium fashion items' !!}
-                    </p>
-                </div>
-                <div class="swiper featured-products">
-                    <div class="swiper-wrapper">
-                        @foreach(collect($all_products)->reverse()->take(10) as $product)
-                            <div class="swiper-slide">
-                                <x-product-card :store="$store" :product="$product" />
-                            </div>
-                        @endforeach
-                    </div>
-                    <div class="arrow-wrapper">
-                        <div class="swiper-button-next"></div>
-                        <div class="swiper-button-prev"></div>
-                    </div>
-                </div>
-            </section>
-        @endif
-
-        <!-- Category Section -->
+        {{-- Demo Category 2 — horizontal icon strip (10 cats), View All --}}
         @if (!empty($themeSettings['category_status']) && $themeSettings['category_status'] == 1)
-            <section class="section-spacing bg-gray-50">
+            <section class="section-spacing" style="background: var(--levo-cream,#faf5ef);">
                 <div class="md:container mx-auto px-4 w-full">
-                    <div class="text-center md:mb-10 mb-6">
-                        <h2 class="levo-section-title md:text-4xl text-3xl font-bold mb-4">
-                        {!! $themeSettings['category_title'] ?? '__("Shop by Category")' !!}    </h2>
-                        <p class="text-gray-600 max-w-2xl mx-auto">
-                            {!! $themeSettings['category_description'] ?? 'Explore our diverse range of categories to find exactly what you need.' !!}
-                        </p>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl md:text-2xl font-extrabold" style="color:var(--levo-leather,#1a1a1a); font-family:'Satoshi',sans-serif;">
+                            {{ $themeSettings['category_title'] ?? __('Categories') }}
+                        </h2>
+                        <a href="{{ route('collections', $slug) }}" class="text-sm font-semibold flex items-center gap-1" style="color:var(--levo-primary,#e8007c);">
+                            {{ __('View All') }} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                        </a>
                     </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-4 md:gap-6">
-                        @foreach (collect($MainCategoryList)->take(3) as $category)
-                            <div class="levo-cat-tile group relative rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
-                                <img
-                                    src="{{ get_file($category->image_path) }}"
-                                    alt="{{ $category->name }}"
-                                    width="400" height="400"
-                                    loading="lazy"
-                                    class="w-full h-64 object-cover object-top rtl:scale-x-[-1]"
-                                />
-                                <div class="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-30 transition-all duration-300"></div>
-                                <div class="absolute inset-0 flex items-end md:p-6 p-4">
-                                    <div>
-                                        <h3 class="text-white text-2xl font-bold mb-3">{{ $category->name }}</h3>
-                                        <a href="{{ route('collections.all', [$slug, $category->slug]) }}"
-                                        class="btn-primary px-4 py-2 text-sm">
-                                           {{ __("Shop Now") }}
-                                        </a>
-                                    </div>
+                    <div class="grid gap-3" style="grid-template-columns: repeat(5, minmax(0,1fr));">
+                        @foreach (collect($MainCategoryList)->take(10) as $category)
+                            <a href="{{ route('collections.all', [$slug, $category->slug]) }}" class="group flex flex-col items-center gap-2 p-3 bg-white rounded-xl border text-center hover:shadow-md transition" style="border-color:#f0e4d8;">
+                                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden bg-[#f6efe7] border flex items-center justify-center" style="border-color:#f0e4d8;">
+                                    <img src="{{ get_file($category->image_path) }}" alt="{{ $category->name }}" width="80" height="80" loading="lazy" class="w-full h-full object-cover" />
                                 </div>
-                            </div>
+                                <span class="text-xs md:text-sm font-medium text-gray-800 line-clamp-1">{{ $category->name }}</span>
+                            </a>
                         @endforeach
                     </div>
+                    <style>@media (max-width: 767px){ .grid{ grid-template-columns: repeat(5, minmax(0,1fr)) !important; } } @media (max-width: 479px){ .grid{ grid-template-columns: repeat(4, minmax(0,1fr)) !important; } }</style>
                 </div>
             </section>
         @endif
 
-        
+        {{-- Demo Tag sectors — New Arrival / Popular / Flash Sale (3 blocks, each with countdown + 4-col grid) --}}
         @if (!empty($themeSettings['bestseller_status']) && $themeSettings['bestseller_status'] == 1)
-            <section class="section-spacing collection-sec">
-                <div class="md:container mx-auto px-4 w-full">
-                    <div class="text-center items-center md:mb-10 mb-6 flex flex-wrap gap-3 justify-center lg:justify-between">
-                    <h2 class="levo-section-title md:text-4xl text-3xl font-bold">
-                        {!! $themeSettings['bestseller_title'] ?? __('Explore Our Products') !!}
-                    </h2>
-                    <div class="overflow-x-auto">
-                        <ul class="flex mx-auto w-fit border-b">
-                        <li class="mr-2 whitespace-nowrap">
-                            <button class="tab-btn active py-2 px-4 font-medium text-center sm:border-b-2 border-[var(--primary-color)]" data-tab="all">
-                        {{__("All Products")}}
-                            </button>
-                        </li>
-                        @foreach(collect($MainCategoryList)->reverse()->take(4) as $category)
-                            <li class="mr-2 whitespace-nowrap">
-                            <button class="tab-btn py-2 px-4 font-medium text-center sm:border-b-2 border-transparent" data-tab="{{ $category->slug }}">
-                                {{ $category->name }}
-                            </button>
-                            </li>
-                        @endforeach
-                        </ul>
-                    </div>
-                    </div>
-
-                    {{-- Tab Content --}}
-                    <div class="tab-content-wrapper">
-                        {{-- All Products Tab --}}
-                        <div class="tab-content active" id="all-tab">
-                            <div class="swiper featured-products">
-                                <div class="swiper-wrapper">
-                                    @foreach(collect($all_products)->reverse()->take(10) as $product)
-                                        <div class="swiper-slide">
-                                            <x-product-card :store="$store" :product="$product" />
-                                        </div>
-                                    @endforeach
-                                </div>
-                                <div class="arrow-wrapper">
-                                    <div class="swiper-button-next"></div>
-                                    <div class="swiper-button-prev"></div>
+            @php
+                $levoTags = collect($tags ?? [])->take(3);
+                if ($levoTags->isEmpty()) $levoTags = collect([ (object)['name'=>'New Arrivals','products'=> collect($all_products)->take(8) ] ]);
+            @endphp
+            @foreach ($levoTags as $tag)
+                <section class="section-spacing" style="background: var(--levo-cream,#faf5ef);">
+                    <div class="md:container mx-auto px-4 w-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <h2 class="text-xl md:text-2xl font-extrabold" style="color:var(--levo-leather,#1a1a1a); font-family:'Satoshi',sans-serif;">{{ $tag->name ?? $tag['name'] ?? __('Products') }}</h2>
+                                <div class="hidden sm:flex items-center gap-1 text-xs">
+                                    <span class="px-2 py-1 rounded bg-white border" style="border-color:#f0e4d8;">00</span><span class="text-gray-500">H</span>
+                                    <span class="px-2 py-1 rounded bg-white border" style="border-color:#f0e4d8;">31</span><span class="text-gray-500">M</span>
+                                    <span class="px-2 py-1 rounded bg-white border" style="border-color:#f0e4d8;">25</span><span class="text-gray-500">S</span>
                                 </div>
                             </div>
+                            <a href="{{ route('page.product-list', $slug) }}" class="text-sm font-semibold flex items-center gap-1" style="color:var(--levo-primary,#e8007c);">{{ __('View All') }} <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></a>
                         </div>
-                        {{-- Category Tabs --}}
-                        @foreach(collect($MainCategoryList)->reverse()->take(4) as $category)
-                            <div class="tab-content hidden" id="{{ $category->slug }}-tab">
-                            <div class="swiper featured-products">
-                                <div class="swiper-wrapper">
-                                @foreach($category->product_details as $product)
-                                    <div class="swiper-slide">
-                                    <x-product-card :store="$store" :product="$product" />
-                                    </div>
-                                @endforeach
-                                </div>
-                                <div class="arrow-wrapper">
-                                <div class="swiper-button-next"></div>
-                                <div class="swiper-button-prev"></div>
-                                </div>
-                            </div>
-                            </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                            @foreach (collect($tag->products ?? $tag['products'] ?? $all_products)->take(8) as $product)
+                                <x-product-card :store="$store" :product="$product" />
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+            @endforeach
+        @endif
+
+        <!-- Products Section (fallback when bestseller off) -->
+        @if (!empty($themeSettings['product_status']) && $themeSettings['product_status'] == 1 && empty($themeSettings['bestseller_status']))
+            <section class="section-spacing" style="background: var(--levo-cream,#faf5ef);">
+                <div class="md:container mx-auto px-4 w-full">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl md:text-2xl font-extrabold" style="color:var(--levo-leather,#1a1a1a); font-family:'Satoshi',sans-serif;">{{ $themeSettings['product_title'] ?? __('Featured Products') }}</h2>
+                        <a href="{{ route('page.product-list', $slug) }}" class="text-sm font-semibold" style="color:var(--levo-primary,#e8007c);">{{ __('View All') }}</a>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                        @foreach(collect($all_products)->reverse()->take(8) as $product)
+                            <x-product-card :store="$store" :product="$product" />
                         @endforeach
                     </div>
                 </div>

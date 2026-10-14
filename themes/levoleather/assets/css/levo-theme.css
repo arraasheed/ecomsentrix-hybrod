@@ -146,9 +146,18 @@ body {
   border-radius: 2px;
 }
 
-/* ── Hero / banners ─────────────────────────────────────────────────── */
+/* ── Hero / Showcase 3 ──────────────────────────────────────────────── */
+.levo-showcase {
+  padding-top: 12px;
+}
+.levo-hero .swiper-slide {
+  min-height: 320px;
+}
 .levo-hero .swiper-slide img {
   border-radius: 14px;
+}
+.levo-hero .swiper-pagination-bullet-active {
+  background: var(--levo-primary) !important;
 }
 .levo-offer-banner img {
   border-radius: 14px;
