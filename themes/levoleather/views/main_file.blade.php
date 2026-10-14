@@ -64,17 +64,15 @@
             </section>
         @endif
 
-        <!-- logo Section -->
-        @if (!empty($themeSettings['logo_status']) && $themeSettings['logo_status'] == 1)
+        <!-- logo Section — generic (niche-agnostic), hidden if no logos configured -->
+        @if (!empty($themeSettings['logo_status']) && $themeSettings['logo_status'] == 1 && !empty($themeSettings['logo_repeater']))
         <section class="section-spacing">
             <div class="md:container mx-auto px-4 w-full">
                 <!-- Swiper container -->
                 <div class="swiper partnerSwiper pb-0 relative">
                     <div class="swiper-wrapper">
-                        @if (!empty($themeSettings['logo_repeater']))
                         @foreach (json_decode($themeSettings['logo_repeater'],true) as $logo)
                                 <div class="swiper-slide">
-                                
                                     <div class="partner-logo flex items-center justify-center bg-white rounded-xl h-full">
                                         <img
                                             src="{{ get_file($logo['image']) }}"
@@ -86,7 +84,6 @@
                                     </div>
                                 </div>
                             @endforeach
-                        @endif
                     </div>
 
                     <div class="arrow-wrapper">
@@ -205,7 +202,7 @@
                 <div class="md:container mx-auto px-4 w-full">
                     <div class="text-center items-center md:mb-10 mb-6 flex flex-wrap gap-3 justify-center lg:justify-between">
                     <h2 class="levo-section-title md:text-4xl text-3xl font-bold">
-                        {!! $themeSettings['bestseller_title'] ?? 'Explore Our Products' !!}
+                        {!! $themeSettings['bestseller_title'] ?? __('Explore Our Products') !!}
                     </h2>
                     <div class="overflow-x-auto">
                         <ul class="flex mx-auto w-fit border-b">

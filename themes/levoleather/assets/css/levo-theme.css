@@ -1,19 +1,33 @@
 /* ==========================================================================
-   Levo Leather theme skin (THEME-15)
-   Brand tokens taken from the reference demo (:root --shop-color-*), mapped
-   onto this codebase's --primary-color contract used by product cards,
-   buttons and badges. Loaded ONLY by the levoleather layout via
+   Levo Leather theme skin (THEME-15) — Phase A Redesign
+   Tokens taken from reference demo 15_levoleather/index.html (:root
+   --shop-color-*). Generic palette — design identical to demo, color NOT
+   leather-specific. Dummy data stays leather (demo products), but palette
+   works for any future niche (fashion/electronics/grocery) without code
+   change. Loaded ONLY by levoleather layout via
    resources/css/store-levoleather.css (after main-style.css, so these win).
-   Kill-switch: switch the store back to the stylique theme in admin.
+   Kill-switch: switch store back to stylique in admin.
    ========================================================================== */
 
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap');
+
 :root {
+  /* Demo source: index.html <style>:root --shop-color-* */
+  --shop-color-primary: #e8007c;
+  --shop-color-secondary: #00c153;
+  --shop-color-tertiary: #ff00ae;
+  --shop-color-primary-light: color-mix(in srgb, var(--shop-color-primary) 20%, white 80%);
+  --shop-color-primary-light-2: color-mix(in srgb, var(--shop-color-primary) 30%, white 70%);
+  --shop-color-primary-light-3: color-mix(in srgb, var(--shop-color-primary) 10%, white 90%);
+
+  /* Theme skin — generic (not leather brown). Keep --levo-* names for
+     backward compat with existing header/card/footer rules. */
   --levo-primary: #e8007c;
   --levo-primary-dark: #b80062;
   --levo-secondary: #00c153;
   --levo-accent: #ff00ae;
-  --levo-leather: #2b1a12;
-  --levo-leather-soft: #4a2f23;
+  --levo-leather: #1a1a1a;
+  --levo-leather-soft: #333333;
   --levo-cream: #faf5ef;
   --levo-gold: #c9a24b;
 
@@ -25,7 +39,7 @@
 
 body {
   background: var(--levo-cream);
-  font-family: 'Poppins', system-ui, sans-serif;
+  font-family: 'Satoshi', 'Poppins', system-ui, sans-serif;
 }
 
 /* ── Header ─────────────────────────────────────────────────────────── */
@@ -79,6 +93,12 @@ body {
 .cart-badge,
 .mnav-badge {
   background: var(--levo-primary) !important;
+}
+
+/* Demo: amount badge uses tertiary for discount context */
+.levo-badge-tertiary {
+  background: var(--shop-color-tertiary);
+  color: #fff;
 }
 
 /* ── Product cards (demo look: rounded, soft shadow, pink price) ────── */
@@ -135,8 +155,10 @@ body {
   border: 2px solid var(--levo-gold);
 }
 
-/* ── Category tiles ─────────────────────────────────────────────────── */
-.levo-cat-tile {
+/* ── Category tiles — demo Category 2 (rounded 14px) ────────────────── */
+.levo-cat-tile,
+.collection-sec .relative.rounded-lg,
+.section-spacing.bg-gray-50 .relative.rounded-lg {
   border-radius: 14px !important;
   overflow: hidden;
 }
@@ -184,11 +206,23 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--levo-primary) !important;
 }
 
+/* ── Category grid — demo Products page (4→3→2, gap 15/13/8) ─────────── */
+.products-cards-demo {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+@media (max-width: 1200px) { .products-cards-demo { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 599px) {
+  .products-cards-demo {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 0 8px;
+  }
+}
+
 /* ── Mobile polish (BD low-end first) ───────────────────────────────── */
 @media (max-width: 767px) {
-  .product-card .product-image {
-    height: 220px !important;
-  }
   .levo-header .logo-col img {
     max-height: 40px;
   }

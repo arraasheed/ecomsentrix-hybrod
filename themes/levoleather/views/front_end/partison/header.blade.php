@@ -1,12 +1,12 @@
-{{-- Levo Leather header (THEME-15): demo-style leather skin.
-     All Blade logic/routes/toggles kept identical to the stylique base;
-     only markup classes changed (+ category URL fixed to collections.all). --}}
+{{-- Levo header (THEME-15 — Phase A): generic skin, demo Header 2 look.
+     Logic/routes/toggles identical to stylique base; only look changed.
+     Dummy catalog is still leather, but copy is niche-agnostic. --}}
 <header class="bg-white sticky-header site-header levo-header">
-    {{-- Top announcement bar (leather) --}}
+    {{-- Top announcement bar — demo Header 2 style, generic copy --}}
     <div class="levo-topbar">
       <div class="md:container mx-auto px-4 w-full flex items-center justify-center gap-2 py-1.5">
         <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none"><path d="M10 1.5L12.6 7l6 .5-4.6 3.9 1.4 5.9L10 14l-5.4 3.3 1.4-5.9L1.4 7.5l6-.5z" fill="#c9a24b"/></svg>
-        <span>{{ $themeSettings['topbar_text'] ?? __('Genuine Leather — Cash on Delivery Available') }}</span>
+        <span>{{ $themeSettings['topbar_text'] ?? __('Free Delivery on Orders — Cash on Delivery Available') }}</span>
       </div>
     </div>
     <!-- Middle Section -->
@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="flex-grow relative search-input">
-                      <input type="text" id="desktop-search-input" class="w-full border-t border-b border-gray-300 px-4 py-2 outline-none" placeholder="{{ __('Search leather goods...') }}" aria-label="Search" list="products" name="search_product" id="product">
+                      <input type="text" id="desktop-search-input" class="w-full border-t border-b border-gray-300 px-4 py-2 outline-none" placeholder="{{ __('Search products...') }}" aria-label="Search" list="products" name="search_product" id="product">
                       <datalist id="products">
                           @foreach ($search_products as $pro_id => $pros)
                               <option value="{{ $pros }}"></option>
