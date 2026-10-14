@@ -1,6 +1,6 @@
-  <!-- Footer -->
+  {{-- Demo Footer 3 replica: dark, 4 cols (Contact/Quick/Useful + logo), Satoshi, pink titles --}}
   @if ($themeSettings['footer_status'] && $themeSettings['footer_status'] == '1')
-    <footer class="levo-footer site-footer pt-12 pb-8">
+    <footer class="levo-footer site-footer pt-10 pb-6" style="font-family:'Satoshi',system-ui,sans-serif;">
       <div class="md:container mx-auto px-4 w-full">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-8 gap-4">
           <!-- About Column -->

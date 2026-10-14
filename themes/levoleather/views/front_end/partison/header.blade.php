@@ -9,44 +9,34 @@
         <span>{{ $themeSettings['topbar_text'] ?? __('Free Delivery on Orders — Cash on Delivery Available') }}</span>
       </div>
     </div>
-    <!-- Middle Section -->
-    <div class="py-3 border-b border-gray-200">
+    <!-- Middle Section — demo Header 2: logo | search+spin | cart+login, Satoshi -->
+    <div class="py-2.5 border-b border-gray-200">
       <div class="md:container mx-auto px-4 w-full">
-        <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center justify-between gap-3">
             @if(isset($themeSettings['header_logo']) && !empty($themeSettings['header_logo']))
-              <!-- Logo -->
-              <div class="logo-col">
-                <h1>
-                    <a href="{{ route('landing_page', $slug) }}">
-                      <img src="{{ get_file($themeSettings['header_logo'] ?? '') }}" alt="Logo" loading="eager" fetchpriority="high" decoding="async">
-                    </a>
-                </h1>
+              <div class="logo-col shrink-0">
+                <a href="{{ route('landing_page', $slug) }}">
+                  <img src="{{ get_file($themeSettings['header_logo'] ?? '') }}" alt="Logo" loading="eager" fetchpriority="high" decoding="async" class="h-8 md:h-9 object-contain">
+                </a>
               </div>
             @endif
             @if(isset($themeSettings['header_search_status']) && $themeSettings['header_search_status'] == 1)
-              <!-- Search Bar (Hidden on mobile) -->
-              <div class="hidden lg:flex flex-1 max-w-xl mx-4">
-                <form class="w-full flex" id="desktop-search-form">
-                    <div class="relative">
-                            <select class="border border-gray-300 rounded-l-lg rtl:rounded-r-lg rtl:rounded-l-none">
-                                    <option>{{__("All Categories")}}</option>
-                                @foreach ($MainCategoryList as $category)
-                                    <option>{{$category->name}}</option>
-                                @endforeach
-                            </select>
+              <div class="hidden lg:flex flex-1 max-w-[560px] mx-3">
+                <form class="w-full flex rounded-lg overflow-hidden border" style="border-color: var(--levo-primary,#e8007c);" id="desktop-search-form">
+                    <div class="relative hidden md:block">
+                        <select class="h-10 border-0 border-r bg-white text-sm pr-6 pl-3 outline-none" style="border-color:#e5e7eb;">
+                            <option>{{__("All Categories")}}</option>
+                            @foreach ($MainCategoryList as $category)<option>{{$category->name}}</option>@endforeach
+                        </select>
                     </div>
-
-                    <div class="flex-grow relative search-input">
-                      <input type="text" id="desktop-search-input" class="w-full border-t border-b border-gray-300 px-4 py-2 outline-none" placeholder="{{ __('Search products...') }}" aria-label="Search" list="products" name="search_product" id="product">
-                      <datalist id="products">
-                          @foreach ($search_products as $pro_id => $pros)
-                              <option value="{{ $pros }}"></option>
-                          @endforeach
-                      </datalist>
-                      </div>
-                      <button type="submit" class="levo-search-btn btn-primary px-4 py-2 rounded-l-none rtl:rounded-l-lg rtl:rounded-r-none">
-                        <i class="fas fa-search"></i>
-                      </button>
+                    <div class="flex-grow relative search-input flex items-center bg-white">
+                      <input type="text" id="desktop-search-input" class="w-full h-10 px-3 outline-none text-sm" placeholder="{{ __('Search products...') }}" aria-label="Search" list="products" name="search_product">
+                      <datalist id="products">@foreach ($search_products as $pro_id => $pros)<option value="{{ $pros }}"></option>@endforeach</datalist>
+                      <span class="hidden md:flex items-center gap-1.5 text-xs text-gray-500 pr-2 shrink-0" id="search-spin-words"><span class="spin-word">{{ __('lipstick') }}</span></span>
+                    </div>
+                    <button type="submit" class="levo-search-btn btn-primary px-5 h-10 rounded-none text-sm font-semibold flex items-center gap-1 shrink-0">
+                        <i class="fas fa-search text-xs"></i> <span class="hidden sm:inline">{{ __('Search') }}</span>
+                    </button>
                 </form>
               </div>
             @endif
