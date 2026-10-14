@@ -361,7 +361,20 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | CLAUDE-13  Skeleton loader + Turbo preview | Gemini / Claude | ✅ DONE | `064b870` | Progress bar 150ms delay & custom gradient · Skeleton overlay debounced (150ms, 0 CLS, prefers-reduced-motion) · Instant tap :active scaling · Selective prefetch on bottom nav, main nav, pagination · fix-forward: prefetch filter, skeleton unstick, inline progress style, kill-switch [CLAUDE-13-FIX `96476ad`] + scroll `525b6a3` |
 | CLAUDE-14  Touch polish (tap delay, dvh, safe-area) | Claude | ✅ DONE | `48d60df` + vite-input fix `e35ed26` + color_flag fix `a78311b` | browser-verified by Muse Spark: storefront 200 + Turbo nav + prefetch policy + admin dashboard 200, 0 console errors |
 | CLAUDE-15  Vue island: cart drawer + variant | Claude + Muse Spark | ✅ DONE | feat commit (this task); checkpoints `1e33cf5` `e01910d` `1004506` | session-auth endpoints (`customer.php`), NOT api.php — Sanctum token would need new auth surface · 5 bugs fixed in finish pass (unmount scope, remove endpoint, teleport-wipe race, mount race, currency parity) · 12-point matrix: 8 PASS, 4 PARTIAL (4/5 variant fixtures নেই, 9 heap-snapshot নয়, 11 offline live নয়) · 0 console errors · kill-switch `SPA_VUE_ISLANDS` দুই দিকে পরীক্ষিত · রিপোর্ট → `.ai/reports/api-contract.md` + `.ai/reports/claude15-final-test.md` |
-| CLAUDE-16  চূড়ান্ত টেস্ট + master-এ merge | Muse Spark | ✅ DONE | merge `3b82fbb` · tags `day4-complete` + `v1.0-spa-pwa` | regression: 7 storefront + 5 admin পেজ, 0 console error · kill-switch TURBO/ISLANDS দুই দিকে ✅ · Day 4 Final benchmark · HANDOVER.md · রিপোর্ট → `.ai/reports/benchmark.md` ("Day 4 Final") |
+<| CLAUDE-16  চূড়ান্ত টেস্ট + master-এ merge | Muse Spark | ✅ DONE | merge `3b82fbb` · tags `day4-complete` + `v1.0-spa-pwa` | regression: 7 storefront + 5 admin পেজ, 0 console error · kill-switch TURBO/ISLANDS দুই দিকে ✅ · Day 4 Final benchmark · HANDOVER.md · রিপোর্ট → `.ai/reports/benchmark.md` ("Day 4 Final") |
+| SIDEBAR-FIX  Sidebar leaf-links → Turbo (stopPropagation শুধু parent-toggle) | Muse Spark | ✅ DONE | `e3f284e` | browser-verified: leaf-click→turbo:visit (same-window) · submenu toggle OK · 0 নতুন error (শুধু pre-existing ApexCharts-NaN) · revert = `git revert e3f284e` |
+| THEME-15  Levoleather theme clone & skin | Claude | ✅ DONE | `4c62b43` → `fe48dc0` | Generic redesign: demo Header2/Card3, 4-col listing, cream bg #faf5ef, Satoshi, generic copy (no leather) · Phases A+B+C |
+
+### Day 5 — Demo Site Theme Migration (branch: `day4/mobile-polish`)
+
+| টাস্ক | মডেল | অবস্থা | কমিট | নোট |
+|---|---|---|---|---|
+| CLAUDE-DEMO-1  Demo theme colors + Satoshi font | Claude | ✅ DONE | `1ace464` | Font import (conditional: `DEMO_THEME_ENABLED=false`), CSS variables (--demo-color-primary: #e8007c, etc), kill-switch in `.env.example`, Vite CSS variable layer · রিপোর্ট → `.ai/reports/demo-analysis.md` |
+| CLAUDE-DEMO-2  Demo product card component | Claude | ✅ DONE | `7625f9d` | New `product-card-demo.blade.php`: discount badge, wishlist button, price display, 2-button layout · Tailwind colors (pink-600, green-500, magenta-500) · Integrated into bestseller + product_slider pages · Event handlers ready |
+| CLAUDE-DEMO-3  Time counter component | Claude | ✅ DONE | `352c02b` | New `time-counter.blade.php`: flash sale countdown · Accept deadline param, update every 1s · Turbo-safe (onTurboLoad + onTurboUnload) · Styled: bordered boxes, magenta color |
+| CLAUDE-DEMO-4  Responsive grid layout | Claude | ✅ DONE | `83cbeba` | Grid: 5 → 4 → 3 → 2 columns (lg/md/sm/xs) · Gap: 15px (desktop) → 7px (mobile) · Fallback to Swiper carousel when disabled · Tested visually |
+| CLAUDE-DEMO-5  Header & footer styling | Claude | ✅ DONE | `8570026` | New components: `header-demo-style.blade.php`, `footer-demo-style.blade.php` · Header: pink hover states, clean minimal design · Footer: 4 → 2 → 1 columns · Included in main layout |
+| CLAUDE-DEMO-6  Testing guide & acceptance criteria | Claude | 🟨 IN PROGRESS | `a509cf6` | Comprehensive Phase 6 testing guide · Browser viewport testing (1440/768/425/375px) · Turbo nav test (5+ pages) · Performance baseline · Kill-switch verification · Test report template · Next: run full browser testing |
 
 ### Phase-2 — FraudPixelShield + Admin SPA coverage (branch: `feat/fraud-shield` for C/D)
 

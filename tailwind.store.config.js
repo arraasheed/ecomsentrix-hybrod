@@ -39,6 +39,19 @@ export default {
                 orange: {
                     500: '#f8796c',
                 },
+                // Demo Site Colors (Levo Leather reference - CLAUDE-DEMO)
+                // Used when DEMO_THEME_ENABLED=true in .env
+                pink: {
+                    600: '#e8007c',  // Primary accent (demo)
+                    700: '#d40069',  // Darker hover state
+                },
+                green: {
+                    500: '#00c153',  // Secondary (demo)
+                    600: '#00b84d',  // Darker hover state
+                },
+                magenta: {
+                    500: '#ff00ae',  // Tertiary highlight (demo)
+                },
             },
         },
     },

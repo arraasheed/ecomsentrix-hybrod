@@ -28,3 +28,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Demo Site Theme Colors (CLAUDE-DEMO). 
+ * Levo Leather reference design. 
+ * Kill-switch: DEMO_THEME_ENABLED=false in .env
+ */
+@layer base {
+  :root {
+    --demo-color-primary: #e8007c;
+    --demo-color-secondary: #00c153;
+    --demo-color-tertiary: #ff00ae;
+    --demo-color-primary-light: color-mix(in srgb, var(--demo-color-primary) 20%, white 80%);
+    --demo-color-primary-light-2: color-mix(in srgb, var(--demo-color-primary) 30%, white 70%);
+    --demo-color-primary-light-3: color-mix(in srgb, var(--demo-color-primary) 10%, white 90%);
+  }
+
+  /* Apply Satoshi font if demo theme enabled (checked via CSS has selector) */
+  body {
+    @supports (font-family: 'Satoshi') {
+      font-family: 'Satoshi', sans-serif;
+    }
+  }
+}

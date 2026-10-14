@@ -1,0 +1,15 @@
+/* Storefront CSS bundle for the Levo Leather theme (THEME-15).
+ * Mirrors resources/css/store.css but imports levoleather's own theme CSS
+ * plus levo-theme.css (brand tokens + component skin).
+ * Entry registered in vite.config.js; loaded by the levoleather layout only.
+ */
+@import url('../../themes/levoleather/assets/css/swiper-bundle.min.css');
+@import url('../../themes/levoleather/assets/css/main-style.css');
+@import url('../../themes/levoleather/assets/css/levo-theme.css');
+
+/* Same storefront Tailwind config as the default bundle (forms plugin OFF). */
+@config "../../tailwind.store.config.js";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
