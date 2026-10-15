@@ -354,8 +354,16 @@ function horizontalmobilemenuclick() {
     pcsublinkclick[n].dataset.menuclickBound = "1";
     pcsublinkclick[n].addEventListener("click", function (event) {
       // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+      // ADMIN-NAV-FIX: only stop when the click was on THIS li's own toggle
+      // link. A click bubbling up from a leaf inside its submenu must reach
+      // Turbo — otherwise every submenu leaf click does a full page reload
+      // (traced live: the parent li's stopPropagation killed the event).
       if (dashLiHasSubmenu(this)) {
-        event.stopPropagation();
+        var clickedLi =
+          event.target && event.target.closest ? event.target.closest("li") : null;
+        if (clickedLi === this) {
+          event.stopPropagation();
+        }
       }
       var targetElement = event.target;
       if (targetElement.tagName == "SPAN") {
@@ -382,8 +390,14 @@ function horizontalmobilemenuclick() {
     pcsubchildlinkclick[n].dataset.menuclickBound = "1";
     pcsubchildlinkclick[n].addEventListener("click", function (event) {
       // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+      // ADMIN-NAV-FIX: see pcsublinkclick above — stop only for clicks on
+      // this li's own toggle, never for leaves bubbling up from its submenu.
       if (dashLiHasSubmenu(this)) {
-        event.stopPropagation();
+        var clickedLi =
+          event.target && event.target.closest ? event.target.closest("li") : null;
+        if (clickedLi === this) {
+          event.stopPropagation();
+        }
       }
       var targetElement = event.target;
       if (targetElement.tagName == "SPAN") {
@@ -448,8 +462,16 @@ function menuclick() {
       pclinkclick[i].dataset.menuclickBound = "1";
       pclinkclick[i].addEventListener("click", function (event) {
         // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+        // ADMIN-NAV-FIX: only stop when the click was on THIS li's own toggle
+        // link. A click bubbling up from a leaf inside its submenu must reach
+        // Turbo — otherwise every submenu leaf click does a full page reload
+        // (traced live: the parent li's stopPropagation killed the event).
         if (dashLiHasSubmenu(this)) {
-          event.stopPropagation();
+          var clickedLi =
+            event.target && event.target.closest ? event.target.closest("li") : null;
+          if (clickedLi === this) {
+            event.stopPropagation();
+          }
         }
         var targetElement = event.target;
         if (targetElement.tagName == "SPAN") {
@@ -482,8 +504,16 @@ function menuclick() {
       pcsublinkclick[i].dataset.menuclickBound = "1";
       pcsublinkclick[i].addEventListener("click", function (event) {
         // SIDEBAR-FIX: leaf links bubble to Turbo; parents keep accordion.
+        // ADMIN-NAV-FIX: only stop when the click was on THIS li's own toggle
+        // link. A click bubbling up from a leaf inside its submenu must reach
+        // Turbo — otherwise every submenu leaf click does a full page reload
+        // (traced live: the parent li's stopPropagation killed the event).
         if (dashLiHasSubmenu(this)) {
-          event.stopPropagation();
+          var clickedLi =
+            event.target && event.target.closest ? event.target.closest("li") : null;
+          if (clickedLi === this) {
+            event.stopPropagation();
+          }
         }
         var targetElement = event.target;
         if (targetElement.tagName == "SPAN") {

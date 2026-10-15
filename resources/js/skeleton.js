@@ -16,6 +16,11 @@ import '../css/skeleton.css';
 // To disable: change `true` to `false` below.
 const SKELETON_ENABLED = true;
 
+// ── Prefetch kill-switch (ADMIN-NAV-FIX) ────────────────────────────────────
+// Set to false to disable ALL speculative prefetch (storefront nav/bottom-nav
+// AND the admin sidebar added by this fix) while keeping the skeleton overlay.
+const PREFETCH_ENABLED = true;
+
 let skeletonTimer = null;
 let skeletonEl = null;
 
@@ -124,7 +129,7 @@ document.addEventListener('turbo:before-cache', () => {
 
 function initSelectivePrefetch() {
     // Kill-switch: skip entirely if disabled
-    if (!SKELETON_ENABLED) return;
+    if (!SKELETON_ENABLED || !PREFETCH_ENABLED) return;
 
     // Excluded href patterns — cart/wishlist/account/checkout/auth routes
     // must never be speculatively prefetched (stateful or dynamic routes).
@@ -158,6 +163,41 @@ function initSelectivePrefetch() {
     // Enable prefetch on pagination links
     const paginationLinks = document.querySelectorAll('.pagination a[href], [data-pagination] a[href]');
     paginationLinks.forEach((link) => {
+        link.setAttribute('data-turbo-prefetch', 'true');
+    });
+
+    // ── Admin sidebar prefetch (ADMIN-NAV-FIX) ──────────────────────────────
+    // The storefront already prefetched on hover; the admin sidebar did not,
+    // so every first click on a menu item paid the full server round-trip.
+    // Same trick here: safe GET links get data-turbo-prefetch so the HTML is
+    // fetched on hover and the click renders from Turbo's cache instantly.
+    //
+    // Safety (prefetch is a GET, so anything state-changing must never be
+    // prefetched): skip logout/delete-style routes, modal forms
+    // (data-ajax-popup / data-bs-toggle), links with inline onclick handlers,
+    // external links, and parameterised URLs (can serve stale variants).
+    // Parent menu items (dash-hasmenu) carry href="#!" and only toggle the
+    // submenu, so the href check drops them.
+    const adminSkip = ['logout', 'login', 'register', 'delete', 'destroy', 'remove', 'trash', 'status', 'pos'];
+    const isSafeAdminHref = (href) => {
+        if (!href) return false;
+        if (/^(javascript:|#|mailto:|tel:)/.test(href)) return false;
+        try {
+            const url = new URL(href, window.location.href);
+            if (url.origin !== window.location.origin) return false;
+            if (url.search) return false;
+            return !adminSkip.some((p) => url.pathname.toLowerCase().includes(p));
+        } catch {
+            return false;
+        }
+    };
+
+    const sidebarLinks = document.querySelectorAll('.dash-navbar a.dash-link[href]');
+    sidebarLinks.forEach((link) => {
+        if (link.hasAttribute('data-turbo-prefetch')) return;
+        if (link.hasAttribute('data-ajax-popup') || link.hasAttribute('data-bs-toggle') || link.hasAttribute('data-toggle')) return;
+        if (link.getAttribute('onclick')) return;
+        if (!isSafeAdminHref(link.getAttribute('href'))) return;
         link.setAttribute('data-turbo-prefetch', 'true');
     });
 }

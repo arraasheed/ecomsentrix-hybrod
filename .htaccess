@@ -100,3 +100,29 @@
 # ============================================================================
 # END Cache-Control headers
 # ============================================================================
+
+# ============================================================================
+# BEGIN gzip compression (ADMIN-NAV-FIX — admin panel loading fix)
+# ============================================================================
+# Every response was shipping uncompressed (no Content-Encoding at all). On the
+# admin panel that meant ~70-100 KB of HTML per navigation on top of the
+# server's TTFB. mod_deflate compresses text responses to roughly a third.
+#
+# KILL-SWITCH: delete or comment out everything between BEGIN and END.
+# Browsers fall back to uncompressed; nothing else depends on this block.
+# ============================================================================
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/xml application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+
+    # Do not re-compress already-compressed formats (webp/jpeg/zip/video).
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|webp|zip|gz|rar|mp4|webm)$ no-gzip dont-vary
+</IfModule>
+
+# ============================================================================
+# END gzip compression
+# ============================================================================
