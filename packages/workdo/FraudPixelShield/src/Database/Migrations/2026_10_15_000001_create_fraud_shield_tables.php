@@ -62,6 +62,23 @@ return new class extends Migration
                 $table->timestamps();
             });
         }
+
+        // 4. API Usage Logs (Aggregated per day per key/store)
+        if (!Schema::hasTable('fraud_api_usage_logs')) {
+            Schema::create('fraud_api_usage_logs', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('store_id')->nullable()->index();
+                $table->unsignedBigInteger('api_key_id')->nullable()->index();
+                $table->string('courier_name', 50)->default('BD Courier');
+                $table->date('date')->index();
+                $table->integer('total_calls')->default(0);
+                $table->integer('successful_calls')->default(0);
+                $table->integer('failed_calls')->default(0);
+                $table->integer('avg_response_time_ms')->default(0);
+                $table->timestamp('last_called_at')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -69,6 +86,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('fraud_api_usage_logs');
         Schema::dropIfExists('fraud_lead_logs');
         Schema::dropIfExists('fraud_check_logs');
         Schema::dropIfExists('fraud_api_keys');

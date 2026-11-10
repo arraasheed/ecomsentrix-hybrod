@@ -13,6 +13,7 @@ Route::middleware(['web'])->group(function () {
 Route::middleware(['web', 'auth', 'setlocate'])->group(function () {
     Route::prefix('fraud-shield')->name('fraud.shield.')->group(function () {
         Route::get('manual-checker', [FraudShieldController::class, 'manualChecker'])->name('manual.checker');
-        Route::post('query', [FraudShieldController::class, 'queryManualNumber'])->name('query');
+        Route::post('query', [FraudShieldController::class, 'manualNumberQuery'])->name('query');
+        Route::get('leads', [FraudShieldController::class, 'leads'])->name('leads');
     });
 });

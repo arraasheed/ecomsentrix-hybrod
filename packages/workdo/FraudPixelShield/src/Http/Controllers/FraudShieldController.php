@@ -253,7 +253,18 @@ class FraudShieldController extends Controller
     }
 
     /**
-     * Store Admin: Manual Number Query Endpoint
+     * Display the list of blocked leads
+     */
+    public function leads()
+    {
+        $storeId = getCurrentStore();
+        $leads = FraudLeadLog::where('store_id', $storeId)->orderBy('created_at', 'desc')->paginate(25);
+
+        return view('fraud-pixel-shield::admin.leads', compact('leads'));
+    }
+
+    /**
+     * Manual number query for admin dashboard
      */
     public function manualNumberQuery(Request $request)
     {
