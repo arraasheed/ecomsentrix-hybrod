@@ -30,7 +30,7 @@
             @endif
         </div>
         <div class="rc-product-card__actions">
-            <button type="button" class="rc-add-button addtocart-btn btn addcart-btn-globaly" product_id="{{ $product->id }}" variant_id="{{ $product->default_variant_id ?? 0 }}" qty="1" data-product-id="{{ $product->id }}" data-variant-id="{{ $product->default_variant_id ?? 0 }}" data-quantity="1" data-url="{{ route('add.to.cart', [$store->slug, $product->id]) }}">
+            <button type="button" class="rc-add-button addtocart-btn btn addcart-btn-globaly" product_id="{{ $product->id }}" variant_id="{{ $product->default_variant_id ?? 0 }}" qty="1" data-product-id="{{ $product->id }}" data-variant-id="{{ $product->default_variant_id ?? 0 }}" data-quantity="1" data-url="{{ route('product.cart', [$store->slug]) }}">
                 <span>{{ __('Add to cart') }}</span>
             </button>
             {!! \App\Models\Product::ProductcardButton($store->slug, $product) !!}

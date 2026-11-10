@@ -64,7 +64,7 @@
             </form>
 
             <div class="rc-detail-actions">
-                <button type="button" class="rc-button rc-button--primary addtocart-btn btn addcart-btn-globaly price-wise-btn product_var_option" product_id="{{ $product->id }}" variant_id="{{ $product->default_variant_id ?? 0 }}" qty="1" data-product-id="{{ $product->id }}" data-variant-id="{{ $product->default_variant_id ?? 0 }}" data-quantity="1" data-url="{{ route('add.to.cart', [$slug, $product->id]) }}" @if($isOutOfStock) disabled aria-disabled="true" @endif><span>{{ __('Add to cart') }}</span></button>
+                <button type="button" class="rc-button rc-button--primary addtocart-btn btn addcart-btn-globaly price-wise-btn product_var_option" product_id="{{ $product->id }}" variant_id="{{ $product->default_variant_id ?? 0 }}" qty="1" data-product-id="{{ $product->id }}" data-variant-id="{{ $product->default_variant_id ?? 0 }}" data-quantity="1" data-url="{{ route('product.cart', [$slug]) }}" @if($isOutOfStock) disabled aria-disabled="true" @endif><span>{{ __('Add to cart') }}</span></button>
                 @if (!$isOutOfStock)
                     {!! \App\Models\Product::ProductcardButton($slug, $product) !!}
                 @endif
