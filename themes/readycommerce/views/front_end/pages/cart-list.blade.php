@@ -17,14 +17,14 @@
                         <tr>
                             <td>
                                 <div class="rc-cart-item">
-                                    <button type="button" class="rc-cart-remove remove_item_from_cart" title="{{ __('Remove item') }}" aria-label="{{ __('Remove :product', ['product' => $line->name]) }}" data-id="{{ $line->cart_id }}" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">×</button>
+                                    <button type="button" class="rc-cart-remove remove_item_from_cart" title="{{ __('Remove item') }}" aria-label="{{ __('Remove :product', ['product' => $line->name]) }}" data-id="{{ $line->cart_id }}" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">Ã—</button>
                                     <a href="{{ url($slug . '/product/' . getProductSlug($line->product_id)) }}"><img src="{{ get_file($line->image) }}" alt="{{ $line->name }}" loading="lazy"></a>
                                     <div><a href="{{ url($slug . '/product/' . getProductSlug($line->product_id)) }}"><strong>{{ $line->name }}</strong></a>@if(($line->variant_id ?? 0) != 0)<p>{!! \App\Models\ProductVariant::variantlist($line->variant_id) !!}</p>@endif</div>
                                 </div>
                             </td>
                             <td>
                                 <div class="rc-quantity-control">
-                                    <button type="button" class="quantity-decrement change-cart-globaly" aria-label="{{ __('Decrease quantity') }}" cart-id="{{ $line->cart_id }}" quantity_type="decrease" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">−</button>
+                                    <button type="button" class="quantity-decrement change-cart-globaly" aria-label="{{ __('Decrease quantity') }}" cart-id="{{ $line->cart_id }}" quantity_type="decrease" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">âˆ’</button>
                                     <input class="quantity" type="text" value="{{ $line->qty }}" min="1" inputmode="numeric" aria-label="{{ __('Quantity for :product', ['product' => $line->name]) }}">
                                     <button type="button" class="quantity-increment change-cart-globaly" aria-label="{{ __('Increase quantity') }}" cart-id="{{ $line->cart_id }}" quantity_type="increase" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">+</button>
                                 </div>
@@ -36,7 +36,7 @@
                 </table>
             </div>
             <div class="rc-cart-actions">
-                <a class="rc-text-link" href="{{ route('page.product-list', $store->slug) }}">← {{ $themeSettings['cart_product_button_text'] ?? __('Continue shopping') }}</a>
+                <a class="rc-text-link" href="{{ route('page.product-list', $store->slug) }}">â† {{ $themeSettings['cart_product_button_text'] ?? __('Continue shopping') }}</a>
                 <button type="button" class="empty_cart">{{ $themeSettings['cart_clear_button_text'] ?? __('Clear cart') }}</button>
             </div>
         @else
@@ -59,3 +59,4 @@
         @endif
     </aside>
 </div>
+

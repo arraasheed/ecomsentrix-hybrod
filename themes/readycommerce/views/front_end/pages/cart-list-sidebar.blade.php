@@ -6,7 +6,7 @@
 <div id="cart-body" class="rc-cart-drawer-content" data-rc-cart-fragment>
     <div class="rc-card-panel" style="display:flex;align-items:center;justify-content:space-between;border:0;border-bottom:1px solid var(--rc-line);border-radius:0">
         <h2 style="margin:0;font-size:16px">{{ __('Your cart') }} <span>(<span data-rc-cart-count>{{ $drawerCart->cart_total_product ?? $drawerProducts->count() }}</span>)</span></h2>
-        <button type="button" id="cart-close" aria-label="{{ __('Close cart') }}">×</button>
+        <button type="button" id="cart-close" aria-label="{{ __('Close cart') }}">Ã—</button>
     </div>
     <div class="rc-cart-drawer-content__items">
         @forelse ($drawerProducts as $line)
@@ -15,12 +15,12 @@
                 <div style="min-width:0;flex:1">
                     <div style="display:flex;align-items:start;justify-content:space-between;gap:8px">
                         <a href="{{ url($slug . '/product/' . getProductSlug($line->product_id)) }}"><strong>{{ $line->name }}</strong></a>
-                        <button type="button" class="rc-cart-remove remove_item_from_cart" aria-label="{{ __('Remove item') }}" data-id="{{ $line->cart_id }}" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">×</button>
+                        <button type="button" class="rc-cart-remove remove_item_from_cart" aria-label="{{ __('Remove item') }}" data-id="{{ $line->cart_id }}" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">Ã—</button>
                     </div>
                     @if (($line->variant_id ?? 0) != 0)<p>{!! \App\Models\ProductVariant::variantlist($line->variant_id) !!}</p>@endif
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px">
                         <div class="rc-quantity-control">
-                            <button type="button" class="quantity-decrement change-cart-globaly" aria-label="{{ __('Decrease quantity') }}" cart-id="{{ $line->cart_id }}" quantity_type="decrease" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">−</button>
+                            <button type="button" class="quantity-decrement change-cart-globaly" aria-label="{{ __('Decrease quantity') }}" cart-id="{{ $line->cart_id }}" quantity_type="decrease" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">âˆ’</button>
                             <input class="quantity" type="text" value="{{ $line->qty }}" min="1" inputmode="numeric" aria-label="{{ __('Quantity for :product', ['product' => $line->name]) }}">
                             <button type="button" class="quantity-increment change-cart-globaly" aria-label="{{ __('Increase quantity') }}" cart-id="{{ $line->cart_id }}" quantity_type="increase" data-product-id="{{ $line->product_id }}" data-variant-id="{{ $line->variant_id }}">+</button>
                         </div>
@@ -40,3 +40,4 @@
         @if ($drawerProducts->isNotEmpty())<a class="rc-button rc-button--outline rc-button--full" style="margin-top:8px" href="{{ route('checkout', $slug) }}">{{ __('Proceed to checkout') }}</a>@endif
     </div>
 </div>
+

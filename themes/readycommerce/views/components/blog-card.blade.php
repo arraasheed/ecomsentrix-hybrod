@@ -12,7 +12,7 @@
         <div class="flex items-center text-gray-500 text-sm mb-2">
         <i class="far fa-calendar-alt ltr:mr-2 rtl:ml-2"></i>
         <span>{{ \Carbon\Carbon::parse($blog->created_at)->format('M d, Y') }}</span>
-        <span class="mx-2">•</span>
+        <span class="mx-2">â€¢</span>
         <span>{{ $blog->category->name ?? '' }}</span>
         </div>
         <h3 class="font-bold text-xl mb-2">{{ $blog->title }}</h3>

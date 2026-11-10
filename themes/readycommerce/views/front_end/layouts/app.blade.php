@@ -1,14 +1,16 @@
 @php
     $locale = app()->getLocale() ?? 'en';
     $favicon = $themeSettings['header_favicon'] ?? '';
-    $faviconUrl = !empty($favicon) ? get_file($favicon) : asset('themes/readycommerce/assets/images/logo-mark.png');
+    $faviconUrl = (!empty($favicon) && !str_contains($favicon, 'stylique') && is_file(public_path($favicon)))
+        ? get_file($favicon)
+        : asset('readycart/logo-mark.png');
     $assetTheme = $currentTheme ?? 'stylique';
     if (!file_exists(public_path('themes/' . $assetTheme . '/assets/css/all.min.css'))) {
         $assetTheme = 'stylique';
     }
-    $storePrimaryColor = trim((string) ($themeSettings['store_primary_color'] ?? '#f95738'));
-    if (!preg_match('/\\A#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\\z/', $storePrimaryColor)) {
-        $storePrimaryColor = '#f95738';
+    $storePrimaryColor = trim((string) ($themeSettings['store_primary_color'] ?? '#F05A00'));
+    if (!preg_match('/\A#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\z/', $storePrimaryColor) || strtolower($storePrimaryColor) === '#f95738' || strtolower($storePrimaryColor) === '#f8796c') {
+        $storePrimaryColor = '#F05A00';
     }
     $primaryColorHex = ltrim($storePrimaryColor, '#');
     if (strlen($primaryColorHex) === 3) {
@@ -16,8 +18,8 @@
     }
     $primaryColorChannels = array_map('hexdec', str_split($primaryColorHex, 2));
     $primaryColorRgb = implode(' ', $primaryColorChannels);
-    $primaryHoverColor = strtolower($storePrimaryColor) === '#f95738'
-        ? '#e04629'
+    $primaryHoverColor = strtolower($storePrimaryColor) === '#f05a00'
+        ? '#D94F00'
         : sprintf(
             '#%02x%02x%02x',
             (int) round($primaryColorChannels[0] * 0.88),
@@ -30,11 +32,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="author" content="{{ config('app.name', $store->name ?? 'ReadyCommerce') }}">
+    <meta name="author" content="{{ config('app.name', $store->name ?? 'Ready eCommerce') }}">
     <meta name="base-url" content="{{ URL::to('/') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {!! metaKeywordSetting($metakeyword ?? null, $metadesc ?? null, $metaimage ?? null, $slug) !!}
-    <title>@yield('page-title')@if(!empty($store->name)) · {{ $store->name }}@endif</title>
+    <title>@yield('page-title') Â· Ready eCommerce</title>
     <link rel="icon" href="{{ $faviconUrl }}" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,10 +45,7 @@
         <link rel="stylesheet" href="{{ asset('themes/' . $assetTheme . '/assets/css/all.min.css') }}">
     @endif
     <link rel="stylesheet" href="{{ asset('assets/css/plugins/select2.min.css') }}">
-    @if (env('MOBILE_APP_FEEL', true))
-        @vite(['resources/css/mobile-app-feel.css'])
-    @endif
-    @vite(['resources/css/store.css', 'resources/css/readycommerce-storefront.css'])
+    @vite(['resources/css/readycommerce-storefront.css'])
     <style>:root { --rc-primary: {{ $storePrimaryColor }}; --rc-primary-hover: {{ $primaryHoverColor }}; --rc-primary-rgb: {{ $primaryColorRgb }}; }</style>
     <style>{!! $storecss ?? '' !!}</style>
     @stack('page-style')
@@ -55,9 +54,9 @@
     @include('layouts.includes.turbo')
     @vite(['resources/js/readycommerce-storefront.js'])
 </head>
-<body class="rc-body">
-    <div class="overlay" id="filter-overlay"></div>
-    <div class="rc-store-shell">
+<body class="rc-body min-h-screen bg-white text-ink font-sans antialiased">
+    <div class="overlay hidden" id="filter-overlay"></div>
+    <div class="min-h-screen bg-white pb-20 md:pb-0">
         @include('front_end.partison.header')
         @if (isset($pixelScript))
             @foreach ($pixelScript as $script)
@@ -66,6 +65,7 @@
         @endif
         @yield('content')
         @include('front_end.partison.footer')
+        @include('front_end.partison.mobile-bottom-nav')
     </div>
     @include('front_end.jQueryRoute')
     @if (file_exists(public_path('themes/' . $assetTheme . '/assets/js/swiper-bundle.min.js')))
@@ -84,13 +84,16 @@
     @stack('page-script')
     <script>
         window.show_toastr = function (title, message, type) {
+            if (window.rcShowToast) {
+                window.rcShowToast(message || title);
+            }
             if (!window.notifier) return;
             const success = type === 'success';
             const icon = success ? '{{ asset('public/assets/images/notification/ok-48.png') }}' : '{{ asset('public/assets/images/notification/high_priority-48.png') }}';
             window.notifier.show(title || (success ? 'Success' : 'Error'), message, success ? 'success' : 'danger', icon, 4000);
         };
     </script>
-    @include('front_end.partison.mobile-bottom-nav')
     @include('front_end.partison.pwa-install')
 </body>
 </html>
+
