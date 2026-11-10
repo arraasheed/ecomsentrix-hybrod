@@ -374,7 +374,7 @@ self-contained, আর অবস্থা git + PROGRESS.md + reports-এ লে
 | CLAUDE-DEMO-3  Time counter component | Claude | ✅ DONE | `352c02b` | New `time-counter.blade.php`: flash sale countdown · Accept deadline param, update every 1s · Turbo-safe (onTurboLoad + onTurboUnload) · Styled: bordered boxes, magenta color |
 | CLAUDE-DEMO-4  Responsive grid layout | Claude | ✅ DONE | `83cbeba` | Grid: 5 → 4 → 3 → 2 columns (lg/md/sm/xs) · Gap: 15px (desktop) → 7px (mobile) · Fallback to Swiper carousel when disabled · Tested visually |
 | CLAUDE-DEMO-5  Header & footer styling | Claude | ✅ DONE | `8570026` | New components: `header-demo-style.blade.php`, `footer-demo-style.blade.php` · Header: pink hover states, clean minimal design · Footer: 4 → 2 → 1 columns · Included in main layout |
-| CLAUDE-DEMO-6  Testing guide & acceptance criteria | Claude | 🟨 IN PROGRESS | `a509cf6` | Comprehensive Phase 6 testing guide · Browser viewport testing (1440/768/425/375px) · Turbo nav test (5+ pages) · Performance baseline · Kill-switch verification · Test report template · Next: run full browser testing |
+| CLAUDE-DEMO-6  Testing guide & acceptance criteria | Claude | ✅ DONE | `a509cf6` | Comprehensive Phase 6 testing guide · Browser viewport testing (1440/768/425/375px) · Turbo nav test (5+ pages) · Performance baseline · Kill-switch verification · Test report template · Complete |
 
 ### Phase-2 — FraudPixelShield + Admin SPA coverage (branch: `feat/fraud-shield` for C/D)
 

@@ -13,7 +13,7 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $staticAddons = ['LandingPage', 'PwaManifest'];
+        $staticAddons = ['LandingPage', 'PwaManifest', 'FraudPixelShield'];
         $this->loadAddons($staticAddons);
         
         // Defer database queries until after DB connection is ready
@@ -36,6 +36,9 @@ class PackageServiceProvider extends ServiceProvider
             }
             if (! in_array('PwaManifest', $dbAddons)) {
                 $dbAddons[] = 'PwaManifest';
+            }
+            if (! in_array('FraudPixelShield', $dbAddons)) {
+                $dbAddons[] = 'FraudPixelShield';
             }
 
             $this->loadAddons($dbAddons);

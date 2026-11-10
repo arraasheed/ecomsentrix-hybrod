@@ -355,6 +355,21 @@ class CompanyMenuListener
         ]);
         /** order end */
 
+        if (env('FRAUD_PIXEL_SHIELD_ENABLED', true)) {
+            $menu->add([
+                'title' => __('Fraud Shield'),
+                'icon' => 'shield-check',
+                'name' => 'fraud_shield',
+                'parent' => null,
+                'order' => 170,
+                'ignore_if' => [],
+                'depend_on' => [],
+                'route' => 'fraud.shield.manual.checker',
+                'module' => $module,
+                'permission' => ''
+            ]);
+        }
+
         /** customer start */
         $menu->add([
             'title' => __('Customers'),

@@ -21,6 +21,13 @@
                 <input type="file" name="discover_logo" id="discover_logo" class="form-control">
             </div>
         </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ Form::label('seo_keyword', __('SEO Keyword'), ['class' => 'form-label']) }}
+                {{ Form::text('seo_keyword', $discover['seo_keyword'] ?? '', ['class' => 'form-control', 'placeholder' => __('Enter SEO Keyword'), 'id' => 'seo_keyword']) }}
+            </div>
+        </div>
     </div>
     <div class="modal-footer pb-0">
         <input type="button" value="{{__('Cancel')}}" class="btn btn-badge btn-secondary" data-bs-dismiss="modal">
