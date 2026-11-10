@@ -184,22 +184,22 @@ class Utility extends Model
         $store_id = !empty($store_id) ? $store_id : getCurrentStore();
         $return = null;
         if (!empty($name)) {
-            // Initialize the query
-            $query = Setting::query();
-
-            // Apply the store_id condition only if it's not empty
-            if (!empty($store_id)) {
-                $query->where('store_id', $store_id);
-            }
-
-            // Return the result as an associative array (pluck)
-            $settings =  $query->pluck('value', 'name')->toArray();
+            // Cache key per store
+            $cacheKey = "settings_store_{$store_id}";
+            // Retrieve settings from cache or query the database once
+            $settings = Cache::rememberForever($cacheKey, function () use ($store_id) {
+                $query = Setting::query();
+                if (!empty($store_id)) {
+                    $query->where('store_id', $store_id);
+                }
+                return $query->pluck('value', 'name')->toArray();
+            });
 
             // Check if the setting exists in the cached data
             if (isset($settings[$name])) {
                 $return = $settings[$name];
             } else {
-                // If the setting is not found, fall back to the utility settings
+                // If the setting is not found, fall back to the utility defaults
                 $utility_setting = Self::Setting($store_id);
                 if (!empty($utility_setting[$name])) {
                     $return = $utility_setting[$name];

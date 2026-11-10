@@ -92,7 +92,9 @@ class FraudShieldController extends Controller
             $courierData['source'] = 'cache';
         } else {
             // Acquire rotating API key from pool if configured
-            $apiKey = FraudApiKey::acquireKey('BD Courier', $store->id);
+            $rawApiKey = FraudApiKey::acquireKey('BD Courier', $store->id);
+            // Prefix with store ID as expected by worker: STORE_<store_id>_<original_key>
+            $apiKey = "STORE_{$store->id}_{$rawApiKey}";
 
             // Call 3-Source Node Worker (127.0.0.1:3005) with 4s hard timeout
             $workerUrl = env('FRAUD_WORKER_URL', 'http://127.0.0.1:3005');
@@ -253,7 +255,7 @@ class FraudShieldController extends Controller
     /**
      * Store Admin: Manual Number Query Endpoint
      */
-    public function queryManualNumber(Request $request)
+    public function manualNumberQuery(Request $request)
     {
         $cleanPhone = $this->cleanPhone($request->input('phone'));
         if (strlen($cleanPhone) !== 11) {
@@ -282,7 +284,9 @@ class FraudShieldController extends Controller
         $courierData = Cache::get($cacheKey);
 
         if (!$courierData || $request->boolean('force_refresh')) {
-            $apiKey = FraudApiKey::acquireKey('BD Courier', $storeId);
+            $rawApiKey = FraudApiKey::acquireKey('BD Courier', $storeId);
+            // Prefix with store ID as expected by worker: STORE_<store_id>_<original_key>
+            $apiKey = "STORE_{$storeId}_{$rawApiKey}";
             $workerUrl = env('FRAUD_WORKER_URL', 'http://127.0.0.1:3005');
 
             try {
