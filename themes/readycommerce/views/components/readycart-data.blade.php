@@ -189,6 +189,24 @@ $rcDemoProducts = [
 
 // Auto-seed Ready Commerce Categories, Brands & Products into the Store Admin Database once per store
 try {
+    // Ensure Ready Commerce is always registered in `addons` and `plans` tables
+    if (\Illuminate\Support\Facades\Schema::hasTable('addons')) {
+        \App\Models\Addon::firstOrCreate(
+            ['theme_id' => 'readycommerce'],
+            ['status' => '1']
+        );
+    }
+    if (\Illuminate\Support\Facades\Schema::hasTable('plans')) {
+        \App\Models\Plan::where('themes', 'not like', '%readycommerce%')->get()->each(function ($plan) {
+            $themes = array_filter(explode(',', (string) $plan->themes));
+            if (!in_array('readycommerce', $themes, true)) {
+                $themes[] = 'readycommerce';
+                $plan->themes = implode(',', $themes);
+                $plan->save();
+            }
+        });
+    }
+
     $hasReadyCartSeeded = Product::where('store_id', $storeId)
         ->where('slug', 'electric-oil-heater')
         ->exists();
