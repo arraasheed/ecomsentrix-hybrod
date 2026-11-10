@@ -81,6 +81,7 @@ Thumbs.db
 desktop.ini
 
 dump.rdb
+.alpme/
 
-# Local theme folder backup (THEME-BACKUP, 2026-10-10) — restore source, never commit, protects from git clean
+# Local theme folder backup (THEME-BACKUP, 2026-10-10) ï¿½ restore source, never commit, protects from git clean
 themes_backup/
