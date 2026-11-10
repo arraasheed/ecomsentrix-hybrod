@@ -118,6 +118,20 @@
 ---
 
 ### ৮. জেমিনাই আর্গন (Gemini Argon)-এর সাথে আলোচনার জন্য ওপেন পয়েন্টসমূহ
-১. **Node.js Puppeteer মাইক্রোসার্ভিসের ক্লাউড স্কেলিং:** Azure VM-এ Chromium headless ইনস্টলেশন এবং মেমোরি ম্যানেজমেন্টের সেরা কনফিগারেশন।
+১. **Node.js Puppeteer মাইক্রোসার্ভিসের ক্লাউড স্কেলিং:** Azure VM-এ Chromium headless ইনস্টলেশন এবং মেমোরি ম্যানেজমেন্টের সেরা কনফিগারেশন
 ২. **BdCourier API ক্যাশিং স্ট্র্যাটেজি:** একই নম্বরের জন্য Redis ক্যাশ TTL কতক্ষণ রাখা যুক্তিযুক্ত (যেমন: ৩ দিন না ৭ দিন)?
 ৩. **React ল্যান্ডিং পেজের বিল্ড ডিপ্লয়মেন্ট:** লারাভেলের `public/` ফোল্ডারের ভেতর কীভাবে React SPA বিল্ড ফাইলগুলো রাখলে রাউটিং সবচেয়ে ক্লিন থাকবে?
+
+---
+
+### ৯. ইমপ্লিমেন্টেশন স্ট্যাটাস ও লগ
+- **পর্ব ১ (ভিত্তি বা Foundation Layer):** ✅ **DONE** (Commit `441a94c`, Tag `phase1-complete`)
+  - সুপার অ্যাডমিন ও স্টোর অ্যাডমিন রুট গার্ড মিডলওয়্যার (`AdminRoleSeparationMiddleware`, `SuperAdminGuard`, `StoreAdminGuard`)
+  - মোবাইল সাইডবার বাউন্স ও একর্ডিয়ান ফিক্স (`dash.js`, `mobile-app-feel.css`)
+  - লাইভ ব্রাউজার ভেরিফাইড (৩টি মোডে: Super Admin, Store Admin, Mobile 375px)
+  - কিল-সুইচ: `ADMIN_ROLE_SEPARATION_ENABLED=true`
+- **পর্ব ২ (কোর ফিচার - ৩-সোর্স ফ্রড ইঞ্জিন):** ⬜ PENDING (পরবর্তী ধাপ)
+- **পর্ব ৩ (কোর ফিচার - মেটা পিক্সেল আইসোলেশন):** ⬜ PENDING
+- **পর্ব ৪ (UX Layer - স্মার্ট অর্ডার টেবিল + অ্যাডমিন UI):** ⬜ PENDING
+- **পর্ব ৫ (Marketing Layer - React Full-SPA ল্যান্ডিং):** ⬜ PENDING
+
