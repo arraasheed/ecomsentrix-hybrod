@@ -43,6 +43,9 @@ export default defineConfig({
                 'resources/js/store.js',
                 'resources/js/admin.js',
                 'resources/js/sw-register.js',
+                // ReadyCommerce Theme Entries
+                'resources/css/readycommerce-storefront.css',
+                'resources/js/readycommerce-storefront.js',
             ],
             refresh: true,
         }),
