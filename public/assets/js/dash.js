@@ -121,41 +121,40 @@ function dashInit() {
   // Menu collapse click start
   var mobilecollapsever = document.querySelector("#mobile-collapse");
   if (mobilecollapsever) {
-    mobilecollapsever.addEventListener("click", function () {
-      if (
-        !document.querySelector("body").classList.contains("dash-horizontal")
-      ) {
-        // menuclick();
-      }
-      var tempsdbr = document.querySelector(".dash-sidebar");
-      if (tempsdbr) {
-        if (
-          document
-            .querySelector(".dash-sidebar")
-            .classList.contains("mob-sidebar-active")
-        ) {
-          rmmenu();
-        } else {
-          document
-            .querySelector(".dash-sidebar")
-            .classList.add("mob-sidebar-active");
-          document
-            .querySelector(".dash-sidebar")
-            .insertAdjacentHTML(
-              "beforeend",
-              '<div class="dash-menu-overlay"></div>'
-            );
-          document
-            .querySelector(".dash-menu-overlay")
-            .addEventListener("click", function () {
+    if (!mobilecollapsever.dataset.mobBound) {
+      mobilecollapsever.dataset.mobBound = "1";
+      mobilecollapsever.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var tempsdbr = document.querySelector(".dash-sidebar");
+        if (tempsdbr) {
+          if (
+            tempsdbr.classList.contains("mob-sidebar-active")
+          ) {
+            rmmenu();
+          } else {
+            tempsdbr.classList.add("mob-sidebar-active");
+            var hamburger = document.querySelector(".hamburger");
+            if (hamburger) hamburger.classList.add("is-active");
+
+            var existingOverlay = document.querySelector(".dash-menu-overlay");
+            if (!existingOverlay) {
+              document.body.insertAdjacentHTML(
+                "beforeend",
+                '<div class="dash-menu-overlay"></div>'
+              );
               document
-                .querySelector(".hamburger")
-                .classList.remove("is-active");
-              rmmenu();
-            });
+                .querySelector(".dash-menu-overlay")
+                .addEventListener("click", function () {
+                  var h = document.querySelector(".hamburger");
+                  if (h) h.classList.remove("is-active");
+                  rmmenu();
+                });
+            }
+          }
         }
-      }
-    });
+      });
+    }
   }
   // Menu collapse click end
 
@@ -473,26 +472,24 @@ function menuclick() {
             event.stopPropagation();
           }
         }
-        var targetElement = event.target;
-        if (targetElement.tagName == "SPAN") {
-          targetElement = targetElement.parentNode;
-        }
-        if (targetElement.parentNode.classList.contains("dash-trigger")) {
-          targetElement.parentNode.classList.remove("dash-trigger");
-          // targetElement.parentNode.children[1].style.display = "none";
-          slideUp(targetElement.parentNode.children[1], 200);
+        var link = event.target ? event.target.closest("a.dash-link") : null;
+        var parentLi = link ? link.closest("li.dash-hasmenu") : null;
+        if (!parentLi || !dashLiHasSubmenu(parentLi)) return;
+        var submenu = parentLi.querySelector(":scope > .dash-submenu");
+        if (!submenu) return;
+
+        if (parentLi.classList.contains("dash-trigger")) {
+          parentLi.classList.remove("dash-trigger");
+          slideUp(submenu, 200);
         } else {
-          var tc = document.querySelectorAll("li.dash-trigger");
-          for (var t = 0; t < tc.length; t++) {
-            var c = tc[t];
-            c.classList.remove("dash-trigger");
-            slideUp(c.children[1], 200);
+          var siblings = parentLi.parentElement ? parentLi.parentElement.querySelectorAll(":scope > li.dash-trigger") : [];
+          for (var t = 0; t < siblings.length; t++) {
+            siblings[t].classList.remove("dash-trigger");
+            var sibSub = siblings[t].querySelector(":scope > .dash-submenu");
+            if (sibSub) slideUp(sibSub, 200);
           }
-          targetElement.parentNode.classList.add("dash-trigger");
-          var tmp = targetElement.children[1];
-          if (tmp) {
-            slideDown(targetElement.parentNode.children[1], 200);
-          }
+          parentLi.classList.add("dash-trigger");
+          slideDown(submenu, 200);
         }
       });
     }
@@ -515,31 +512,24 @@ function menuclick() {
             event.stopPropagation();
           }
         }
-        var targetElement = event.target;
-        if (targetElement.tagName == "SPAN") {
-          targetElement = targetElement.parentNode;
-        }
-        if (targetElement.parentNode.classList.contains("dash-trigger")) {
-          targetElement.parentNode.classList.remove("dash-trigger");
-          slideUp(targetElement.parentNode.children[1], 200);
+        var subLink = event.target ? event.target.closest("a.dash-link") : null;
+        var subParentLi = subLink ? subLink.closest("li.dash-hasmenu") : null;
+        if (!subParentLi || !dashLiHasSubmenu(subParentLi)) return;
+        var subMenu = subParentLi.querySelector(":scope > .dash-submenu");
+        if (!subMenu) return;
+
+        if (subParentLi.classList.contains("dash-trigger")) {
+          subParentLi.classList.remove("dash-trigger");
+          slideUp(subMenu, 200);
         } else {
-          var tc = targetElement.parentNode.parentNode.children;
-          for (var t = 0; t < tc.length; t++) {
-            var c = tc[t];
-            c.classList.remove("dash-trigger");
-            if (c.tagName == "LI") {
-              c = c.children[0];
-            }
-            if (c.parentNode.classList.contains("dash-hasmenu")) {
-              slideUp(c.parentNode.children[1], 200);
-            }
+          var siblings = subParentLi.parentElement ? subParentLi.parentElement.querySelectorAll(":scope > li.dash-trigger") : [];
+          for (var t = 0; t < siblings.length; t++) {
+            siblings[t].classList.remove("dash-trigger");
+            var sibSub = siblings[t].querySelector(":scope > .dash-submenu");
+            if (sibSub) slideUp(sibSub, 200);
           }
-          targetElement.parentNode.classList.add("dash-trigger");
-          var tmp = targetElement.parentNode.children[1];
-          if (tmp) {
-            tmp.removeAttribute("style");
-            slideDown(tmp, 200);
-          }
+          subParentLi.classList.add("dash-trigger");
+          slideDown(subMenu, 200);
         }
       });
     }
@@ -571,20 +561,17 @@ function rmthead() {
 function rmmenu() {
   var tempov = document.querySelector(".dash-sidebar");
   if (tempov) {
-    document
-      .querySelector(".dash-sidebar")
-      .classList.remove("mob-sidebar-active");
+    tempov.classList.remove("mob-sidebar-active");
   }
   if (document.querySelector(".topbar")) {
     document.querySelector(".topbar").classList.remove("mob-sidebar-active");
   }
 
-  if (document.querySelector(".dash-sidebar .dash-menu-overlay")) {
-    document.querySelector(".dash-sidebar .dash-menu-overlay").remove();
-  }
-  if (document.querySelector(".topbar .dash-menu-overlay")) {
-    document.querySelector(".topbar .dash-menu-overlay").remove();
-  }
+  var hamburger = document.querySelector(".hamburger");
+  if (hamburger) hamburger.classList.remove("is-active");
+
+  var overlays = document.querySelectorAll(".dash-menu-overlay");
+  overlays.forEach(function (el) { el.remove(); });
 }
 
 function rmovermenu() {

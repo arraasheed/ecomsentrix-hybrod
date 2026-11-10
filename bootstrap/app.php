@@ -25,10 +25,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             '2fa' => \PragmaRX\Google2FALaravel\Middleware::class,
             'demo_mode' => \App\Http\Middleware\DemoModeMiddleware::class,
+            'super_admin' => \App\Http\Middleware\SuperAdminGuard::class,
+            'store_admin' => \App\Http\Middleware\StoreAdminGuard::class,
         ]);
         // Append middleware to the 'web' group
         $middleware->appendToGroup('web', \App\Http\Middleware\SetLocate::class);
         $middleware->appendToGroup('web', \App\Http\Middleware\TurboResponseMiddleware::class);
+        $middleware->appendToGroup('web', \App\Http\Middleware\AdminRoleSeparationMiddleware::class);
         // Exclude specific routes from CSRF protection
         $middleware->validateCsrfTokens(
             except: [

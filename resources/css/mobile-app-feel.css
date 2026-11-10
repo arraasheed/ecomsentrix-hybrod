@@ -320,3 +320,44 @@ p *,
    The only mobile additions are momentum scroll (-webkit-overflow-scrolling)
    on .navbar-content (above) and safe-area/dvh overrides (section 1-2).
    Deferred: no code change required. */
+
+/* ── 9. Admin Mobile Sidebar & Overlay Fix ───────────────────────────────────
+   Smooth slide-in, high z-index, and backdrop overlay for mobile viewports. */
+@media (max-width: 1024px) {
+    .dash-sidebar {
+        left: -280px !important;
+        width: 280px !important;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), left 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        z-index: 1050 !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+    }
+
+    .dash-sidebar.mob-sidebar-active {
+        left: 0 !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .dash-sidebar.mob-sidebar-active .navbar-wrapper {
+        background: #ffffff !important;
+    }
+
+    .dash-menu-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        background: rgba(0, 0, 0, 0.45) !important;
+        backdrop-filter: blur(2px) !important;
+        z-index: 1045 !important;
+        cursor: pointer !important;
+        animation: fadeInOverlay 0.2s ease-out forwards;
+    }
+
+    @keyframes fadeInOverlay {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+}
