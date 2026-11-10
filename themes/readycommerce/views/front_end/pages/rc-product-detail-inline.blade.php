@@ -5,8 +5,15 @@
     $productsUrl = route('page.product-list', ['storeSlug' => $storeSlug]);
     $checkoutUrl = $homeUrl . '?rc_checkout=1';
 
-    $targetId = (int) ($rcProductId ?? request('rc_product', 1));
-    $activeProd = collect($rcProducts)->firstWhere('id', $targetId) ?? $rcProducts[0];
+    $targetId = (int) ($rcProductId ?? request('rc_product', 0));
+    $reqSlug = (string) (request()->route('product_slug') ?? request('product_slug', ''));
+    if ($reqSlug !== '') {
+        $activeProd = collect($rcProducts)->firstWhere('slug', $reqSlug);
+    }
+    if (empty($activeProd) && $targetId > 0) {
+        $activeProd = collect($rcProducts)->firstWhere('id', $targetId);
+    }
+    $activeProd = $activeProd ?? $rcProducts[0];
 
     if (isset($product) && is_object($product) && !isset($rcProductId)) {
         $rawName = (string) ($product->name ?? 'Product');

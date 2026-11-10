@@ -67,7 +67,8 @@
                         </label>
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold">Phone <span class="text-brand">*</span></span>
-                            <input name="phone" type="tel" required placeholder="Enter phone" autocomplete="tel" class="{{ $inputClass }}" />
+                            <input name="phone" type="tel" required placeholder="Enter phone" autocomplete="tel" class="{{ $inputClass }}" id="rc-phone-input" data-slug="{{ $storeSlug }}" />
+                            <div id="fraud-check-status" class="mt-2 hidden"></div>
                         </label>
                         <label class="block">
                             <span class="mb-2 block text-sm font-semibold">Area</span>

@@ -39,7 +39,7 @@
     if ($isDemo || empty($prodSlug)) {
         $productUrl = route('landing_page', $storeSlug) . '?rc_product=' . $id;
     } else {
-        $productUrl = route('page.product', ['storeSlug' => $storeSlug, 'productSlug' => $prodSlug]);
+        $productUrl = route('page.product', ['storeSlug' => $storeSlug, 'product_slug' => $prodSlug]);
     }
     $checkoutUrl = route('landing_page', $storeSlug) . '?rc_checkout=1';
     $isList = $layout === 'list';

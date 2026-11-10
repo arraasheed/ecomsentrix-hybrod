@@ -124,14 +124,24 @@
 
 ---
 
-### ৯. ইমপ্লিমেন্টেশন স্ট্যাটাস ও লগ
-- **পর্ব ১ (ভিত্তি বা Foundation Layer):** ✅ **DONE** (Commit `441a94c`, Tag `phase1-complete`)
+### ৯. ইমপ্লিমেন্টেশন স্ট্যাটাস ও ৫-পর্বের রোডম্যাপ (Live Tracker)
+- **পর্ব ১ (ভিত্তি বা Foundation Layer):** ✅ **DONE** (Commit `441a94c`, `71b5c0e`, Tag `phase1-complete`)
   - সুপার অ্যাডমিন ও স্টোর অ্যাডমিন রুট গার্ড মিডলওয়্যার (`AdminRoleSeparationMiddleware`, `SuperAdminGuard`, `StoreAdminGuard`)
   - মোবাইল সাইডবার বাউন্স ও একর্ডিয়ান ফিক্স (`dash.js`, `mobile-app-feel.css`)
   - লাইভ ব্রাউজার ভেরিফাইড (৩টি মোডে: Super Admin, Store Admin, Mobile 375px)
   - কিল-সুইচ: `ADMIN_ROLE_SEPARATION_ENABLED=true`
-- **পর্ব ২ (কোর ফিচার - ৩-সোর্স ফ্রড ইঞ্জিন):** ⬜ PENDING (পরবর্তী ধাপ)
-- **পর্ব ৩ (কোর ফিচার - মেটা পিক্সেল আইসোলেশন):** ⬜ PENDING
-- **পর্ব ৪ (UX Layer - স্মার্ট অর্ডার টেবিল + অ্যাডমিন UI):** ⬜ PENDING
-- **পর্ব ৫ (Marketing Layer - React Full-SPA ল্যান্ডিং):** ⬜ PENDING
+- **পর্ব ২ (কোর ফিচার - ৩-সোর্স ফ্রড ইঞ্জিন / `packages/workdo/FraudPixelShield`):** 🟨 **IN PROGRESS (৭০% সম্পন্ন, ৪টি ফিনিশিং কাজ বাকি)**
+  - ✅ সম্পন্ন: ৩-সোর্স Node.js ওয়ার্কার (`service/fraud-worker.cjs`), কন্ট্রোলার (`FraudShieldController.php`), ৪টি মডেল (`FraudCheckLog`, `FraudLeadLog`, `FraudApiKey`, `FraudApiUsageLog`), অ্যাডমিন ভিউ (`manual-checker.blade.php`, `leads.blade.php`), `Utility::GetValueByName` ক্যাশিং (Commit `490eae4`)।
+  - ⬜ বাকি ১: `src/Routes/web.php`-এ `queryManualNumber` ও `FraudShieldController::manualNumberQuery` নাম মেলানো এবং `leads.blade.php`-এর জন্য `leads()` রুট ও কন্ট্রোলার মেথড যোগ করা।
+  - ⬜ বাকি ২: `2026_10_15_000001_create_fraud_shield_tables.php` মাইগ্রেশনে `fraud_api_usage_logs` টেবিলের স্কিমা যোগ ও রান করা।
+  - ⬜ বাকি ৩: স্টোরফ্রন্ট চেকআউট পেজে ১.৫ সেকেন্ড ডিবাউন্সে `POST /{slug}/fraud-check` কল এবং হাই-রিস্ক কাস্টমারের জন্য Soft-Lock WhatsApp পপআপ ও `POST /{slug}/fraud-log-lead` কলের ফ্রন্টএন্ড JS স্ক্রিপ্ট যুক্ত করা।
+  - ⬜ বাকি ৪: ব্রাউজার/এন্ডপয়েন্ট টেস্ট করে পর্ব ২ `✅ DONE` মার্ক ও গিট কমিট করা।
+- **পর্ব ৩ (কোর ফিচার - মেটা পিক্সেল আইসোলেশন ও ডিলেড CAPI সিস্টেম — সেকশন ৪ অনুযায়ী):** ⬜ **PENDING**
+  - অর্ডার প্লেস হলে ডিফল্ট `pixel_status = 'hold'` রাখা (ব্রাউজার পিক্সেলে ফেক/ইন্সট্যান্ট `Purchase` ইভেন্ট ব্লক করা)।
+  - স্টোর অ্যাডমিন অর্ডার **"Confirm"** বা ডেলিভারি নিশ্চিত করলেই কেবল ব্যাকএন্ড থেকে `SendMetaCapiPurchaseJob` (SHA-256 হ্যাশ করা PII সহ) ফায়ার করা এবং `capi_dispatch_logs` আইডেমপোটেন্সি গার্ড বসানো।
+- **পর্ব ৪ (UX Layer - স্মার্ট অর্ডার প্রসেসিং টেবিল + Ecom Sentrix অ্যাডমিন UI — সেকশন ২ ও ৫ অনুযায়ী):** ⬜ **PENDING**
+  - ড্যাশবোর্ডে Ecom Sentrix গ্রেডিয়েন্ট UI, ২০টি ডাইনামিক মেট্রিক কার্ড (প্রাইমারি ১০টি + "See More" সেকেন্ডারি ১০টি) ও ApexCharts।
+  - অর্ডার লিস্টে ১৩টি স্ট্যাটাস ট্যাব (কাউন্ট ব্যাজসহ), ফোন নম্বরের নিচে লাইভ কুরিয়ার সাকসেস রেট ব্যাজ (🟢/🟡/🔴), এবং ১-ক্লিক Copy Phone / Direct WhatsApp / Direct Call বাটন।
+- **পর্ব ৫ (Marketing Layer - React Full-SPA ল্যান্ডিং পেজ ইন্টিগ্রেশন — সেকশন ৭ অনুযায়ী):** ⬜ **PENDING**
+  - মূল ডোমেইনে (`ecommercego.dev`) React Full-SPA ল্যান্ডিং পেজ যুক্ত করা (`plans` টেবিল থেকে ডাইনামিক প্রাইসিং, সুপার অ্যাডমিন সেটিংস থেকে Pixel/GTM, এবং সাবডোমেইন/কাস্টম ডোমেইন আইসোলেশন)।
 
