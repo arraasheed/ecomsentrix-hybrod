@@ -126,7 +126,18 @@ function renderCartUI() {
   }
 }
 
-function addItemToCart(id, qty = 1) {
+function getCsrfToken() {
+  return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+}
+
+function getStoreSlug() {
+  const bodySlug = document.querySelector('[data-slug]')?.getAttribute('data-slug');
+  if (bodySlug) return bodySlug;
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  return pathParts.length > 0 ? pathParts[0] : 'xyz';
+}
+
+function addItemToCart(id, qty = 1, callback = null) {
   const numId = Number(id);
   const cart = readJson(CART_KEY, []);
   const existing = cart.find((item) => Number(item.id) === numId);
@@ -135,15 +146,44 @@ function addItemToCart(id, qty = 1) {
   } else {
     const meta = getProductMeta(numId) || {
       id: numId,
-      name: 'ReadyCart Product',
-      brand: 'ReadyCart',
-      price: 49,
+      name: 'Product',
+      brand: 'Store',
+      price: 0,
       image: '/readycart/p-heater.png',
     };
     cart.push({ ...meta, qty });
   }
   writeJson(CART_KEY, cart);
   renderCartUI();
+
+  // Sync to Laravel server-side cart
+  const token = getCsrfToken();
+  const slug = getStoreSlug();
+  if (numId > 0 && token) {
+    fetch(`/${slug}/product_cart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': token,
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        product_id: numId,
+        qty: qty,
+        variant_id: 0
+      })
+    })
+    .then(r => r.json())
+    .then(res => {
+      if (typeof callback === 'function') callback(res);
+    })
+    .catch(err => {
+      console.warn('Server cart sync:', err);
+      if (typeof callback === 'function') callback(null);
+    });
+  } else if (typeof callback === 'function') {
+    callback(null);
+  }
 }
 
 function renderWishUI() {
@@ -321,9 +361,10 @@ document.addEventListener('click', (event) => {
     const id = buyNowBtn.getAttribute('data-rc-buy-now');
     const detailQtyEl = document.querySelector('[data-rc-detail-qty-val]');
     const qty = buyNowBtn.closest('[data-rc-detail-root]') && detailQtyEl ? parseInt(detailQtyEl.textContent || '1', 10) || 1 : 1;
-    addItemToCart(id, qty);
     const url = buyNowBtn.getAttribute('data-checkout-url');
-    if (url) window.location.href = url;
+    addItemToCart(id, qty, () => {
+      if (url) window.location.href = url;
+    });
     return;
   }
 
@@ -555,18 +596,11 @@ document.addEventListener('change', (event) => {
 });
 
 document.addEventListener('submit', (event) => {
-  const checkoutForm = event.target.closest('[data-rc-checkout-form]');
+  const checkoutForm = event.target.closest('#rc-order-form, [data-rc-checkout-form]');
   if (checkoutForm) {
-    event.preventDefault();
+    // Clear client-side cart mirror so returning back shows clean state
     writeJson(CART_KEY, []);
     renderCartUI();
-    document.querySelector('[data-rc-checkout-form-wrap]')?.classList.add('hidden');
-    const placed = document.querySelector('[data-rc-order-placed]');
-    if (placed) {
-      placed.classList.remove('hidden');
-      placed.classList.add('flex');
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
 

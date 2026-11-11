@@ -3,7 +3,7 @@
     $storeSlug = $slug ?? ($store->slug ?? request()->route('storeSlug') ?? 'stylique');
     $homeUrl = route('landing_page', $storeSlug);
     $productsUrl = route('page.product-list', ['storeSlug' => $storeSlug]);
-    $checkoutUrl = $homeUrl . '?rc_checkout=1';
+    $checkoutUrl = route('checkout', $storeSlug);
 
     $targetId = (int) ($rcProductId ?? request('rc_product', 0));
     $reqSlug = (string) (request()->route('product_slug') ?? request('product_slug', ''));
@@ -15,6 +15,7 @@
     }
     $activeProd = $activeProd ?? $rcProducts[0];
 
+    $isInStock = true;
     if (isset($product) && is_object($product) && !isset($rcProductId)) {
         $rawName = (string) ($product->name ?? 'Product');
         $rawImg = (string) ($product->cover_image_path ?? '');
@@ -24,6 +25,7 @@
         $imgUrl = (!empty($rawImg) && !str_contains($rawImg, 'themes/stylique/assets/images/service') && !str_starts_with($rawName, 'Test '))
             ? get_file($rawImg)
             : ($activeProd['image'] ?? asset('readycart/p-heater.png'));
+        $isInStock = !($product->track_stock == 1 && $product->product_stock <= 0);
         $activeProd = [
             'id' => (int) ($product->id ?? 1),
             'name' => $rawName,
@@ -39,10 +41,14 @@
         ];
     }
 
-    $others = array_values(array_filter($rcProducts, fn ($p) => $p['id'] !== $activeProd['id']));
-    $sameCat = array_values(array_filter($others, fn ($p) => $p['category'] === $activeProd['category']));
-    $diffCat = array_values(array_filter($others, fn ($p) => $p['category'] !== $activeProd['category']));
-    $related = array_slice(array_merge($sameCat, $diffCat), 0, 4);
+    if (isset($products) && is_iterable($products) && count($products) > 0) {
+        $related = collect($products)->where('id', '!=', $activeProd['id'])->take(4)->values()->all();
+    } else {
+        $others = array_values(array_filter($rcProducts, fn ($p) => $p['id'] !== $activeProd['id']));
+        $sameCat = array_values(array_filter($others, fn ($p) => $p['category'] === $activeProd['category']));
+        $diffCat = array_values(array_filter($others, fn ($p) => $p['category'] !== $activeProd['category']));
+        $related = array_slice(array_merge($sameCat, $diffCat), 0, 4);
+    }
 
     $colors = [
         ['name' => 'Black', 'hex' => '#111111'],
@@ -142,9 +148,9 @@
             </div>
 
             <div class="mt-5 flex items-baseline gap-3 border-b border-line pb-5">
-                <span class="text-4xl font-extrabold">${{ number_format($activeProd['price'], 2) }}</span>
+                <span class="text-4xl font-extrabold">৳{{ number_format($activeProd['price'], 2) }}</span>
                 @if ($activeProd['oldPrice'] > $activeProd['price'])
-                    <span class="text-lg text-ink/40 line-through">${{ number_format($activeProd['oldPrice'], 2) }}</span>
+                    <span class="text-lg text-ink/40 line-through">৳{{ number_format($activeProd['oldPrice'], 2) }}</span>
                 @endif
             </div>
 
@@ -193,7 +199,11 @@
                             <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                         </button>
                     </div>
-                    <span class="text-sm font-semibold text-emerald-600">In Stock</span>
+                    @if ($isInStock)
+                        <span class="text-sm font-semibold text-emerald-600">স্টকে আছে (In Stock)</span>
+                    @else
+                        <span class="text-sm font-semibold text-rose-600">স্টক আউট (Out of Stock)</span>
+                    @endif
                 </div>
             </div>
 
@@ -203,7 +213,7 @@
                     data-rc-add-cart="{{ $activeProd['id'] }}"
                     class="h-12 min-w-44 flex-1 rounded-md bg-brand px-8 font-bold text-brand-foreground transition hover:bg-brand-dark sm:flex-none"
                 >
-                    Add to Cart
+                    {{ __('কার্ট-এ যোগ করুন') }}
                 </button>
                 <button
                     type="button"
@@ -211,7 +221,7 @@
                     data-checkout-url="{{ $checkoutUrl }}"
                     class="h-12 min-w-44 flex-1 rounded-md border-2 border-brand px-8 font-bold text-brand transition hover:bg-brand hover:text-brand-foreground sm:flex-none"
                 >
-                    Buy Now
+                    {{ __('ক্যাশ অন ডেলিভারিতে অর্ডার করুন') }}
                 </button>
             </div>
 
@@ -268,32 +278,16 @@
         </div>
 
         <div data-rc-tab-panel="description" class="max-w-4xl space-y-6 py-8 text-sm leading-relaxed text-ink/70">
-            <div>
-                <h2 class="mb-2 text-base font-bold text-ink">Summary</h2>
-                <p>This product is designed to provide a practical, reliable and user-friendly solution for everyday needs. Made with quality materials and a functional design, it offers durability and excellent performance.</p>
-            </div>
-            <div>
-                <h2 class="mb-3 text-base font-bold text-ink">Key Features</h2>
-                <ul class="grid gap-4 sm:grid-cols-2">
-                    @foreach ($details as $d)
-                        <li class="rounded-md bg-surface p-4">
-                            <p class="font-bold text-ink">{{ $d['title'] }}</p>
-                            <p class="mt-1">{{ $d['text'] }}</p>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-            <div>
-                <h2 class="mb-3 text-base font-bold text-ink">Frequently Asked Questions</h2>
-                <dl class="space-y-4">
-                    @foreach ($faqs as $f)
-                        <div>
-                            <dt class="font-semibold text-ink">{{ $f['q'] }}</dt>
-                            <dd>{{ $f['a'] }}</dd>
-                        </div>
-                    @endforeach
-                </dl>
-            </div>
+            @if(isset($product) && (!empty($product->description) || !empty($product->detail) || !empty($product->specification)))
+                <div class="prose max-w-none text-ink/80 leading-relaxed">
+                    {!! !empty($product->description) ? $product->description : (!empty($product->detail) ? $product->detail : $product->specification) !!}
+                </div>
+            @else
+                <div>
+                    <h2 class="mb-2 text-base font-bold text-ink">বিবরণ (Summary)</h2>
+                    <p>এই পণ্যটি মানসম্মত উপকরণ দিয়ে তৈরি এবং টেকসই ও নির্ভরযোগ্য ব্যবহারের জন্য ডিজাইন করা হয়েছে। দৈনন্দিন ব্যবহারের জন্য এটি অত্যন্ত সুবিধাজনক ও আকর্ষণীয়।</p>
+                </div>
+            @endif
         </div>
 
         <ul data-rc-tab-panel="reviews" class="hidden max-w-3xl space-y-4 py-8">
