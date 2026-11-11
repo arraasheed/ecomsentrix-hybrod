@@ -495,6 +495,27 @@
 
     @php
         $setting = getSuperAdminAllSetting();
+        if (is_dir(base_path('themes/readycommerce'))) {
+            try {
+                if (!\Illuminate\Support\Facades\DB::table('addons')->where('theme_id', 'readycommerce')->exists()) {
+                    \Illuminate\Support\Facades\DB::table('addons')->insert([
+                        'theme_id'   => 'readycommerce',
+                        'status'     => '1',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+                foreach (\Illuminate\Support\Facades\DB::table('plans')->get() as $__planRow) {
+                    $__planThemes = array_filter(array_map('trim', explode(',', (string) $__planRow->themes)));
+                    if (!in_array('readycommerce', $__planThemes, true)) {
+                        $__planThemes[] = 'readycommerce';
+                        \Illuminate\Support\Facades\DB::table('plans')
+                            ->where('id', $__planRow->id)
+                            ->update(['themes' => implode(',', $__planThemes)]);
+                    }
+                }
+            } catch (\Throwable $__e) {}
+        }
     @endphp
     @if (isset($setting['enable_cookie']) && $setting['enable_cookie'] == 'on')
         @include('layouts.cookie_consent')

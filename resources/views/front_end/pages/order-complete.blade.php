@@ -101,5 +101,31 @@
     });
   </script>
 
+  @php
+      $pixelIsolationEnabled = (\App\Models\Utility::GetValueByName('pixel_isolation_enabled', $store->id) !== 'off');
+  @endphp
+  @if($pixelIsolationEnabled)
+  <script>
+      if (typeof fbq === 'function') {
+          fbq('trackCustom', 'OrderReceivedHold', {
+              order_id: '{{ $order->product_order_id ?? $order->id }}',
+              status: 'hold_pending_confirmation'
+          });
+          console.log('[Pixel Shield] Browser Purchase event suppressed. Delayed CAPI will dispatch on confirmation.');
+      }
+  </script>
+  @else
+  <script>
+      if (typeof fbq === 'function') {
+          fbq('track', 'Purchase', {
+              value: {{ (float)($order->grand_total ?? $order->price ?? 0) }},
+              currency: '{{ $store->currency_code ?? "BDT" }}',
+              content_type: 'product',
+              order_id: '{{ $order->product_order_id ?? $order->id }}'
+          });
+      }
+  </script>
+  @endif
+
 @endpush
 

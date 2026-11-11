@@ -62,7 +62,7 @@ class FraudShieldController extends Controller
         }
 
         $minSuccessRate = (int) Utility::GetValueByName('fraud_risk_threshold', $store->id) ?: 50;
-        $dailyLimit = (int) Utility::GetValueByName('fraud_daily_limit', $store->id) ?: 50;
+        $dailyLimit = (int) Utility::GetValueByName('fraud_daily_limit', $store->id) ?: 20;
         $storeWhatsApp = Utility::GetValueByName('whatsapp_number', $store->id) 
             ?: (Utility::GetValueByName('company_telephone', $store->id) ?: '8801948821476');
 
@@ -242,7 +242,7 @@ class FraudShieldController extends Controller
         $today = now()->format('Y-m-d');
         $quotaKey = "store_{$storeId}_fraud_quota_{$today}";
         $usedToday = (int) Cache::get($quotaKey, 0);
-        $dailyLimit = (int) Utility::GetValueByName('fraud_daily_limit', $storeId) ?: 50;
+        $dailyLimit = (int) Utility::GetValueByName('fraud_daily_limit', $storeId) ?: 20;
 
         $recentLogs = FraudCheckLog::where('store_id', $storeId)
             ->orderBy('id', 'desc')
@@ -279,7 +279,7 @@ class FraudShieldController extends Controller
         $today = now()->format('Y-m-d');
         $quotaKey = "store_{$storeId}_fraud_quota_{$today}";
         $usedToday = (int) Cache::get($quotaKey, 0);
-        $dailyLimit = (int) Utility::GetValueByName('fraud_daily_limit', $storeId) ?: 50;
+        $dailyLimit = (int) Utility::GetValueByName('fraud_daily_limit', $storeId) ?: 20;
 
         if ($usedToday >= $dailyLimit && !$request->boolean('force')) {
             return response()->json([

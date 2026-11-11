@@ -77,6 +77,22 @@ return new class extends Migration
                 $table->integer('avg_response_time_ms')->default(0);
                 $table->timestamp('last_called_at')->nullable();
                 $table->timestamps();
+
+                $table->index(['store_id', 'date'], 'fau_store_date_idx');
+                $table->unique(['store_id', 'courier_name', 'api_key_id', 'date'], 'fau_unique_usage');
+            });
+        }
+
+        // 5. Meta CAPI Dispatch Logs for delayed idempotency guard
+        if (!Schema::hasTable('capi_dispatch_logs')) {
+            Schema::create('capi_dispatch_logs', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('order_id')->index();
+                $table->unsignedBigInteger('store_id')->index();
+                $table->string('event_name', 50)->default('Purchase');
+                $table->string('status', 30)->default('success'); // success, failed, error
+                $table->text('response_payload')->nullable();
+                $table->timestamps();
             });
         }
     }

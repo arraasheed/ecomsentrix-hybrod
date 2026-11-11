@@ -142,8 +142,9 @@ if (!function_exists('get_file')) {
     function get_file($path)
     {
         $admin = User::where('type', 'super admin')->first();
+        $storeId = $admin ? $admin->current_store : 1;
         
-        $settings = Setting::where('store_id', $admin->current_store)->pluck('value', 'name')->toArray();
+        $settings = Setting::where('store_id', $storeId)->pluck('value', 'name')->toArray();
 
         if (empty($path)) {
             return $path;

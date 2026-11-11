@@ -3100,6 +3100,8 @@ class ApiController extends Controller
         $order->reward_points = SetNumber($product_reward_point);
         $order->additional_note = $request->additional_note;
         $order->store_id = $store->id;
+        $order->pixel_status = 'hold';
+        $order->capi_status = 'pending';
         $order->save();
 
         Utility::paymentWebhook( $order );

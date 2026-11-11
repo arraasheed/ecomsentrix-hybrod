@@ -368,6 +368,19 @@ class CompanyMenuListener
                 'module' => $module,
                 'permission' => ''
             ]);
+
+            $menu->add([
+                'title' => __('Pixel Isolation'),
+                'icon' => 'brand-facebook',
+                'name' => 'pixel_isolation',
+                'parent' => null,
+                'order' => 175,
+                'ignore_if' => [],
+                'depend_on' => [],
+                'route' => 'fraud.pixel.dashboard',
+                'module' => $module,
+                'permission' => ''
+            ]);
         }
 
         /** customer start */

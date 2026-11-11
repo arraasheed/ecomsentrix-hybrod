@@ -52,7 +52,7 @@
 
 <script>
 window.onTurboLoad(function () {
-    const storeSlug = '{{ $slug ?? ($store->slug ?? "") }}';
+    const storeSlug = '{{ $slug ?? ($storeSlug ?? ($store->slug ?? "")) }}';
     if (!storeSlug) return;
 
     let phoneInput = document.querySelector('input[name="billing_info[billing_user_telephone]"]') || 

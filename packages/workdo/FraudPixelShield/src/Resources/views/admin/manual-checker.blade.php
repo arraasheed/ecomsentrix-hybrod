@@ -74,8 +74,22 @@
                             <span class="text-xs text-uppercase font-weight-bold text-muted">{{ __('Verified Number') }}</span>
                             <h3 class="h4 font-weight-bold m-0" id="res-phone">017XXXXXXXX</h3>
                         </div>
-                        <div>
-                            <span class="badge px-3 py-2 rounded-pill font-weight-bold h5 m-0" id="res-rate-badge">85% Success Rate</span>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="position-relative" style="width: 70px; height: 70px;">
+                                <svg class="w-100 h-100" viewBox="0 0 36 36">
+                                    <path stroke="#e2e8f0" stroke-width="3.5" fill="none"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path id="res-circle-progress" stroke="#10b981" stroke-width="3.5" stroke-dasharray="100, 100" stroke-linecap="round" fill="none"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <div class="position-absolute top-50 start-50 translate-middle text-center" style="transform: translate(-50%, -50%);">
+                                    <span class="h6 font-weight-bold m-0 d-block" id="res-rate-percent">0%</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="d-block text-xs font-weight-bold text-muted text-uppercase">{{ __('Courier Delivery Rate') }}</span>
+                                <span class="badge px-3 py-2 rounded-pill font-weight-bold h6 m-0" id="res-rate-badge">Safe</span>
+                            </div>
                         </div>
                     </div>
 
@@ -230,17 +244,28 @@ window.onTurboLoad(function () {
             document.getElementById('res-courier').innerText = item.courier_details || '-';
 
             const rateBadge = document.getElementById('res-rate-badge');
-            rateBadge.innerText = item.success_rate + '% Success Rate';
-
+            const ratePercent = document.getElementById('res-rate-percent');
+            const circleProgress = document.getElementById('res-circle-progress');
             const statusCard = document.getElementById('fraud-status-card');
-            if (item.success_rate >= 80) {
-                rateBadge.className = 'badge px-3 py-2 rounded-pill font-weight-bold h5 m-0 bg-success';
+
+            const rate = Math.max(0, Math.min(100, parseInt(item.success_rate || 0)));
+            ratePercent.innerText = rate + '%';
+            circleProgress.setAttribute('stroke-dasharray', `${rate}, 100`);
+
+            if (rate >= 80) {
+                rateBadge.innerText = 'নিরাপদ কাস্টমার (' + rate + '%)';
+                rateBadge.className = 'badge px-3 py-2 rounded-pill font-weight-bold h6 m-0 bg-success text-white';
+                circleProgress.setAttribute('stroke', '#10b981');
                 statusCard.style.backgroundColor = '#ecfdf5';
-            } else if (item.success_rate >= 50) {
-                rateBadge.className = 'badge px-3 py-2 rounded-pill font-weight-bold h5 m-0 bg-warning text-dark';
+            } else if (rate >= 50) {
+                rateBadge.innerText = 'মাঝারি ঝুঁকি (' + rate + '%)';
+                rateBadge.className = 'badge px-3 py-2 rounded-pill font-weight-bold h6 m-0 bg-warning text-dark';
+                circleProgress.setAttribute('stroke', '#f59e0b');
                 statusCard.style.backgroundColor = '#fffbeb';
             } else {
-                rateBadge.className = 'badge px-3 py-2 rounded-pill font-weight-bold h5 m-0 bg-danger';
+                rateBadge.innerText = 'উচ্চ ঝুঁকি / ফ্রড (' + rate + '%)';
+                rateBadge.className = 'badge px-3 py-2 rounded-pill font-weight-bold h6 m-0 bg-danger text-white';
+                circleProgress.setAttribute('stroke', '#ef4444');
                 statusCard.style.backgroundColor = '#fef2f2';
             }
 

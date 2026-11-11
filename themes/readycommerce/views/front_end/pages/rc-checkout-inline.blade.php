@@ -160,4 +160,6 @@
     </div>
 </main>
 
+@include('front_end.hooks.checkout_form')
+
 

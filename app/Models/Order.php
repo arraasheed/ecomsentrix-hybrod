@@ -41,6 +41,8 @@ class Order extends Model
         'additional_note',
         'deliveryboy_id',
         'store_id',
+        'pixel_status',
+        'capi_status',
     ];
 
     protected $appends = [
@@ -446,6 +448,19 @@ class Order extends Model
                 $order->confirmed_date = now();
                 $order->delivered_status = 4;
                 $order->save();
+                
+                // Dispatch Meta CAPI Purchase event if module is active and settings match
+                if (module_is_active('FraudPixelShield')) {
+                    $store = \App\Models\Store::find($order->store_id);
+                    if ($store) {
+                        $delayUntil = \App\Models\Utility::GetValueByName('delay_capi_until', $store->id);
+                        $pixelStatus = \App\Models\Utility::GetValueByName('pixel_status', $store->id);
+                        if ($pixelStatus == 'hold' && $delayUntil == 'order_confirm') {
+                            \Workdo\FraudPixelShield\Jobs\SendMetaCapiPurchaseJob::dispatch($order, $store);
+                        }
+                    }
+                }
+
                 event(new OrderPaymentStatus($order));
 
                 $return['status'] = 'success';
@@ -499,6 +514,19 @@ class Order extends Model
                 $order->delivery_date = now();
                 $order->delivered_status = 1;
                 $order->save();
+
+                // Dispatch Meta CAPI Purchase event if delivery_confirm is selected
+                if (module_is_active('FraudPixelShield')) {
+                    $store = \App\Models\Store::find($order->store_id);
+                    if ($store) {
+                        $delayUntil = \App\Models\Utility::GetValueByName('delay_capi_until', $store->id);
+                        $pixelStatus = \App\Models\Utility::GetValueByName('pixel_status', $store->id);
+                        if ($pixelStatus == 'hold' && $delayUntil == 'delivery_confirm') {
+                            \Workdo\FraudPixelShield\Jobs\SendMetaCapiPurchaseJob::dispatch($order, $store);
+                        }
+                    }
+                }
+
                 event(new OrderPaymentStatus($order));
 
                 $return['status'] = 'success';

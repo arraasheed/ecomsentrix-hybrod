@@ -11,7 +11,9 @@
 5. **স্মার্ট অর্ডার প্রসেসিং সিস্টেম (bdeshio / Saleecom রেফারেন্স)**
 6. **সুপার অ্যাডমিন ও স্টোর অ্যাডমিন সেপারেশন ও সাবস্ক্রিপশন অডিট**
 7. **হোমপেজ ল্যান্ডিং পেজ আর্কিটেকচার (React Full-SPA + Laravel Backend)**
-8. **জেমিনাই আর্গন (Gemini Argon)-এর সাথে আলোচনার জন্য ওপেন পয়েন্টসমূহ**
+8. **ইন-হাউস AI + লাইভ এজেন্ট + ইন-বক্স টিকিটিং সাপোর্ট সিস্টেম (Intercom-Style Isolated Tool)**
+9. **জেমিনাই আর্গন (Gemini Argon)-এর সাথে আলোচনার জন্য ওপেন পয়েন্টসমূহ**
+10. **ইমপ্লিমেন্টেশন স্ট্যাটাস ও ৬-পর্বের রোডম্যাপ (Live Tracker)**
 
 ---
 
@@ -34,6 +36,11 @@
   - প্রফিট ও রেভিনিউ বার চার্ট (Today / Last Week / Monthly / Yearly ফিল্টার)।
   - ক্যাটাগরি সেলস ডোনাট চার্ট।
 - **ক্যাটাগরাইজড সাইডবার:** `STORE MANAGEMENT`, `CATALOG & SALES` ইত্যাদি সুবিন্যস্ত সেকশন।
+- **হাইলাইটেড "Smart Features / Integrations Hub" পেজ (Saleecom / Bdeshio রেফারেন্স):**
+  - সাইডবারে সাধারণ `Settings`-এর বদলে আলাদাভাবে হাইলাইট করা **`⚡ Smart Features` / `Features Hub`** মেনু বাটন থাকবে।
+  - পেজের ভেতরে সার্চ বার (`Search`), `Tutorial` ও `Support` বাটনসহ ৪-কলামের কালারফুল কার্ড গ্রিডে স্টোরের সব পাওয়ার-টুল ও থার্ড-পার্টি ইন্টিগ্রেশন (`Delivery Charge`, `Advance Payment`, `SMS`, `Courier`, `Fraud Check API`, `Payment Methods`, `Social Login`, `Facebook Pixel & CAPI`, `TikTok Pixel`, `Tag Manager, Analytics & Data Layer`, `Facebook Catalog`, `Manage Offer / Flash Campaign`, `Chat Manage (WhatsApp/Messenger/Tawk.to/Crisp)`, `Domain Manage`, `Google Search Console`, `Reward Point`, `ePBX Auto Call` এবং ভবিষ্যতের সব নতুন ফিচার) এক জায়গায় সাজানো থাকবে। (যেখানে ট্র্যাকিং ও চ্যাট স্ক্রিপ্টের জন্য লোকাল `Nazmart v4.0.0`-এর `Modules/Integrations` লজিক রিউইজ করে সময় বাঁচানো হবে)।
+- **আনলিমিটেড প্রোডাক্ট ল্যান্ডিং পেজ বিল্ডার (Single-Product Sales Funnel):**
+  - স্টোর অ্যাডমিন প্যানেলে আনলিমিটেড প্রোডাক্ট ল্যান্ডিং পেজ (`/offer/{slug}`) তৈরির অপশন থাকবে—যেখানে প্রোডাক্ট সিলেক্ট করে রেডি হাই-কনভার্টিং বাংলাদেশি টেমপ্লেটে অফার, ভিডিও, রিভিউ ও পেজের নিচেই সরাসরি ১-ক্লিক চেকআউট ফর্ম (লাইভ ফ্রড শিল্ড ও মেটা পিক্সেল CAPI সহ) থাকবে।
 
 ---
 
@@ -130,18 +137,27 @@
   - মোবাইল সাইডবার বাউন্স ও একর্ডিয়ান ফিক্স (`dash.js`, `mobile-app-feel.css`)
   - লাইভ ব্রাউজার ভেরিফাইড (৩টি মোডে: Super Admin, Store Admin, Mobile 375px)
   - কিল-সুইচ: `ADMIN_ROLE_SEPARATION_ENABLED=true`
-- **পর্ব ২ (কোর ফিচার - ৩-সোর্স ফ্রড ইঞ্জিন / `packages/workdo/FraudPixelShield`):** 🟨 **IN PROGRESS (৭০% সম্পন্ন, ৪টি ফিনিশিং কাজ বাকি)**
-  - ✅ সম্পন্ন: ৩-সোর্স Node.js ওয়ার্কার (`service/fraud-worker.cjs`), কন্ট্রোলার (`FraudShieldController.php`), ৪টি মডেল (`FraudCheckLog`, `FraudLeadLog`, `FraudApiKey`, `FraudApiUsageLog`), অ্যাডমিন ভিউ (`manual-checker.blade.php`, `leads.blade.php`), `Utility::GetValueByName` ক্যাশিং (Commit `490eae4`)।
-  - ⬜ বাকি ১: `src/Routes/web.php`-এ `queryManualNumber` ও `FraudShieldController::manualNumberQuery` নাম মেলানো এবং `leads.blade.php`-এর জন্য `leads()` রুট ও কন্ট্রোলার মেথড যোগ করা।
-  - ⬜ বাকি ২: `2026_10_15_000001_create_fraud_shield_tables.php` মাইগ্রেশনে `fraud_api_usage_logs` টেবিলের স্কিমা যোগ ও রান করা।
-  - ⬜ বাকি ৩: স্টোরফ্রন্ট চেকআউট পেজে ১.৫ সেকেন্ড ডিবাউন্সে `POST /{slug}/fraud-check` কল এবং হাই-রিস্ক কাস্টমারের জন্য Soft-Lock WhatsApp পপআপ ও `POST /{slug}/fraud-log-lead` কলের ফ্রন্টএন্ড JS স্ক্রিপ্ট যুক্ত করা।
-  - ⬜ বাকি ৪: ব্রাউজার/এন্ডপয়েন্ট টেস্ট করে পর্ব ২ `✅ DONE` মার্ক ও গিট কমিট করা।
-- **পর্ব ৩ (কোর ফিচার - মেটা পিক্সেল আইসোলেশন ও ডিলেড CAPI সিস্টেম — সেকশন ৪ অনুযায়ী):** ⬜ **PENDING**
-  - অর্ডার প্লেস হলে ডিফল্ট `pixel_status = 'hold'` রাখা (ব্রাউজার পিক্সেলে ফেক/ইন্সট্যান্ট `Purchase` ইভেন্ট ব্লক করা)।
-  - স্টোর অ্যাডমিন অর্ডার **"Confirm"** বা ডেলিভারি নিশ্চিত করলেই কেবল ব্যাকএন্ড থেকে `SendMetaCapiPurchaseJob` (SHA-256 হ্যাশ করা PII সহ) ফায়ার করা এবং `capi_dispatch_logs` আইডেমপোটেন্সি গার্ড বসানো।
+- **পর্ব ২ (কোর ফিচার - ৩-সোর্স ফ্রড ইঞ্জিন / `packages/workdo/FraudPixelShield`):** ✅ **DONE**
+  - ৩-সোর্স লাইভ কুরিয়ার ওয়ার্কার (`service/fraud-worker.cjs`), কন্ট্রোলার (`FraudShieldController.php`), দৈনিক কোটা ফিক্সড ২০টি (লাইভ চেকআউট + ম্যানুয়াল চেক মিলিয়ে)।
+  - EliteMart-স্টাইল সার্কুলার SVG গেজ (প্রগ্রেস রিং) সহ ম্যানুয়াল চেকার, কালার কোডেড স্ট্যাটাস (🟢 ৮০%+, 🟡 ৫০-৭৯%, 🔴 <৫০%), এবং ব্লকড লিড ট্র্যাকিং।
+  - চেকআউট ফর্মে ১.৫ সেকেন্ড ডিবাউন্স লাইভ চেক ও হাই-রিস্ক কাস্টমারের জন্য Soft-Lock WhatsApp পপআপ (`front_end.hooks.checkout_form`, ReadyCommerce সহ সব থিমে অ্যাক্টিভ)।
+  - সুপার অ্যাডমিন অ্যাড-অন ম্যানেজারে ফিক্সড আইকন (`favicon.png`) ও গ্রিন `Enable` স্ট্যাটাস।
+- **পর্ব ৩ (কোর ফিচার - মেটা পিক্সেল আইসোলেশন ও ডিলেড CAPI সিস্টেম):** ✅ **DONE**
+  - স্টোর অ্যাডমিনের জন্য ডেডিকেটেড `Pixel Isolation` ড্যাশবোর্ড (`MetaPixelIsolationController.php` ও `pixel-dashboard.blade.php`)।
+  - ৪টি মান্থলি ক্যালকুলেশন কার্ড: Purchases Held, Dispatched to CAPI, Pending Confirmation, Estimated Ad Spend Saved (৳)।
+  - লাইভ অন/অফ টগল সুইচ (হোল্ড মোড অ্যাক্টিভ থাকলে ব্রাউজার পিক্সেল Purchase ব্লক থাকবে)।
+  - অর্ডার লিস্ট লেজারে স্ট্যাটাস ব্যাজ (`HOLD (Suppressed)`, `DISPATCHED`, `DIRECT`) এবং ১-ক্লিকে `"Confirm & Send to Meta"` অ্যাকশন বাটন।
+  - মেটা CAPI কিউ জব (`SendMetaCapiPurchaseJob` SHA-256 হ্যাশ করা কাস্টমার ডাটা সহ) ও আইডেমপোটেন্সি গার্ড (`capi_dispatch_logs`)।
+  - স্টোরফ্রন্ট অর্ডার কমপ্লিট পেজে ব্রাউজার পিক্সেল `Purchase` ইভেন্ট সাপ্রেস করে নিউট্রাল `OrderReceivedHold` কাস্টম ইভেন্ট পাঠানো।
+  - `CapiDispatchLog` লেজার ভিউ (`capi-logs.blade.php`) ও রিট্রাই বাটন।
+  - স্টোর অ্যাডমিন সাইডবারে অর্ডার ১৭৫-এ `Pixel Isolation` মেনু যোগ।
 - **পর্ব ৪ (UX Layer - স্মার্ট অর্ডার প্রসেসিং টেবিল + Ecom Sentrix অ্যাডমিন UI — সেকশন ২ ও ৫ অনুযায়ী):** ⬜ **PENDING**
   - ড্যাশবোর্ডে Ecom Sentrix গ্রেডিয়েন্ট UI, ২০টি ডাইনামিক মেট্রিক কার্ড (প্রাইমারি ১০টি + "See More" সেকেন্ডারি ১০টি) ও ApexCharts।
   - অর্ডার লিস্টে ১৩টি স্ট্যাটাস ট্যাব (কাউন্ট ব্যাজসহ), ফোন নম্বরের নিচে লাইভ কুরিয়ার সাকসেস রেট ব্যাজ (🟢/🟡/🔴), এবং ১-ক্লিক Copy Phone / Direct WhatsApp / Direct Call বাটন।
 - **পর্ব ৫ (Marketing Layer - React Full-SPA ল্যান্ডিং পেজ ইন্টিগ্রেশন — সেকশন ৭ অনুযায়ী):** ⬜ **PENDING**
   - মূল ডোমেইনে (`ecommercego.dev`) React Full-SPA ল্যান্ডিং পেজ যুক্ত করা (`plans` টেবিল থেকে ডাইনামিক প্রাইসিং, সুপার অ্যাডমিন সেটিংস থেকে Pixel/GTM, এবং সাবডোমেইন/কাস্টম ডোমেইন আইসোলেশন)।
+- **পর্ব ৬ (Support Layer - ইন-হাউস AI + লাইভ এজেন্ট + ইন-বক্স টিকিটিং সাপোর্ট টুল — বিস্তারিত: `.ai/reports/live-support-ai-ticket-plan.md`):** ⬜ **PENDING**
+  - **১০০% বিচ্ছিন্ন টুল (`public/support-desk/`):** মূল কোডবেসে হাত না দিয়ে `.env` কিল-সুইচ (`SUPPORT_DESK_ENABLED=true`) দিয়ে স্টোর অ্যাডমিনে Intercom-স্টাইল ৩-ট্যাব (`Home / Messages / Help & Tickets`) চ্যাট উইজেট যুক্ত করা।
+  - **এমপ্লয়ি রোল-বেসড পোর্টাল (`/support-desk/admin.php`):** মূল Super Admin অ্যাক্সেস ছাড়াই সাপোর্ট কর্মীদের জন্য আলাদা ইউজার আইডি ও পাসওয়ার্ড (`Agent`, `Supervisor`, `Admin` রোল) এবং মোবাইল PWA অ্যাপ (`manifest.json`) ও নিজস্ব ব্রাউজার/ফোন পুশ নোটিফিকেশন (কোনো থার্ড-পার্টি টেলিগ্রাম ছাড়া)।
+  - **ডাইনামিক ওয়ার্কফ্লো (AI → Live Agent → Auto Note & Ticket):** প্রথমে বিল্ট-ইন গাইড/অটোমেশন ও ফ্রি Google Gemini API সমাধান দেওয়ার চেষ্টা করবে; টেকনিক্যাল সমস্যায় যেকোনো সময় অনলাইনে থাকা কর্মী বা ডেভেলপার লাইভ চ্যাটে কথা বলতে পারবেন; আর কেউ অ্যাভেলেবেল না থাকলে বট নিজেই সমস্যাটি নোট করে রাখবে এবং চ্যাটবক্সের ভেতরেই স্টোর অ্যাডমিনকে একটি **Support Ticket (`#TKT-...`)** তৈরি করার অপশন দেবে।
 
