@@ -82,7 +82,66 @@ class FraudShieldController extends Controller
             ]);
         }
 
-        // Check Redis cache first (72h for >=5 orders, 24h for <5 orders)
+        // 1. Cross-Tenant Internal SaaS Intelligence Check (Instant 0-50ms lookup across ALL platform stores)
+        $internalBlocked = FraudCheckLog::where('phone', $cleanPhone)
+            ->where('is_blocked', true)
+            ->latest()
+            ->first();
+
+        if (!$internalBlocked) {
+            $internalBlocked = FraudLeadLog::where('phone', $cleanPhone)
+                ->where('status', 'blocked_whatsapp_offered')
+                ->latest()
+                ->first();
+        }
+
+        if ($internalBlocked) {
+            Log::info("FraudShield: {$cleanPhone} blocked by internal SaaS network (Store #{$store->id}).");
+
+            $cleanWhatsApp = $this->cleanPhone($storeWhatsApp);
+            if (!str_starts_with($cleanWhatsApp, '880')) {
+                $cleanWhatsApp = '88' . $cleanWhatsApp;
+            }
+            $waMsg = "হ্যালো! আমি ওয়েবসাইট থেকে অর্ডার করতে চেয়েছিলাম\nআমার মোবাইল নম্বর: {$cleanPhone}\nদয়া করে আমার অর্ডারটি নিশ্চিত করুন";
+            $whatsAppUrl = "https://wa.me/{$cleanWhatsApp}?text=" . urlencode($waMsg);
+
+            // Record this check for current store
+            try {
+                FraudCheckLog::create([
+                    'store_id' => $store->id,
+                    'phone' => $cleanPhone,
+                    'courier_details' => is_array($internalBlocked->courier_details) ? $internalBlocked->courier_details : ['summary' => (string) ($internalBlocked->courier_details ?? 'পূর্বে অন্য স্টোরে ফ্রড/বাতিল হিসেবে চিহ্নিত')],
+                    'total_orders' => (int) ($internalBlocked->total_orders ?? 1),
+                    'total_delivery' => (int) ($internalBlocked->total_delivery ?? 0),
+                    'total_cancel' => (int) ($internalBlocked->total_cancel ?? 1),
+                    'success_rate' => (int) ($internalBlocked->success_rate ?? 0),
+                    'risk_status' => 'high',
+                    'is_blocked' => true,
+                    'check_type' => 'live_checkout',
+                    'ip_address' => $request->ip(),
+                ]);
+            } catch (\Throwable $e) {}
+
+            return response()->json([
+                'status' => 'success',
+                'phone' => $cleanPhone,
+                'blocked' => true,
+                'success_rate' => (int) ($internalBlocked->success_rate ?? 0),
+                'risk_status' => 'high',
+                'total_orders' => (int) ($internalBlocked->total_orders ?? 1),
+                'total_delivery' => (int) ($internalBlocked->total_delivery ?? 0),
+                'total_cancel' => (int) ($internalBlocked->total_cancel ?? 1),
+                'courier_details' => $internalBlocked->courier_details ?? 'পূর্বে প্ল্যাটফর্মের অন্য স্টোরে অস্বাভাবিক রিটার্ন রেকর্ড',
+                'threshold' => $minSuccessRate,
+                'whatsapp_url' => $whatsAppUrl,
+                'whatsapp_number' => $storeWhatsApp,
+                'used_today' => $usedToday,
+                'daily_limit' => $dailyLimit,
+                'data_source' => 'internal_saas_network'
+            ]);
+        }
+
+        // 2. Check Redis cache (72h for >=5 orders, 24h for <5 orders)
         $cacheKey = "fraud_cache_{$cleanPhone}";
         $cached = Cache::get($cacheKey);
 
@@ -146,9 +205,9 @@ class FraudShieldController extends Controller
         if ($totalOrders > 0) {
             if ($successRate < $minSuccessRate) {
                 $isBlocked = true;
-                $riskStatus = 'high_risk';
+                $riskStatus = 'high';
             } elseif ($successRate < 75) {
-                $riskStatus = 'moderate';
+                $riskStatus = 'medium';
             }
         }
 
@@ -166,7 +225,7 @@ class FraudShieldController extends Controller
             FraudCheckLog::create([
                 'store_id' => $store->id,
                 'phone' => $cleanPhone,
-                'courier_details' => $courierDetails,
+                'courier_details' => is_array($courierDetails) ? $courierDetails : ['summary' => (string) $courierDetails],
                 'total_orders' => $totalOrders,
                 'total_delivery' => $totalDelivery,
                 'total_cancel' => $totalCancel,
@@ -192,6 +251,7 @@ class FraudShieldController extends Controller
             'courier_details' => $courierDetails,
             'threshold' => $minSuccessRate,
             'whatsapp_url' => $whatsAppUrl,
+            'whatsapp_number' => $storeWhatsApp,
             'used_today' => $usedToday + 1,
             'daily_limit' => $dailyLimit,
             'data_source' => $courierData['source'] ?? 'live'
@@ -219,9 +279,9 @@ class FraudShieldController extends Controller
                 'address' => $request->input('address'),
                 'cart_total' => (float) $request->input('cart_total', 0),
                 'success_rate' => (int) $request->input('success_rate', 0),
-                'courier_details' => $request->input('courier_details'),
+                'courier_details' => is_array($request->input('courier_details')) ? $request->input('courier_details') : ['summary' => (string) $request->input('courier_details')],
                 'ip_address' => $request->ip(),
-                'status' => 'blocked_whatsapp_offered',
+                'status' => 'pending',
             ]);
 
             return response()->json(['status' => 'success', 'lead_id' => $lead->id]);
@@ -324,12 +384,12 @@ class FraudShieldController extends Controller
         FraudCheckLog::create([
             'store_id' => $storeId,
             'phone' => $cleanPhone,
-            'courier_details' => $courierData['courier_details'] ?? '-',
+            'courier_details' => is_array($courierData['courier_details'] ?? null) ? $courierData['courier_details'] : ['summary' => (string) ($courierData['courier_details'] ?? '-')],
             'total_orders' => $courierData['total_orders'] ?? 0,
             'total_delivery' => $courierData['total_delivery'] ?? 0,
             'total_cancel' => $courierData['total_cancel'] ?? 0,
             'success_rate' => $courierData['success_rate'] ?? 0,
-            'risk_status' => (($courierData['success_rate'] ?? 100) < 50) ? 'high_risk' : 'safe',
+            'risk_status' => (($courierData['success_rate'] ?? 100) < 50) ? 'high' : 'safe',
             'is_blocked' => false,
             'check_type' => 'manual_admin',
             'ip_address' => $request->ip(),

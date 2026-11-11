@@ -23,5 +23,6 @@ class FraudLeadLog extends Model
     protected $casts = [
         'cart_total' => 'decimal:2',
         'success_rate' => 'integer',
+        'courier_details' => 'array',
     ];
 }

@@ -28,5 +28,6 @@ class FraudCheckLog extends Model
         'total_delivery' => 'integer',
         'total_cancel' => 'integer',
         'success_rate' => 'integer',
+        'courier_details' => 'array',
     ];
 }
