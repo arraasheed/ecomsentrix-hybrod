@@ -79,6 +79,18 @@ class MetaPixelIsolationController extends Controller
     }
 
     /**
+     * Helper to update setting and clear cache
+     */
+    protected function updateSetting($name, $value, $storeId)
+    {
+        \App\Models\Setting::updateOrCreate(
+            ['name' => $name, 'store_id' => $storeId],
+            ['value' => $value]
+        );
+        \Illuminate\Support\Facades\Cache::forget("settings_store_{$storeId}");
+    }
+
+    /**
      * Toggle Pixel Isolation On/Off
      */
     public function toggleStatus(Request $request)
@@ -91,7 +103,7 @@ class MetaPixelIsolationController extends Controller
         $current = Utility::GetValueByName('pixel_isolation_enabled', $store->id);
         $newStatus = ($current === 'off') ? 'on' : 'off';
 
-        Utility::UpdateValueByName('pixel_isolation_enabled', $newStatus, $store->id);
+        $this->updateSetting('pixel_isolation_enabled', $newStatus, $store->id);
 
         return response()->json([
             'status' => 'success',
@@ -118,12 +130,12 @@ class MetaPixelIsolationController extends Controller
             'delay_capi_until' => 'required|in:order_confirm,delivery_confirm',
         ]);
 
-        Utility::UpdateValueByName('meta_pixel_id', $validated['meta_pixel_id'] ?? '', $store->id);
-        Utility::UpdateValueByName('meta_capi_access_token', $validated['meta_capi_access_token'] ?? '', $store->id);
-        Utility::UpdateValueByName('delay_capi_until', $validated['delay_capi_until'], $store->id);
+        $this->updateSetting('meta_pixel_id', $validated['meta_pixel_id'] ?? '', $store->id);
+        $this->updateSetting('meta_capi_access_token', $validated['meta_capi_access_token'] ?? '', $store->id);
+        $this->updateSetting('delay_capi_until', $validated['delay_capi_until'], $store->id);
 
         if ($request->has('pixel_isolation_enabled')) {
-            Utility::UpdateValueByName('pixel_isolation_enabled', $request->input('pixel_isolation_enabled'), $store->id);
+            $this->updateSetting('pixel_isolation_enabled', $request->input('pixel_isolation_enabled'), $store->id);
         }
 
         return redirect()->back()->with('success', __('Meta Pixel & CAPI সেটিংস সফলভাবে সংরক্ষিত হয়েছে।'));
