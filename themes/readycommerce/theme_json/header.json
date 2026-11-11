@@ -1,110 +1,66 @@
 {
-    "title": "Header",
+    "title": "Header & Branding",
     "slug": "header",
-    "detail": "Header settings such as, site top bar, site menu and so on.",
-    "icon": "fas fa-arrows-up-to-line",
+    "detail": "Customize your store logo, favicon, top announcement bar, and contact details.",
+    "icon": "fas fa-heading",
     "sections": [
         {
-            "title": "Menu Bar",
-            "slug": "menu_bar",
-            "key": "menu_bar",
-            "settings": [
-                {
-                    "label": "On/Off",
-                    "key": "status",
-                    "type": "switch",
-                    "value": 1
-                },
-                {
-                    "label": "Menu",
-                    "key": "menu",
-                    "type": "menu",
-                    "placeholder": "Select menu",
-                    "value": ""
-                }
-            ]
-        },
-        {
-            "title": "Logo",
+            "title": "Logo & Favicon",
             "slug": "logo",
             "key": "header",
             "settings": [
                 {
-                    "label": "On/Off",
-                    "key": "status",
-                    "type": "switch",
-                    "value": 1
-                },
-                {
-                    "label": "Logo",
+                    "label": "Store Logo",
                     "key": "logo",
                     "type": "image",
-                    "value": "themes/stylique/assets/images/logo.png"
+                    "value": "readycart/logo-mark.png"
                 },
                 {
-                    "label": "Favicon",
+                    "label": "Store Favicon",
                     "key": "favicon",
                     "type": "image",
-                    "value": "themes/stylique/assets/images/favicon.png"
+                    "value": "readycart/favicon.png"
                 }
             ]
         },
         {
-            "title": "Search Bar",
-            "slug": "search",
-            "key": "header_search",
+            "title": "Top Announcement Bar",
+            "slug": "top_bar",
+            "key": "header_top_bar",
             "settings": [
                 {
-                    "label": "On/Off",
+                    "label": "Show Announcement Bar",
                     "key": "status",
                     "type": "switch",
                     "value": 1
                 },
                 {
-                    "label": "Title",
+                    "label": "Announcement Text",
                     "key": "title",
                     "type": "text",
-                    "value": "Search",
-                    "placeholder": "Enter here..."
+                    "placeholder": "Free Delivery on orders over ৳999.00",
+                    "value": "Free Delivery on orders over ৳999.00"
                 }
             ]
         },
         {
-            "title": "Login Button",
-            "slug": "login",
-            "key": "header_login",
+            "title": "Hotline & WhatsApp",
+            "slug": "contact",
+            "key": "header_contact",
             "settings": [
                 {
-                    "label": "On/Off",
-                    "key": "status",
-                    "type": "switch",
-                    "value": 1
-                }
-            ]
-        },
-        {
-            "title": "Wishlist Button",
-            "slug": "wishlist",
-            "key": "header_wishlist",
-            "settings": [
+                    "label": "Hotline / Support Phone Number",
+                    "key": "phone",
+                    "type": "text",
+                    "placeholder": "+8801XXXXXXXXX",
+                    "value": "+880123456789"
+                },
                 {
-                    "label": "On/Off",
-                    "key": "status",
-                    "type": "switch",
-                    "value": 1
-                }
-            ]
-        },
-        {
-            "title": "Cart Button",
-            "slug": "cart",
-            "key": "header_cart",
-            "settings": [
-                {
-                    "label": "On/Off",
-                    "key": "status",
-                    "type": "switch",
-                    "value": 1
+                    "label": "Order WhatsApp Number",
+                    "key": "whatsapp",
+                    "type": "text",
+                    "placeholder": "+8801XXXXXXXXX",
+                    "value": "+880123456789"
                 }
             ]
         }

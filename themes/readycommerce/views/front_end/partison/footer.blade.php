@@ -1,20 +1,38 @@
 @php
     $storeSlug = $slug ?? ($store->slug ?? request()->route('storeSlug') ?? 'stylique');
+    $storeObj = isset($store) && is_object($store) ? $store : \App\Models\Store::where('slug', $storeSlug)->first();
+    $storeId = $storeObj ? (int) $storeObj->id : 2;
+    $themeSettings = $themeSettings ?? (function_exists('getThemeSetting') ? getThemeSetting($storeId, $storeObj->theme_id ?? 'readycommerce') : []);
+
     $homeUrl = route('landing_page', $storeSlug);
     $productsUrl = route('page.product-list', ['storeSlug' => $storeSlug]);
     $contactUrl = Route::has('page.contact_us') ? route('page.contact_us', ['storeSlug' => $storeSlug]) : $productsUrl;
     $faqUrl = Route::has('page.faq') ? route('page.faq', ['storeSlug' => $storeSlug]) : $productsUrl;
     $blogUrl = Route::has('page.blog') ? route('page.blog', ['storeSlug' => $storeSlug]) : $productsUrl;
 
+    if (!empty($themeSettings['header_logo'])) {
+        $footerLogo = get_file($themeSettings['header_logo']);
+    } elseif (!empty($storeObj->logo)) {
+        $footerLogo = get_file($storeObj->logo);
+    } else {
+        $footerLogo = asset('readycart/logo-mark.png');
+    }
+    $storeName = $storeObj->name ?? 'Ready eCommerce';
+    $footerBio = !empty($themeSettings['footer_description']) ? $themeSettings['footer_description'] : 'The ultimate all-in-one eCommerce solution in Bangladesh.';
+    $footerPhone = !empty($themeSettings['footer_phone']) ? $themeSettings['footer_phone'] : ($storeObj->phone ?? '+880123456789');
+    $footerEmail = !empty($themeSettings['footer_email']) ? $themeSettings['footer_email'] : ($storeObj->email ?? 'support@example.com');
+    $footerAddress = !empty($themeSettings['footer_address']) ? $themeSettings['footer_address'] : ($storeObj->address ?? 'Dhaka, Bangladesh');
+
+    $fbLink = !empty($themeSettings['footer_social_facebook']) ? $themeSettings['footer_social_facebook'] : '#';
+    $waLink = !empty($themeSettings['footer_social_whatsapp']) ? $themeSettings['footer_social_whatsapp'] : (!empty($footerPhone) ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $footerPhone) : '#');
+    $instaLink = !empty($themeSettings['footer_social_instagram']) ? $themeSettings['footer_social_instagram'] : '#';
+    $ytLink = !empty($themeSettings['footer_social_youtube']) ? $themeSettings['footer_social_youtube'] : '#';
+
     $socials = [
-        ['name' => 'Facebook', 'src' => 'facebook'],
-        ['name' => 'LinkedIn', 'src' => 'linkedin'],
-        ['name' => 'Instagram', 'src' => 'instagram'],
-        ['name' => 'YouTube', 'src' => 'youtube'],
-        ['name' => 'WhatsApp', 'src' => 'whatsapp'],
-        ['name' => 'X', 'src' => 'x'],
-        ['name' => 'Telegram', 'src' => 'telegram'],
-        ['name' => 'Google', 'src' => 'google'],
+        ['name' => 'Facebook', 'src' => 'facebook', 'url' => $fbLink],
+        ['name' => 'WhatsApp', 'src' => 'whatsapp', 'url' => $waLink],
+        ['name' => 'Instagram', 'src' => 'instagram', 'url' => $instaLink],
+        ['name' => 'YouTube', 'src' => 'youtube', 'url' => $ytLink],
     ];
 
     $payments = [
@@ -37,33 +55,33 @@
     <div class="mx-auto grid max-w-[1400px] gap-10 px-3 py-14 sm:px-4 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1.1fr] lg:px-6">
         {{-- Column 1: Brand & Contact --}}
         <div>
-            <a href="{{ $homeUrl }}" class="flex items-center gap-2" aria-label="Ready eCommerce home">
-                <img src="{{ asset('readycart/logo-mark.png') }}" alt="" width="40" height="40" class="brand-logo size-10 shrink-0 object-contain" />
+            <a href="{{ $homeUrl }}" class="flex items-center gap-2" aria-label="{{ $storeName }}">
+                <img src="{{ $footerLogo }}" alt="{{ $storeName }}" width="40" height="40" class="brand-logo size-10 shrink-0 object-contain rounded-md" />
                 <span class="text-[15px] font-extrabold leading-[1.05] tracking-tight text-ink">
-                    Ready<br />eCommerce
+                    {{ $storeName }}
                 </span>
             </a>
             <p class="mt-4 max-w-xs text-sm leading-relaxed text-ink/65">
-                The ultimate all-in-one solution for your eCommerce business worldwide.
+                {{ $footerBio }}
             </p>
             <ul class="mt-5 space-y-3 text-sm text-ink/75">
                 <li class="flex items-center gap-3">
                     <span class="flex size-9 items-center justify-center rounded-full bg-brand/10 text-brand">
                         <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                     </span>
-                    +880123456789
+                    <a href="tel:{{ $footerPhone }}" class="hover:text-brand transition">{{ $footerPhone }}</a>
                 </li>
                 <li class="flex items-center gap-3">
                     <span class="flex size-9 items-center justify-center rounded-full bg-brand/10 text-brand">
                         <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                     </span>
-                    admin@example.com
+                    <a href="mailto:{{ $footerEmail }}" class="hover:text-brand transition">{{ $footerEmail }}</a>
                 </li>
             </ul>
             <ul class="mt-5 flex max-w-[260px] flex-wrap gap-2">
                 @foreach ($socials as $social)
                     <li>
-                        <a href="#" aria-label="{{ $social['name'] }}" class="flex size-9 items-center justify-center rounded-md bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                        <a href="{{ $social['url'] }}" @if($social['url'] !== '#') target="_blank" rel="noopener" @endif aria-label="{{ $social['name'] }}" class="flex size-9 items-center justify-center rounded-md bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                             <img src="{{ asset('readycart/brands/' . $social['src'] . '.svg') }}" alt="" width="18" height="18" class="size-[18px]" />
                         </a>
                     </li>

@@ -1,14 +1,14 @@
 @php
     $locale = app()->getLocale() ?? 'en';
     $favicon = $themeSettings['header_favicon'] ?? '';
-    $faviconUrl = (!empty($favicon) && !str_contains($favicon, 'stylique') && is_file(public_path($favicon)))
+    $faviconUrl = (!empty($favicon) && is_file(public_path($favicon)))
         ? get_file($favicon)
         : asset('readycart/logo-mark.png');
     $assetTheme = $currentTheme ?? 'stylique';
     if (!file_exists(public_path('themes/' . $assetTheme . '/assets/css/all.min.css'))) {
         $assetTheme = 'stylique';
     }
-    $storePrimaryColor = trim((string) ($themeSettings['store_primary_color'] ?? '#F05A00'));
+    $storePrimaryColor = trim((string) ($themeSettings['theme_color_primary'] ?? ($themeSettings['store_primary_color'] ?? '#F05A00')));
     if (!preg_match('/\A#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\z/', $storePrimaryColor) || strtolower($storePrimaryColor) === '#f95738' || strtolower($storePrimaryColor) === '#f8796c') {
         $storePrimaryColor = '#F05A00';
     }

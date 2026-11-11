@@ -1,0 +1,22 @@
+{
+    "title": "Theme Branding & Color",
+    "slug": "styling",
+    "detail": "Configure the primary brand color for buttons, badges, and accents across the store.",
+    "icon": "fas fa-palette",
+    "sections": [
+        {
+            "title": "Brand Accent Color",
+            "slug": "color",
+            "key": "theme_color",
+            "settings": [
+                {
+                    "label": "Primary Brand Color Hex Code (e.g. #FF5A1F)",
+                    "key": "primary",
+                    "type": "text",
+                    "placeholder": "#FF5A1F",
+                    "value": "#FF5A1F"
+                }
+            ]
+        }
+    ]
+}

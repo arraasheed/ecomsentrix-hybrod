@@ -14,6 +14,9 @@
 @php extract(include base_path('themes/readycommerce/views/components/readycart-data.php')); @endphp
 @php
     $storeSlug = $slug ?? ($store->slug ?? request()->route('storeSlug') ?? 'stylique');
+    $storeObj = isset($store) && is_object($store) ? $store : \App\Models\Store::where('slug', $storeSlug)->first();
+    $storeId = $storeObj ? (int) $storeObj->id : 2;
+    $themeSettings = $themeSettings ?? (function_exists('getThemeSetting') ? getThemeSetting($storeId, $storeObj->theme_id ?? 'readycommerce') : []);
     $productsUrl = route('page.product-list', ['storeSlug' => $storeSlug]);
 
     $slides = [
@@ -23,6 +26,7 @@
             'title' => 'Modern Watch',
             'sub' => 'Super Sale',
             'badge' => 'Save up to 70%',
+            'link' => $productsUrl,
             'tone' => 'text-white',
         ],
         [
@@ -31,6 +35,7 @@
             'title' => 'Natural Beauty',
             'sub' => 'Skincare Week',
             'badge' => 'Up to 50% off',
+            'link' => $productsUrl,
             'tone' => 'text-ink',
         ],
         [
@@ -39,9 +44,56 @@
             'title' => 'Outdoor Flash',
             'sub' => 'Biggest Deals',
             'badge' => 'Up to 60% off',
+            'link' => $productsUrl,
             'tone' => 'text-ink',
         ],
     ];
+
+    if (!empty($themeSettings['slider_repeater'])) {
+        $customSliders = json_decode($themeSettings['slider_repeater'], true);
+        if (is_array($customSliders) && !empty($customSliders)) {
+            $parsedSlides = [];
+            foreach ($customSliders as $cs) {
+                if (!empty($cs['image'])) {
+                    $img = (str_starts_with($cs['image'], 'readycart/') || str_starts_with($cs['image'], 'http')) ? asset($cs['image']) : get_file($cs['image']);
+                    $parsedSlides[] = [
+                        'image' => $img,
+                        'eyebrow' => $cs['small_text'] ?? 'Special Offer',
+                        'title' => $cs['big_text'] ?? 'Modern Collection',
+                        'sub' => $cs['content'] ?? 'Limited Time Offer',
+                        'badge' => $cs['button_text'] ?? 'Shop Now',
+                        'link' => !empty($cs['button_link']) ? $cs['button_link'] : $productsUrl,
+                        'tone' => 'text-white',
+                    ];
+                }
+            }
+            if (!empty($parsedSlides)) {
+                $slides = $parsedSlides;
+            }
+        }
+    }
+
+    $showSlider = !isset($themeSettings['slider_status']) || $themeSettings['slider_status'] == 1;
+    $showSideBanners = !isset($themeSettings['more_offer_status']) || $themeSettings['more_offer_status'] == 1;
+    $sideBanner1Img = !empty($themeSettings['more_offer_image']) ? get_file($themeSettings['more_offer_image']) : asset('readycart/banner-beauty.png');
+    $sideBanner1Link = !empty($themeSettings['more_offer_button_link']) ? $themeSettings['more_offer_button_link'] : ($productsUrl . '?category=' . urlencode('Beauty & Personal Care'));
+    $sideBanner2Img = !empty($themeSettings['more_offer_image2']) ? get_file($themeSettings['more_offer_image2']) : asset('readycart/banner-outdoor.png');
+    $sideBanner2Link = !empty($themeSettings['more_offer_button_link2']) ? $themeSettings['more_offer_button_link2'] : ($productsUrl . '?category=' . urlencode('Sports & Outdoors'));
+
+    $showCategories = !isset($themeSettings['category_status']) || $themeSettings['category_status'] == 1;
+    $categoriesTitle = !empty($themeSettings['category_title']) ? $themeSettings['category_title'] : 'Shop By Categories';
+
+    $showPopular = !isset($themeSettings['popular_products_status']) || $themeSettings['popular_products_status'] == 1;
+    $popularTitle = !empty($themeSettings['popular_products_title']) ? $themeSettings['popular_products_title'] : 'Popular Products';
+
+    $showBestDeal = !isset($themeSettings['bestseller_status']) || $themeSettings['bestseller_status'] == 1;
+    $bestDealTitle = !empty($themeSettings['bestseller_title']) ? $themeSettings['bestseller_title'] : 'Best Deal';
+
+    $showBrands = !isset($themeSettings['logo_status']) || $themeSettings['logo_status'] == 1;
+    $brandsTitle = !empty($themeSettings['logo_title']) ? $themeSettings['logo_title'] : 'Top Brands';
+
+    $showForYou = !isset($themeSettings['product_status']) || $themeSettings['product_status'] == 1;
+    $forYouTitle = !empty($themeSettings['product_title']) ? $themeSettings['product_title'] : 'Just For You';
 
     $popular = array_slice($rcRotate($rcProducts, 0), 0, 6);
     $bestDealSorted = $rcProducts;
@@ -138,10 +190,10 @@
                                     <p class="text-lg font-bold opacity-90 sm:text-xl">{{ $slide['sub'] }}</p>
                                     <p class="text-sm font-medium opacity-80">{{ $slide['badge'] }}</p>
                                     <a
-                                        href="{{ $productsUrl }}"
+                                        href="{{ $slide['link'] ?? $productsUrl }}"
                                         class="mt-1 flex w-fit items-center gap-2 rounded-md bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-brand hover:text-brand-foreground"
                                     >
-                                        Shop Now
+                                        {{ $slide['badge'] ?? 'Shop Now' }}
                                         <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                                     </a>
                                 </div>
@@ -182,22 +234,24 @@
                     </div>
 
                     {{-- 2 Stacked Right Side Banners --}}
+                    @if ($showSideBanners)
                     <div class="grid grid-cols-2 gap-4 lg:flex lg:flex-col">
-                        <a href="{{ $productsUrl }}?category={{ urlencode('Beauty & Personal Care') }}" class="group relative min-h-[140px] flex-1 overflow-hidden rounded-lg text-left shadow-sm">
-                            <img src="{{ asset('readycart/banner-beauty.png') }}" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                        <a href="{{ $sideBanner1Link }}" class="group relative min-h-[140px] flex-1 overflow-hidden rounded-lg text-left shadow-sm">
+                            <img src="{{ $sideBanner1Img }}" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                             <span class="relative flex h-full flex-col justify-end gap-0.5 bg-gradient-to-t from-ink/60 via-transparent to-transparent p-4 text-white">
-                                <span class="text-[11px] font-semibold uppercase tracking-widest opacity-90">New Product</span>
-                                <span class="text-base font-extrabold leading-tight">Natural Beauty - 50% off</span>
+                                <span class="text-[11px] font-semibold uppercase tracking-widest opacity-90">Special Promo</span>
+                                <span class="text-base font-extrabold leading-tight">Featured Offer</span>
                             </span>
                         </a>
-                        <a href="{{ $productsUrl }}?category={{ urlencode('Sports & Outdoors') }}" class="group relative min-h-[140px] flex-1 overflow-hidden rounded-lg text-left shadow-sm">
-                            <img src="{{ asset('readycart/banner-outdoor.png') }}" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                        <a href="{{ $sideBanner2Link }}" class="group relative min-h-[140px] flex-1 overflow-hidden rounded-lg text-left shadow-sm">
+                            <img src="{{ $sideBanner2Img }}" alt="" class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                             <span class="relative flex h-full flex-col justify-end gap-0.5 bg-gradient-to-t from-ink/60 via-transparent to-transparent p-4 text-white">
                                 <span class="text-[11px] font-semibold uppercase tracking-widest opacity-90">Limited Offer</span>
-                                <span class="text-base font-extrabold leading-tight">Flash Sale up to 60%</span>
+                                <span class="text-base font-extrabold leading-tight">Flash Sale</span>
                             </span>
                         </a>
                     </div>
+                    @endif
                 </div>
 
                 {{-- 5 Store Promises --}}
@@ -254,9 +308,10 @@
         </section>
 
         {{-- Shop By Categories --}}
+        @if ($showCategories)
         <section class="mt-10" aria-label="Shop by categories">
             <div class="mb-4 flex items-end justify-between">
-                <h2 class="text-lg font-bold tracking-tight sm:text-xl">Shop By Categories</h2>
+                <h2 class="text-lg font-bold tracking-tight sm:text-xl">{{ $categoriesTitle }}</h2>
                 <a href="{{ $productsUrl }}" class="flex items-center gap-1 text-sm text-ink/60 transition hover:text-brand">
                     View All
                     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -294,11 +349,13 @@
                 </ul>
             </div>
         </section>
+        @endif
 
         {{-- Popular Products --}}
+        @if ($showPopular)
         <section class="mt-10" aria-label="Popular products">
             <div class="mb-4 flex items-end justify-between">
-                <h2 class="text-lg font-bold tracking-tight sm:text-xl">Popular Products</h2>
+                <h2 class="text-lg font-bold tracking-tight sm:text-xl">{{ $popularTitle }}</h2>
                 <a href="{{ $productsUrl }}" class="flex items-center gap-1 text-sm text-ink/60 transition hover:text-brand">
                     View All
                     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -310,11 +367,13 @@
                 @endforeach
             </div>
         </section>
+        @endif
 
         {{-- Best Deal --}}
+        @if ($showBestDeal)
         <section class="mt-10" aria-label="Best deals">
             <div class="mb-4 flex items-end justify-between">
-                <h2 class="text-lg font-bold tracking-tight sm:text-xl">Best Deal</h2>
+                <h2 class="text-lg font-bold tracking-tight sm:text-xl">{{ $bestDealTitle }}</h2>
                 <a href="{{ $productsUrl }}" class="flex items-center gap-1 text-sm text-ink/60 transition hover:text-brand">
                     View All
                     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -326,11 +385,63 @@
                 @endforeach
             </div>
         </section>
+        @endif
+
+        {{-- Dynamic Custom Category Shelf 1 --}}
+        @if (!empty($themeSettings['custom_cat1_status']) && $themeSettings['custom_cat1_status'] == 1 && !empty($themeSettings['custom_cat1_name']))
+            @php
+                $cat1Target = strtolower(trim($themeSettings['custom_cat1_name']));
+                $cat1Products = array_values(array_filter($rcProducts, fn($p) => strtolower(trim($p['category'] ?? '')) === $cat1Target));
+                $cat1Title = !empty($themeSettings['custom_cat1_title']) ? $themeSettings['custom_cat1_title'] : $themeSettings['custom_cat1_name'];
+            @endphp
+            @if (!empty($cat1Products))
+            <section class="mt-10" aria-label="{{ $cat1Title }}">
+                <div class="mb-4 flex items-end justify-between">
+                    <h2 class="text-lg font-bold tracking-tight sm:text-xl">{{ $cat1Title }}</h2>
+                    <a href="{{ $productsUrl }}?category={{ urlencode($themeSettings['custom_cat1_name']) }}" class="flex items-center gap-1 text-sm text-ink/60 transition hover:text-brand">
+                        View All
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                    @foreach (array_slice($cat1Products, 0, 6) as $product)
+                        <x-product-card :store="$store" :product="$product" />
+                    @endforeach
+                </div>
+            </section>
+            @endif
+        @endif
+
+        {{-- Dynamic Custom Category Shelf 2 --}}
+        @if (!empty($themeSettings['custom_cat2_status']) && $themeSettings['custom_cat2_status'] == 1 && !empty($themeSettings['custom_cat2_name']))
+            @php
+                $cat2Target = strtolower(trim($themeSettings['custom_cat2_name']));
+                $cat2Products = array_values(array_filter($rcProducts, fn($p) => strtolower(trim($p['category'] ?? '')) === $cat2Target));
+                $cat2Title = !empty($themeSettings['custom_cat2_title']) ? $themeSettings['custom_cat2_title'] : $themeSettings['custom_cat2_name'];
+            @endphp
+            @if (!empty($cat2Products))
+            <section class="mt-10" aria-label="{{ $cat2Title }}">
+                <div class="mb-4 flex items-end justify-between">
+                    <h2 class="text-lg font-bold tracking-tight sm:text-xl">{{ $cat2Title }}</h2>
+                    <a href="{{ $productsUrl }}?category={{ urlencode($themeSettings['custom_cat2_name']) }}" class="flex items-center gap-1 text-sm text-ink/60 transition hover:text-brand">
+                        View All
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                    @foreach (array_slice($cat2Products, 0, 6) as $product)
+                        <x-product-card :store="$store" :product="$product" />
+                    @endforeach
+                </div>
+            </section>
+            @endif
+        @endif
 
         {{-- Top Brands --}}
+        @if ($showBrands)
         <section id="brands" class="mt-10" aria-label="Top brands">
             <div class="mb-4 flex items-end justify-between">
-                <h2 class="text-lg font-bold tracking-tight sm:text-xl">Top Brands</h2>
+                <h2 class="text-lg font-bold tracking-tight sm:text-xl">{{ $brandsTitle }}</h2>
                 <a href="{{ $productsUrl }}" class="flex items-center gap-1 text-sm text-ink/60 transition hover:text-brand">
                     View All
                     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -354,11 +465,13 @@
                 @endforeach
             </ul>
         </section>
+        @endif
 
         {{-- Just For You --}}
+        @if ($showForYou)
         <section class="mt-10" aria-label="Just for you">
             <div class="mb-4 flex items-end justify-between">
-                <h2 class="text-lg font-bold tracking-tight sm:text-xl">Just For You</h2>
+                <h2 class="text-lg font-bold tracking-tight sm:text-xl">{{ $forYouTitle }}</h2>
                 <a href="{{ $productsUrl }}" class="flex items-center gap-1 text-sm text-ink/60 transition hover:text-brand">
                     View All
                     <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -381,6 +494,7 @@
                 </button>
             </div>
         </section>
+        @endif
     </main>
 @endif
 @endsection
