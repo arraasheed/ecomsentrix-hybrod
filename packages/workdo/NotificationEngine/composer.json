@@ -1,0 +1,25 @@
+{
+    "name": "workdo/notification-engine",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Workdo\\NotificationEngine\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ecom Sentrix",
+            "email": "support@ecomsentrix.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Workdo\\NotificationEngine\\Providers\\NotificationEngineServiceProvider"
+            ]
+        }
+    }
+}
