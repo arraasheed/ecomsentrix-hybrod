@@ -1,0 +1,25 @@
+{
+    "name": "workdo/receipt-engine",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Workdo\\ReceiptEngine\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ecom Sentrix",
+            "email": "support@ecomsentrix.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Workdo\\ReceiptEngine\\Providers\\ReceiptEngineServiceProvider"
+            ]
+        }
+    }
+}

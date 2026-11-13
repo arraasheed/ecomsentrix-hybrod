@@ -1,0 +1,11 @@
+{
+    "name": "ReceiptEngine",
+    "alias": "Branded Receipts",
+    "description": "Four branded, printable customer receipts for store orders",
+    "priority": 30,
+    "version": 1.0,
+    "monthly_price": 0,
+    "yearly_price": 0,
+    "display": true,
+    "package_name": "receipt-engine"
+}

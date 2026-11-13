@@ -1,0 +1,12 @@
+@extends('receiptengine::templates.layout')
+
+@section('receipt')
+<header style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:4px solid #7c3aed;padding-bottom:22px;">
+    <div>@if ($receipt['store']['logo']) <img class="brand-logo" src="{{ $receipt['store']['logo'] }}" alt="{{ $receipt['store']['name'] }}"> @endif<h1 style="margin:12px 0 3px;color:#7c3aed;">{{ $receipt['store']['name'] }}</h1><div class="muted">{{ $receipt['store']['phone'] }} · {{ $receipt['store']['address'] }}</div></div>
+    <div class="text-right"><strong style="font-size:22px;">{{ $receipt['order']['id'] }}</strong><br>{{ $receipt['order']['date'] }}<br><span style="display:inline-block;background:#ede9fe;color:#6d28d9;padding:4px 8px;border-radius:20px;margin-top:8px;">{{ $receipt['order']['payment_type'] }} @if ($receipt['order']['transaction_id']) · {{ $receipt['order']['transaction_id'] }} @endif</span></div>
+</header>
+<div class="receipt-grid" style="margin-top:26px;"><div><strong>{{ __('Deliver to') }}</strong><br>{{ $receipt['customer']['name'] }}<br>{{ $receipt['customer']['phone'] }}<br>{{ $receipt['customer']['address'] }}</div><div class="text-right"><img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=104x104&data={{ urlencode($receipt['order']['verification_url']) }}" alt="{{ __('Order verification QR') }}"><br><span class="muted">{{ __('Scan to verify order') }}</span></div></div>
+<table class="items"><thead style="background:#f5f3ff;"><tr><th>{{ __('Item') }}</th><th>{{ __('Qty') }}</th><th>{{ __('Amount') }}</th></tr></thead><tbody>@foreach ($receipt['items'] as $item)<tr><td>{{ $item['name'] }}</td><td>{{ $item['quantity'] }}</td><td>{{ $receipt['currency'] }} {{ number_format($item['total'], 2) }}</td></tr>@endforeach</tbody></table>
+<div class="summary"><div><span>{{ __('Subtotal') }}</span><span>{{ $receipt['currency'] }} {{ number_format($receipt['subtotal'], 2) }}</span></div><div><span>{{ __('Delivery charge') }}</span><span>{{ $receipt['currency'] }} {{ number_format($receipt['delivery'], 2) }}</span></div><div><span>{{ __('Discount') }}</span><span>- {{ $receipt['currency'] }} {{ number_format($receipt['discount'], 2) }}</span></div><div class="total" style="color:#7c3aed;"><span>{{ __('Total paid') }}</span><span>{{ $receipt['currency'] }} {{ number_format($receipt['total'], 2) }}</span></div></div>
+<div class="terms"><strong>{{ __('Returns & support') }}</strong><br>{{ $receipt['return_policy'] }}</div>
+@endsection
