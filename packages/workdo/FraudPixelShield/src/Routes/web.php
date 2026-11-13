@@ -3,11 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use Workdo\FraudPixelShield\Http\Controllers\FraudShieldController;
 use Workdo\FraudPixelShield\Http\Controllers\MetaPixelIsolationController;
+use Workdo\FraudPixelShield\Http\Controllers\FunnelController;
 
-// 1. Public Live Checkout Routes (called via AJAX by checkout form)
+// 1. Public Live Checkout & Funnel Routes
 Route::middleware(['web'])->group(function () {
     Route::post('{slug}/fraud-check', [FraudShieldController::class, 'checkLiveCheckout'])->name('fraud.live.check');
     Route::post('{slug}/fraud-log-lead', [FraudShieldController::class, 'logBlockedLead'])->name('fraud.log.lead');
+    
+    // Funnel Landing Page
+    Route::get('{storeSlug}/offer/{slug}', [FunnelController::class, 'show'])->name('funnel.landing');
+    Route::post('{storeSlug}/offer/order', [FunnelController::class, 'orderSubmit'])->name('funnel.order.submit');
 });
 
 // 2. Store Admin Panel Routes - Fraud Shield

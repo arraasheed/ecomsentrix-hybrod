@@ -78,9 +78,9 @@ class StoreController extends Controller
             $setting = getSuperAdminAllSetting();
 
             return view('store.user-create', compact('setting'));
-        } else {
-            return redirect()->back()->with('error', __('Permission denied.'));
         }
+
+        return response('<div class="alert alert-danger m-3">' . __('Permission denied.') . '</div>');
     }
 
     /**
@@ -513,9 +513,18 @@ class StoreController extends Controller
 
     public function ExitAdmin(Request $request)
     {
-        Auth::user()->leaveImpersonation($request->user());
-        //return redirect('dashboard');
-        return redirect('stores');
+        if (Impersonate::isImpersonating()) {
+            Auth::user()->leaveImpersonation();
+        }
+
+        // Super admin has no store dashboard of their own — sending them to
+        // `dashboard` bounces through the role guard and loops. Land them on
+        // the store list, which is the screen they impersonated from.
+        if (auth()->check() && auth()->user()->type === 'super admin') {
+            return redirect()->route('stores.index')->with('success', __('Exit successfully'));
+        }
+
+        return redirect()->route('dashboard')->with('success', __('Exit successfully'));
     }
 
     public function StoreLinks(Request $request, $id)
@@ -532,10 +541,18 @@ class StoreController extends Controller
             $user = User::find(decrypt($user_id));
             $plans = Plan::get();
 
+            // Return only partial view for AJAX requests to avoid loading full layout in modal
+            if (request()->ajax()) {
+                return view('store.plan', compact('user', 'plans'))->render();
+            }
+
             return view('store.plan', compact('user', 'plans'));
-        } else {
-            return redirect()->back()->with('error', __('Permission denied.'));
         }
+
+        // This action is loaded into an AJAX modal. A redirect() would hand the
+        // popup the whole dashboard and nest it inside itself, so return a
+        // small fragment instead.
+        return response('<div class="alert alert-danger m-3">' . __('Permission denied.') . '</div>');
     }
 
     public function activePlan($user_id, $plan_id)

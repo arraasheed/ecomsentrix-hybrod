@@ -156,7 +156,7 @@
                                                             data-title="{{ __('Upgrade Plan') }}">{{ __('Upgrade Plan') }}</a>
                                                     </div>
                                                     <div>
-                                                        <a href="#" data-url="{{ route('user.info', $user->id) }}"
+                                                        <a href="#" data-url="{{ route('user.info', encrypt($user->id)) }}"
                                                             data-size="lg" data-ajax-popup="true"
                                                             class="btn btn-outline-primary btn-badge"
                                                             data-title="{{ __('Company Info') }}">{{ __('AdminHub') }}</a>

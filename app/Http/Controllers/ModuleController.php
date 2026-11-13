@@ -19,22 +19,45 @@ class ModuleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         if(auth()->user() && auth()->user()->isAbleTo('Manage Module'))
         {
-            $modules = Module::allModules();
-            //$modules = [];
+            $tab = $request->get('tab', 'all');
+            
+            // Get all modules from packages/workdo/
+            $allModules = Module::allModules();
+            
+            // Filter modules based on tab
+            switch ($tab) {
+                case 'enabled':
+                    $modules = array_filter($allModules, function($m) { return $m->isEnabled(); });
+                    break;
+                case 'disabled':
+                    $modules = array_filter($allModules, function($m) { return !$m->isEnabled(); });
+                    break;
+                case 'local':
+                    // Local modules are those that exist in packages/workdo/ directory
+                    $modules = array_filter($allModules, function($m) { 
+                        return file_exists(base_path('packages/workdo/' . $m->name . '/module.json'));
+                    });
+                    break;
+                default: // 'all'
+                    $modules = $allModules;
+            }
+            
             $module_path = Module::getPath();
-            //$module_path = null;
             $addon_themes = Addon::get();
             $theme = Utility::BuyMoreTheme();
             
-            $addon_tab = session()->get('addon_tab');
-            if (empty($addon_tab)) {
-                $addon_tab = 'pills-premium-tab';
-            }
-            return view('module.index',compact('modules','module_path', 'theme', 'addon_themes', 'addon_tab'));
+            // Calculate counts for tab badges
+            $enabledCount = count(array_filter($allModules, function($m) { return $m->isEnabled(); }));
+            $disabledCount = count(array_filter($allModules, function($m) { return !$m->isEnabled(); }));
+            $localCount = count(array_filter($allModules, function($m) { 
+                return file_exists(base_path('packages/workdo/' . $m->name . '/module.json'));
+            }));
+            
+            return view('module.index', compact('modules', 'module_path', 'theme', 'addon_themes', 'tab', 'enabledCount', 'disabledCount', 'localCount'));
         }
         else
         {

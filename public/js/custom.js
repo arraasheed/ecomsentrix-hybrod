@@ -44,6 +44,11 @@ $(document).on('click', 'a[data-ajax-popup="true"], button[data-ajax-popup="true
     $.ajax({
         url: url,
         success: function (data) {
+            // Prevent full-page HTML injection (redirects return entire dashboard)
+            if (typeof data === 'string' && data.includes('<html') && data.includes('</html>')) {
+                window.location.reload();
+                return;
+            }
             $('#commanModel .modal-body').html(data);
             $("#commanModel").modal('show');
             $('#loader').fadeOut();
@@ -79,6 +84,11 @@ $(document).on('click', 'a[data-ajax-popup-over="true"], button[data-ajax-popup-
     $.ajax({
         url: url,
         success: function (data) {
+            // Prevent full-page HTML injection (redirects return entire dashboard)
+            if (typeof data === 'string' && data.includes('<html') && data.includes('</html>')) {
+                window.location.reload();
+                return;
+            }
             $('#commanModelOver .modal-body').html(data);
             $("#commanModelOver").modal('show');
             $('#loader').fadeOut();
@@ -308,35 +318,7 @@ $(document).on('change', '.domain_click#enable_subdomain', function (e) {
 
 
 /********* POS Module ********/
-$(document).on('click', 'a[data-ajax-popup="true"], button[data-ajax-popup="true"], div[data-ajax-popup="true"]', function () {
-
-    var data = {};
-    var title = $(this).data('title');
-    var size = ($(this).data('size') == '') ? 'md' : $(this).data('size');
-    var url = $(this).data('url');
-    $("#commonModal .modal-title").html(title);
-    $("#commonModal .modal-dialog").addClass('modal-' + size);
-    if ($('#vc_name_hidden').length > 0) {
-        data['vc_name'] = $('#vc_name_hidden').val();
-    }
-    if ($('#store_id').length > 0) {
-        data['store_id'] = $('#store_id').val();
-    }
-    if ($('#discount_hidden').length > 0) {
-        data['discount'] = $('#discount_hidden').val();
-    }
-    $.ajax({
-        url: url,
-        data:data,
-        success: function (data) {
-
-            $('#commonModal .modal-body').html(data);
-            $("#commonModal").modal('show');
-
-        },
-        error: function (data) {
-            data = data.responseJSON;
-        }
+/* Duplicate handler removed — main AJAX popup handler at lines 35–48 handles all modals */
     });
 
 });

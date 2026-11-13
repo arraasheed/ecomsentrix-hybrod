@@ -391,24 +391,40 @@ class UserController extends Controller
     }
 
     public function userInfo(Request $request, $id)
-	{
-        if(empty(decrypt($id))){
-            $id = $request->id;
+    {
+        // Handle both encrypted (from action.blade.php) and unencrypted (from store/index.blade.php) IDs
+        $userId = $id;
+        try {
+            $userId = decrypt($id);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            // ID is not encrypted, use as-is
+            $userId = $id;
         }
-		if(!empty($id)){
-            $user = User::find(decrypt($id));
+
+        if (!empty($userId)) {
+            $user = User::find($userId);
+            if (!$user) {
+                return redirect()->back()->with('error', __('Permission denied.'));
+            }
             $status = $user->is_active;
-		    $data = $this->storeUserCounter(decrypt($id));
-		    if($data['is_success']){
-		        $users_data = $data['response']['users_data'];
-		        $store_data = $data['response']['store_data'];
-		        return view('users.user_info', compact('id','users_data','store_data','status'));
-		    }
-		}
-		else
-		{
-		    return redirect()->back()->with('error', __('Permission denied.'));
-		}
+            $data = $this->storeUserCounter($userId);
+            if ($data['is_success']) {
+                $users_data = $data['response']['users_data'];
+                $store_data = $data['response']['store_data'];
+
+                // Return only partial view for AJAX requests, full view otherwise
+                if ($request->ajax()) {
+                    return view('users.user_info', compact('id', 'users_data', 'store_data', 'status'))->render();
+                }
+
+                return view('users.user_info', compact('id', 'users_data', 'store_data', 'status'));
+            }
+        } else {
+            if ($request->ajax()) {
+                return response('<div class="alert alert-danger m-3">' . __('Permission denied.') . '</div>');
+            }
+            return redirect()->back()->with('error', __('Permission denied.'));
+        }
     }
 
     public function storeUserCounter($id)

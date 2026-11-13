@@ -16,30 +16,9 @@
 
 @section('content')
     <div class="row justify-content-center px-0">
-        <div class=" col-12">
-            <div class="card">
-                <div class="card-body package-card-inner  d-flex align-items-center">
-                    <div class="package-itm ">
-                        <a href="https://workdo.io/?utm_source=ecom-main-file&utm_medium=superadmin&utm_campaign=superadmin-btn-theme-all" target="new">
-                            <img src="https://workdo.io/wp-content/uploads/2023/04/Logo.svg" alt="">
-                        </a>
-                    </div>
-                    <div class="package-content flex-grow-1  px-3">
-                        <h4>{{ __('Get More Themes Addon') }}</h4>
-                        <div class="text-muted">{{ __('+35 Premium Themes Addon') }}</div>
-                    </div>
-                    <div class="price text-end">
-                        <a class="btn btn-primary" href="https://workdo.io/product-category/theme-addon/?utm_source=ecom-main-file&utm_medium=superadmin&utm_campaign=superadmin-btn-theme-all" target="new">
-                            {{ __('Themes Addon') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="col-12">
+            <h4 class="mb-4">{{ __('Installed Themes') }}</h4>
         </div>
-    </div>
-
-    <div class="col-md-4">
-        <h4 class="mb-3"> {{ __('Installed Theme') }}</h4>
     </div>
     <div class="event-cards row px-0">
             @php
@@ -110,48 +89,7 @@
         @endforeach
     </div>
 
-    <div class="col-md-4">
-        <h4 class="mb-3"> {{ __('Buy More Themes') }}</h4>
-    </div>
-    <div class="event-cards row px-0">
-        @foreach ($theme['theme'] as $key => $value)
-            @if (!in_array($value[0],$theme_array))
-                <div class="col-lg-3 col-md-4 col-sm-6 card-wrapper">
-                    <div class="product-card ">
-                        <div class="product-card-inner">
-                            <div class="product-card-image img-wrapper">
-                                <a href="{{ $value[3] }}?utm_source=ecom-main-file&utm_medium=superadmin&utm_campaign=superadmin-btn-theme-{{ $value[0] }}" target="_new" class="pdp-img" tabindex="0">
-                                    <img src="{{ $value[2] }}">
-                                </a>
-                            </div>
-                            <div class="product-content">
-                                <div class="product-content-top">
-                                    <small class="text-muted">
-                                        <span class="badges bg-success">{{ __('Free Add-On') }}</span>
-                                    </small>
-                                    <div class="d-flex align-items-center justify-content-between gap-2">
-                                        <h4 class="text-capitalize">{{ $value[0] }} ({{ __('Free Add-On') }}) </h4>
-                                        @if(!in_array($value[0],['stylique', 'greentic', 'techzonix']))
-                                               <a href="https://s3.ap-southeast-1.wasabisys.com/workdo-main-file.rajodiya/ecommercego/main_files/{{$value[0]}}/theme-addon/{{$value[0]}}.zip" target="_new" class="btn btn-outline-primary btn-sm" title="Free Download">{{ __('Free Download') }}
-                                                <!-- <i class="fa fa-download"
-                                                        aria-hidden="true"></i> -->
-                                                    </a>
-                                            @endif
-                                    </div>
-                                </div>
-                                <div class="product-content-bottom d-flex gap-2">
-                                    <a href="{{ $value[1] }}" target="_new"
-                                        class="btn btn-outline-primary w-100 mt-2">{{ __('View Demo') }}</a>
-                                        <a href="{{ $value[3] }}?utm_source=ecom-main-file&utm_medium=superadmin&utm_campaign=superadmin-btn-theme-{{ $value[0] }}" target="_new"
-                                        class="btn btn-outline-primary w-100 mt-2">{{ __('View Details') }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        @endforeach
-    </div>
+    <!-- Promotional 'Buy More Themes' section removed per Milestone 5 clean-up -->
 
 @endsection
 @push('custom-script')
