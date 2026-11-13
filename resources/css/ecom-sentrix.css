@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+:root {
+    --sentrix-primary: #4f46e5;
+    --sentrix-secondary: #7c3aed;
+    --sentrix-accent: #8b5cf6;
+    --sentrix-gradient: linear-gradient(135deg, #4f46e5, #7c3aed, #8b5cf6);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100;
+}
+
+.sentrix-gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600;
+}
+
+.sentrix-card {
+    @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200;
+}
+
+/* Sidebar Specifics */
+#ecomsentrix-sidebar[data-collapsed="true"] .sidebar-text {
+    display: none;
+}
+
+#ecomsentrix-sidebar[data-collapsed="true"] {
+    width: 72px;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 dark:bg-slate-700 rounded-full;
+}
+
+/* Mobile Bottom Bar */
+.mobile-bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 flex items-center justify-around z-50 lg:hidden;
+}
+
+.mobile-nav-item {
+    @apply flex flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors;
+}
+
+.mobile-nav-item.active {
+    @apply text-indigo-600 dark:text-indigo-400;
+}

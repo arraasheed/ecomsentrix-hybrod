@@ -361,3 +361,30 @@ p *,
         to { opacity: 1; }
     }
 }
+
+/* ── 10. Ecom Sentrix Sidebar Mobile Overlay ─────────────────────────────────
+    Sidebar overlay toggle for DropX/Ecom Sentrix layout */
+@media (max-width: 1024px) {
+    #sidebar-overlay.active {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+
+    /* Ecom Sentrix Sidebar - Mobile Off-Canvas Drawer */
+    #ecomsentrix-sidebar {
+        transform: translateX(-100%) !important;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        z-index: 1050 !important;
+    }
+
+    #ecomsentrix-sidebar.mob-sidebar-active {
+        transform: translateX(0) !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Hide sidebar text when collapsed on mobile */
+    body.sidebar-collapsed #ecomsentrix-sidebar .sidebar-text {
+        display: none !important;
+    }
+}

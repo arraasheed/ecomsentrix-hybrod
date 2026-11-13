@@ -260,6 +260,31 @@ class HomeController extends Controller
         $new_orders = $orderQuery->orderBy('id', 'DESC')->limit(4)->get();
         $chartData = $this->getOrderChart(['duration' => 'week']);
 
+        // Ecom Sentrix 20 Metrics Implementation
+        $ecom_metrics = [
+            'today_order' => (clone $orderQuery)->whereBetween('created_at', [$todayStart, $todayEnd])->count(),
+            'today_courier_order' => (clone $orderQuery)->whereNotNull('shipped_date')->whereBetween('shipped_date', [$todayStart, $todayEnd])->count(),
+            'confirmed_order' => (clone $orderQuery)->where('delivered_status', 4)->count(),
+            'pending_order' => (clone $orderQuery)->where('delivered_status', 0)->count(),
+            'cancel_order' => (clone $orderQuery)->where('delivered_status', 2)->count(),
+            'hold_order' => (clone $orderQuery)->where('delivered_status', 5)->count(),
+            'delivered_order' => (clone $orderQuery)->where('delivered_status', 1)->count(),
+            'read_order' => (clone $orderQuery)->where('is_read', 1)->count(),
+            'unread_order' => (clone $orderQuery)->where('is_read', 0)->count(),
+            'low_stock_product' => Product::where('store_id', getCurrentStore())->where('track_stock', 1)->where('product_stock', '<=', (Utility::GetValueByName('low_stock_threshold', getCurrentStore()) ?? 10))->count(),
+            
+            'return_order' => (clone $orderQuery)->where('delivered_status', 3)->count(),
+            'total_order' => (clone $orderQuery)->count(),
+            'total_product' => Product::where('store_id', getCurrentStore())->count(),
+            'total_cost_price' => Product::where('store_id', getCurrentStore())->sum(\DB::raw('purchase_price * product_stock')),
+            'total_sales_value' => (clone $orderQuery)->where('delivered_status', 1)->sum('final_price'),
+            'total_expense' => 0, 
+            'total_profit' => (clone $orderQuery)->where('delivered_status', 1)->sum('final_price') - (clone $orderQuery)->where('delivered_status', 1)->sum('purchase_price'),
+            'damage_amount' => 0,
+            'net_profit' => (clone $orderQuery)->where('delivered_status', 1)->sum('final_price') - (clone $orderQuery)->where('delivered_status', 1)->sum('purchase_price'),
+            'total_income' => (clone $orderQuery)->where('delivered_status', 1)->sum('final_price'),
+        ];
+
         $store = getStoreById(getCurrentStore());
        
         $slug = $store->slug;
@@ -307,7 +332,8 @@ class HomeController extends Controller
             'customerPer',
             'productPer',
             'shippedOrderPer',
-            'shipped_order'
+            'shipped_order',
+            'ecom_metrics'
         );
         return $data;
     }
