@@ -24,6 +24,7 @@ config([
 
     @section('content')
         <div class="text-center">
+            <div class="mb-2 fw-bold text-primary">eCom Sentrix</div>
             <h2 class="mb-2 h3 f-w-600">{{ __('New Password') }}</h2>
             <div class="text-border-bottom"></div>
             <p>{{ __('Enter your email and setup new password') }}</p>

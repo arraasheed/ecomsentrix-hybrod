@@ -27,6 +27,7 @@
 @section('content')
     <div>
         <div class="text-center">
+            <div class="mb-2 fw-bold text-primary">eCom Sentrix</div>
             <h2 class="mb-2 h3 f-w-600">{{ __('Forgot Password') }}</h2>
             <div class="text-border-bottom"></div>
             <p>{{ __('Enter your email to receive a password reset link') }}</p>

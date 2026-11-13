@@ -23,6 +23,7 @@
 <!-- Session Status -->
 @section('content')
     <div class="text-center">
+        <div class="mb-2 fw-bold text-primary">eCom Sentrix</div>
         <h2 class="mb-2 h3 f-w-600">{{ __('Log in to your account') }}</h2>
         <div class="text-border-bottom"></div>
         <p>{{ __('Enter your email and password below to log in') }}</p>

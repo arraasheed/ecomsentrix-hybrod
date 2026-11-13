@@ -27,6 +27,7 @@
 
 @section('content')
     <div class="text-center">
+        <div class="mb-2 fw-bold text-primary">eCom Sentrix</div>
         @if (session('status'))
             <div class="mb-4 font-medium text-lg text-green-600 text-danger">
                 {{ session('status') ?? __('Email SMTP settings does not configured so please contact to your site admin.') }}

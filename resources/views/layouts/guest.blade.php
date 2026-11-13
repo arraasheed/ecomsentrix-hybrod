@@ -92,7 +92,7 @@
         }
     }
 
-    $footer_text = $setting['footer_text'] ?? (env('APP_NAME') ?? 'Ecommercego saas');
+    $footer_text = $setting['footer_text'] ?? 'eCom Sentrix';
     $menusettings = \Workdo\LandingPage\Entities\OwnerMenuSetting::where('created_by', 1)->first();
     //$menusettings = null;
 
@@ -110,18 +110,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="WorkDo.io" />
 
-    <meta name="title" content="{{ isset($setting['metatitle']) ? $setting['metatitle'] : 'EcommerceGo' }}">
+    <meta name="title" content="{{ isset($setting['metatitle']) ? $setting['metatitle'] : 'eCom Sentrix' }}">
     <meta name="keywords"
-        content="{{ isset($setting['metakeyword']) ? $setting['metakeyword'] : 'EcommerceGo, Store with Multi theme and Multi Store' }}">
+        content="{{ isset($setting['metakeyword']) ? $setting['metakeyword'] : 'eCom Sentrix, Multi-tenant eCommerce SaaS' }}">
     <meta name="description"
-        content="{{ isset($setting['metadesc']) ? $setting['metadesc'] : 'Discover the efficiency of EcommerceGo, a user-friendly web application by Workdo.io.' }}">
+        content="{{ isset($setting['metadesc']) ? $setting['metadesc'] : 'eCom Sentrix - modern multi-tenant eCommerce SaaS.' }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ env('APP_URL') }}">
-    <meta property="og:title" content="{{ isset($setting['metatitle']) ? $setting['metatitle'] : 'EcommerceGo' }}">
+    <meta property="og:title" content="{{ isset($setting['metatitle']) ? $setting['metatitle'] : 'eCom Sentrix' }}">
     <meta property="og:description"
-        content="{{ isset($setting['metadesc']) ? $setting['metadesc'] : 'Discover the efficiency of EcommerceGo, a user-friendly web application by Workdo.io.' }} ">
+        content="{{ isset($setting['metadesc']) ? $setting['metadesc'] : 'eCom Sentrix - modern multi-tenant eCommerce SaaS.' }} ">
     <meta property="og:image"
         content="{{ get_file_v(isset($setting['metaimage']) ? $setting['metaimage'] : 'storage/uploads/ecommercego-saas-preview.png') }}">
 
@@ -129,13 +129,24 @@
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ env('APP_URL') }}">
     <meta property="twitter:title"
-        content="{{ isset($setting['metatitle']) ? $setting['metatitle'] : 'EcommerceGo' }}">
+        content="{{ isset($setting['metatitle']) ? $setting['metatitle'] : 'eCom Sentrix' }}">
     <meta property="twitter:description"
-        content="{{ isset($setting['metadesc']) ? $setting['metadesc'] : 'Discover the efficiency of EcommerceGo, a user-friendly web application by Workdo.io.' }} ">
+        content="{{ isset($setting['metadesc']) ? $setting['metadesc'] : 'eCom Sentrix - modern multi-tenant eCommerce SaaS.' }} ">
     <meta property="twitter:image"
         content="{{ get_file_v(isset($setting['metaimage']) ? $setting['metaimage'] : 'storage/uploads/ecommercego-saas-preview.png') }}">
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        :root {
+            --ecom-sentrix-primary: #4F46E5;
+            --ecom-sentrix-primary-dark: #4338CA;
+            --ecom-sentrix-accent: #8B5CF6;
+            --bs-primary: var(--ecom-sentrix-primary);
+            --bs-primary-rgb: 79, 70, 229;
+            --bs-link-color: var(--ecom-sentrix-primary);
+            --bs-link-hover-color: var(--ecom-sentrix-primary-dark);
+        }
+    </style>
 
     {{--
         Turbo helper stub (CLAUDE-6). Not Turbo itself — this layout stays on full
@@ -146,7 +157,7 @@
     --}}
     @include('layouts.includes.turbo-stub')
 
-    <title>{{ config('app.name', 'Laravel') }}-@yield('page-title')</title>
+    <title>{{ config('app.name', 'eCom Sentrix') }} - @yield('page-title')</title>
 
     <!-- Favicon icon -->
     <link rel="icon" href="{{ !empty($favicon) ? get_file_v($favicon) : get_file_v($profile . '/logo-sm.svg') }}"
@@ -415,13 +426,14 @@
                 </div>
                 <div class="auth-footer">
                     <p class="text-black mb-0">
-                        @if (isset($setting['footer_text']) &&
-                                (strpos($setting['footer_text'], '©') === false && strpos($setting['footer_text'], '&copy;') === false))
-                            &copy;
+                        @if (isset($setting['footer_text']))
+                            @if (strpos($setting['footer_text'], '©') === false && strpos($setting['footer_text'], '&copy;') === false)
+                                &copy; {{ date('Y') }}
+                            @endif
+                            {{ $setting['footer_text'] }}
+                        @else
+                            © 2026 eCom Sentrix. All rights reserved.
                         @endif
-
-                        {{ date('Y') }}
-                        {{ isset($setting['footer_text']) ? $setting['footer_text'] : config('app.name', 'E-CommerceGo') }}
                     </p>
                 </div>
             </div>

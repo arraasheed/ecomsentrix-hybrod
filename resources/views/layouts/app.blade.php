@@ -80,6 +80,17 @@
     <meta name="author" content="WorkDo.io" />
     <meta name="base-url" content="{{ URL::to('/') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        :root {
+            --ecom-sentrix-primary: #4F46E5;
+            --ecom-sentrix-primary-dark: #4338CA;
+            --ecom-sentrix-accent: #8B5CF6;
+            --bs-primary: var(--ecom-sentrix-primary);
+            --bs-primary-rgb: 79, 70, 229;
+            --bs-link-color: var(--ecom-sentrix-primary);
+            --bs-link-hover-color: var(--ecom-sentrix-primary-dark);
+        }
+    </style>
 
     {{--
         Turbo Drive (CLAUDE-6). Must stay in <head>: Turbo warns when started from
@@ -91,25 +102,25 @@
     --}}
     @include('layouts.includes.turbo', ['entry' => 'admin'])
 
-    <meta name="title" content="{{ isset($SuperadminData['metatitle']) ? $SuperadminData['metatitle'] : 'EcommerceGo' }}">
-    <meta name="keywords" content="{{ isset($SuperadminData['metakeyword']) ? $SuperadminData['metakeyword'] : 'EcommerceGo, Store with Multi theme and Multi Store' }}">
-    <meta name="description" content="{{ isset($SuperadminData['metadesc']) ? $SuperadminData['metadesc'] : 'Discover the efficiency of EcommerceGo, a user-friendly web application by Workdo.io.'}}">
+    <meta name="title" content="{{ isset($SuperadminData['metatitle']) ? $SuperadminData['metatitle'] : 'eCom Sentrix' }}">
+    <meta name="keywords" content="{{ isset($SuperadminData['metakeyword']) ? $SuperadminData['metakeyword'] : 'eCom Sentrix, Multi-tenant eCommerce SaaS' }}">
+    <meta name="description" content="{{ isset($SuperadminData['metadesc']) ? $SuperadminData['metadesc'] : 'eCom Sentrix - modern multi-tenant eCommerce SaaS.'}}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ env('APP_URL') }}">
-    <meta property="og:title" content="{{ isset($SuperadminData['metatitle']) ? $SuperadminData['metatitle'] : 'EcommerceGo' }}">
-    <meta property="og:description" content="{{ isset($SuperadminData['metadesc']) ? $SuperadminData['metadesc'] : 'Discover the efficiency of EcommerceGo, a user-friendly web application by Workdo.io.'}} ">
+    <meta property="og:title" content="{{ isset($SuperadminData['metatitle']) ? $SuperadminData['metatitle'] : 'eCom Sentrix' }}">
+    <meta property="og:description" content="{{ isset($SuperadminData['metadesc']) ? $SuperadminData['metadesc'] : 'eCom Sentrix - modern multi-tenant eCommerce SaaS.'}} ">
     <meta property="og:image" content="{{ get_file_v(isset($SuperadminData['metaimage']) ? $SuperadminData['metaimage'] : 'storage/uploads/ecommercego-saas-preview.png') }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ env('APP_URL') }}">
-    <meta property="twitter:title" content="{{ isset($SuperadminData['metatitle']) ? $SuperadminData['metatitle'] : 'EcommerceGo' }}">
-    <meta property="twitter:description" content="{{ isset($SuperadminData['metadesc']) ? $SuperadminData['metadesc'] : 'Discover the efficiency of EcommerceGo, a user-friendly web application by Workdo.io.'}} ">
+    <meta property="twitter:title" content="{{ isset($SuperadminData['metatitle']) ? $SuperadminData['metatitle'] : 'eCom Sentrix' }}">
+    <meta property="twitter:description" content="{{ isset($SuperadminData['metadesc']) ? $SuperadminData['metadesc'] : 'eCom Sentrix - modern multi-tenant eCommerce SaaS.'}} ">
     <meta property="twitter:image" content="{{ get_file_v(isset($SuperadminData['metaimage']) ? $SuperadminData['metaimage'] : 'storage/uploads/ecommercego-saas-preview.png') }}">
 
-    <title>{{ isset($setting['title_text']) ? $setting['title_text'] : ( env('APP_NAME') ?? 'Ecommercego saas') }} - @yield('page-title') </title>
+    <title>{{ isset($setting['title_text']) ? $setting['title_text'] : (env('APP_NAME') ?? 'eCom Sentrix') }} - @yield('page-title') </title>
 
     @if (env('LEGACY_ADMIN_CSS', false))
         {{-- Kill-switch: Use legacy 28 separate CSS links instead of bundled Vite entry. --}}
