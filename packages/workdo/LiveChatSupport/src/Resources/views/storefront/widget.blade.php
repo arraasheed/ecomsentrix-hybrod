@@ -26,6 +26,12 @@
             <div style="font-size:13px;opacity:.85">We usually reply quickly</div>
         </header>
         <div id="live-chat-messages" style="height:280px;overflow:auto;padding:14px;background:#f8fafc"></div>
+        <div id="live-chat-quick-actions" style="display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 10px;background:#f8fafc">
+            <button type="button" class="live-chat-chip" data-message="অর্ডার ট্র্যাকিং">📦 অর্ডার ট্র্যাকিং</button>
+            <button type="button" class="live-chat-chip" data-message="পেমেন্ট ও বিকাশ তথ্য">💳 পেমেন্ট ও বিকাশ তথ্য</button>
+            <button type="button" class="live-chat-chip" data-message="রিটার্ন ও এক্সচেঞ্জ পলিসি">🔄 রিটার্ন ও এক্সচেঞ্জ পলিসি</button>
+            <button type="button" class="live-chat-chip" data-message="লাইভ এজেন্টের সাথে কথা বলতে চাই" data-agent="true">👤 লাইভ এজেন্টের সাথে কথা বলুন</button>
+        </div>
         <form id="live-chat-form" style="display:flex;gap:8px;padding:12px;border-top:1px solid #e5e7eb">
             @csrf
             <input id="live-chat-input" type="text" maxlength="5000" autocomplete="off" placeholder="Write a message..." required style="min-width:0;flex:1;border:1px solid #d1d5db;border-radius:8px;padding:10px">
@@ -40,6 +46,7 @@
     .live-chat-message { margin:0 0 8px; padding:8px 10px; border-radius:10px; max-width:85%; white-space:pre-wrap; }
     .live-chat-message--visitor { margin-left:auto; background:#dbeafe; }
     .live-chat-message--bot, .live-chat-message--agent { background:#fff; border:1px solid #e5e7eb; }
+    .live-chat-chip { border:1px solid #bfdbfe; border-radius:999px; background:#fff; color:#1d4ed8; cursor:pointer; padding:6px 9px; font-size:12px; }
 </style>
 
 <script>
@@ -52,7 +59,9 @@
     const form = document.getElementById('live-chat-form');
     const input = document.getElementById('live-chat-input');
     const messages = document.getElementById('live-chat-messages');
+    const quickActions = document.getElementById('live-chat-quick-actions');
     let conversation = null;
+    let agentRequested = false;
 
     const appendMessage = (message) => {
         const element = document.createElement('div');
@@ -73,7 +82,7 @@
 
         if (!response.ok) throw new Error('Unable to initialize chat.');
         conversation = await response.json();
-        appendMessage({ sender_type: 'bot', message: 'Hello! How can we help you today?' });
+        appendMessage({ sender_type: 'bot', message: 'স্বাগতম! আমরা কীভাবে আপনাকে সাহায্য করতে পারি?' });
     };
 
     launcher.addEventListener('click', async () => {
@@ -83,6 +92,22 @@
         if (isHidden) {
             try { await initialize(); } catch (error) { appendMessage({ sender_type: 'bot', message: 'Sorry, chat is temporarily unavailable.' }); }
         }
+    });
+
+    quickActions.addEventListener('click', (event) => {
+        const chip = event.target.closest('.live-chat-chip');
+        if (!chip) return;
+
+        const cannedResponses = {
+            'অর্ডার ট্র্যাকিং': 'আপনার অর্ডার নম্বরটি দিলে আমরা সেটির স্ট্যাটাস জানাতে পারব।',
+            'পেমেন্ট ও বিকাশ তথ্য': 'পেমেন্টের জন্য checkout page-এ দেওয়া bKash বা অন্যান্য payment option ব্যবহার করুন।',
+            'রিটার্ন ও এক্সচেঞ্জ পলিসি': 'রিটার্ন বা exchange-এর জন্য অর্ডার নম্বরসহ আমাদের support team-কে জানান।',
+            'লাইভ এজেন্টের সাথে কথা বলতে চাই': 'অবশ্যই! আপনার মেসেজ লিখুন, একজন live agent যত দ্রুত সম্ভব আপনাকে সহায়তা করবেন।'
+        };
+        const message = chip.dataset.message;
+        if (chip.dataset.agent === 'true') agentRequested = true;
+        appendMessage({ sender_type: 'visitor', message });
+        appendMessage({ sender_type: 'bot', message: cannedResponses[message] });
     });
 
     form.addEventListener('submit', async (event) => {
@@ -96,7 +121,12 @@
         const response = await fetch(widget.dataset.sendUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '' },
-            body: JSON.stringify({ conversation_id: conversation.conversation_id, session_token: conversation.session_token, message })
+            body: JSON.stringify({
+                conversation_id: conversation.conversation_id,
+                session_token: conversation.session_token,
+                message,
+                agent_requested: agentRequested
+            })
         });
 
         if (!response.ok) {

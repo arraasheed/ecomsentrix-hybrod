@@ -14,6 +14,8 @@ Route::middleware('web')->group(function () {
 Route::middleware(['web', 'auth', 'setlocate'])->name('livechat.')->group(function () {
     Route::get('/admin/live-chat', [AdminChatInboxController::class, 'index'])
         ->name('admin.index');
+    Route::post('/admin/live-chat/settings', [AdminChatInboxController::class, 'updateSettings'])
+        ->name('admin.settings.update');
     Route::post('/admin/live-chat/{conversation}/reply', [AdminChatInboxController::class, 'reply'])
         ->name('admin.reply');
 });

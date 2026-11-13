@@ -40,6 +40,7 @@ class StorefrontChatController extends Controller
             'conversation_id' => ['required', 'integer'],
             'session_token' => ['required', 'string', 'size:64'],
             'message' => ['required', 'string', 'max:5000'],
+            'agent_requested' => ['sometimes', 'boolean'],
         ]);
 
         $conversation = ChatConversation::whereKey($data['conversation_id'])
@@ -50,13 +51,20 @@ class StorefrontChatController extends Controller
             return response()->json(['message' => 'This conversation is closed.'], 422);
         }
 
+        if ($request->boolean('agent_requested')) {
+            $conversation->update(['status' => 'open']);
+            Log::info('Live chat agent requested.', [
+                'conversation_id' => $conversation->id,
+            ]);
+        }
+
         $conversation->messages()->create([
             'sender_type' => 'visitor',
             'message' => $data['message'],
         ]);
 
         try {
-            $reply = $chatbot->reply($data['message']);
+            $reply = $chatbot->reply($data['message'], (int) $conversation->store_id);
         } catch (\RuntimeException $exception) {
             Log::error('Live chat Gemini response failed.', [
                 'conversation_id' => $conversation->id,
