@@ -1,3 +1,10 @@
+@extends('layouts.app')
+
+@section('page-title')
+    {{ __('System Notifications') }}
+@endsection
+
+@section('content')
 <div class="container py-4">
     <h1>{{ __('System Notifications') }}</h1>
 
@@ -64,3 +71,4 @@
     syncStoreVisibility();
 })();
 </script>
+@endsection
