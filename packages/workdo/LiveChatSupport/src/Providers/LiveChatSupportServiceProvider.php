@@ -9,6 +9,7 @@ class LiveChatSupportServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../../config/chat.php', 'chat');
+        $this->app->register(EventServiceProvider::class);
     }
 
     public function boot(): void

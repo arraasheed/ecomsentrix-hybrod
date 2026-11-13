@@ -11,8 +11,9 @@ Route::middleware('web')->group(function () {
         ->name('livechatsupport.chat.send');
 });
 
-Route::middleware(['web', 'auth', 'setlocate'])->prefix('chat')->name('livechatsupport.')->group(function () {
-    Route::get('/inbox', [AdminChatInboxController::class, 'index'])->name('inbox');
-    Route::post('/inbox/{conversation}/reply', [AdminChatInboxController::class, 'reply'])
-        ->name('inbox.reply');
+Route::middleware(['web', 'auth', 'setlocate'])->name('livechat.')->group(function () {
+    Route::get('/admin/live-chat', [AdminChatInboxController::class, 'index'])
+        ->name('admin.index');
+    Route::post('/admin/live-chat/{conversation}/reply', [AdminChatInboxController::class, 'reply'])
+        ->name('admin.reply');
 });

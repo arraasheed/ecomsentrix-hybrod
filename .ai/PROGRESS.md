@@ -452,3 +452,4 @@ CLAUDE-5-এর পর যোগ হলো (এগুলোও ব্লকা�
 | তারিখ | কাজ | অবস্থা |
 |---|---|---|
 | 2026-11-13 | LiveChatSupport Step 1: module metadata, provider, Gemini service, chat controllers, routes, migrations, models ও Blade views scaffold করা হয়েছে | ✅ সম্পন্ন |
+| 2026-11-13 | LiveChatSupport Step 2: module activation, database migrations, `/chat/*` ও `/admin/live-chat` routes এবং Smart Features menu link যুক্ত করা হয়েছে | ✅ সম্পন্ন |
