@@ -1,0 +1,11 @@
+{
+    "name": "LiveChatSupport",
+    "alias": "AI Live Chat Support",
+    "description": "AI-powered storefront chat and admin support inbox",
+    "priority": 20,
+    "version": 1.0,
+    "monthly_price": 0,
+    "yearly_price": 0,
+    "display": true,
+    "package_name": "live-chat-support"
+}

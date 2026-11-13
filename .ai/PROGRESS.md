@@ -446,3 +446,9 @@ CLAUDE-5-এর পর যোগ হলো (এগুলোও ব্লকা�
 | Day 2 | checkout form-এ `data-turbo="false"` | `payment.process` gateway-তে `redirect()->away()` করে; Turbo form submit করে `fetch()` দিয়ে (mode `cors`), আর কোনো gateway আমাদের origin-কে CORS দেয় না → fetch reject, console-এ error, ব্যবহারকারী কিছুই দেখে না। checkout সম্পূর্ণ অচল হতো |
 | Day 2 | `data-turbo-permanent` **যোগ করা হয়নি** | Turbo এমনিতেই head স্থির রাখছে (stylesheet 6, script 8, meta 20 — ৫ পেজে অপরিবর্তিত), তাই permanent element-এর দরকার পড়েনি। এটি জটিলতা বাড়ায় (id বাধ্যতামূলক, morph-এ ব্যতিক্রম), লাভ নেই |
 | Day 2 | admin layout-এ Turbo **এখন নয়** | DataTable/select2/summernote destroy না করে Turbo চালু করলে প্রথম back-navigation-এই "Cannot reinitialise DataTable"। `admin.js` entry তৈরি ও build করা আছে, কিন্তু কোনো view এখনো ডাকে না — CLAUDE-6 যোগ করবে |
+
+### Post-v1 module work
+
+| তারিখ | কাজ | অবস্থা |
+|---|---|---|
+| 2026-11-13 | LiveChatSupport Step 1: module metadata, provider, Gemini service, chat controllers, routes, migrations, models ও Blade views scaffold করা হয়েছে | ✅ সম্পন্ন |

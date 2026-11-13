@@ -1,0 +1,25 @@
+{
+    "name": "workdo/live-chat-support",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Workdo\\LiveChatSupport\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ecom Sentrix",
+            "email": "support@ecomsentrix.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Workdo\\LiveChatSupport\\Providers\\LiveChatSupportServiceProvider"
+            ]
+        }
+    }
+}
