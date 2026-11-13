@@ -13,7 +13,7 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $staticAddons = ['LandingPage', 'PwaManifest', 'FraudPixelShield'];
+        $staticAddons = ['LandingPage', 'PwaManifest', 'FraudPixelShield', 'LiveChatSupport', 'NotificationEngine'];
         $this->loadAddons($staticAddons);
         
         // Defer database queries until after DB connection is ready
@@ -39,6 +39,12 @@ class PackageServiceProvider extends ServiceProvider
             }
             if (! in_array('FraudPixelShield', $dbAddons)) {
                 $dbAddons[] = 'FraudPixelShield';
+            }
+            if (! in_array('LiveChatSupport', $dbAddons)) {
+                $dbAddons[] = 'LiveChatSupport';
+            }
+            if (! in_array('NotificationEngine', $dbAddons)) {
+                $dbAddons[] = 'NotificationEngine';
             }
 
             $this->loadAddons($dbAddons);
