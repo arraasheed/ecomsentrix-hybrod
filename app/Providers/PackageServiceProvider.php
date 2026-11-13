@@ -13,7 +13,7 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $staticAddons = ['LandingPage', 'PwaManifest', 'FraudPixelShield', 'LiveChatSupport', 'NotificationEngine'];
+        $staticAddons = ['LandingPage', 'PwaManifest', 'FraudPixelShield', 'LiveChatSupport', 'NotificationEngine', 'ReceiptEngine'];
         $this->loadAddons($staticAddons);
         
         // Defer database queries until after DB connection is ready
@@ -45,6 +45,9 @@ class PackageServiceProvider extends ServiceProvider
             }
             if (! in_array('NotificationEngine', $dbAddons)) {
                 $dbAddons[] = 'NotificationEngine';
+            }
+            if (! in_array('ReceiptEngine', $dbAddons)) {
+                $dbAddons[] = 'ReceiptEngine';
             }
 
             $this->loadAddons($dbAddons);
