@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Classes\Module;
 use Illuminate\Support\Facades\File;
+use App\Models\Order;
+use App\Observers\OrderObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +31,8 @@ class AppServiceProvider extends ServiceProvider
         if (! File::exists($cachePath)) {
             File::makeDirectory($cachePath, 0755, true);
         }
+
+        // Register Order Observer for Central Intelligence sync
+        Order::observe(OrderObserver::class);
     }
 }

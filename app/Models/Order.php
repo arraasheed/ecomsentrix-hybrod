@@ -12,6 +12,15 @@ class Order extends Model
 {
     use HasFactory, Cachable;
 
+    protected static function booted()
+    {
+        static::updated(function ($order) {
+            if ($order->isDirty('delivered_status') && in_array($order->delivered_status, [2, 3])) {
+                \App\Jobs\SyncOrderFraudStatus::dispatch($order->id);
+            }
+        });
+    }
+
     protected $fillable = [
         'product_order_id',
         'order_date',

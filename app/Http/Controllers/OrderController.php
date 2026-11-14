@@ -421,6 +421,10 @@ class OrderController extends Controller
         }
         $order->save();
 
+        if (in_array($order->delivered_status, [2, 3])) {
+            \App\Jobs\SyncPixelBlacklist::dispatch($order);
+        }
+
         return response()->json([
             'delivered_status' => $order->delivered_status,
             'delivery_date' => $order->delivery_date,
