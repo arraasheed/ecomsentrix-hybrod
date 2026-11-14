@@ -1,71 +1,16 @@
 @extends('layouts.app')
+
 @section('page-title')
     {{ __('Add-on Manager') }}
 @endsection
-@section('page-breadcrumb')
-    {{ __('Add-on Manager') }}
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
+    <li class="breadcrumb-item">{{ __('Add-on Manager') }}</li>
 @endsection
+
 @push('css')
     <style>
-        .product-img {
-            padding-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .system-version h5 {
-            position: absolute;
-            bottom: -44px;
-            right: 27px;
-        }
-
-        .center-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .center-text .text-primary {
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .theme-main {
-            display: flex;
-            align-items: center;
-        }
-
-        .theme-main .theme-avtar {
-            margin-right: 15px;
-        }
-
-        .product-img .checkbox-custom .card-option {
-            border: 0;
-            outline: 0;
-        }
-
-        .product-img .checkbox-custom .card-option .btn.show {
-            color: #000;
-            border: 0;
-        }
-
-        .product-img .checkbox-custom .card-option .btn:focus {
-            border: 0;
-        }
-
-        @media only screen and (max-width: 575px) {
-            .system-version h5 {
-                position: unset;
-                margin-bottom: 0px;
-            }
-
-            .system-version {
-                text-align: center;
-                margin-bottom: -22px;
-            }
-        }
-
-        /* Horizontal tabs styling */
         .addon-tabs {
             border-bottom: 1px solid #e9ecef;
             margin-bottom: 1.5rem;
@@ -102,27 +47,13 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
         
-        .module-card .card {
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
-        .module-card .card.enable_module {
-            border-left: 4px solid #28a745;
-        }
-        
-        .module-card .card.disable_module {
-            border-left: 4px solid #dc3545;
-        }
-        
         .theme-avtar img {
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
             object-fit: contain;
             border-radius: 8px;
             background: #f8f9fa;
-            padding: 8px;
+            padding: 6px;
         }
         
         .empty-state {
@@ -130,136 +61,93 @@
             padding: 3rem 1rem;
             color: #6c757d;
         }
-        
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
     </style>
 @endpush
-@section('page-action')
-@endsection
 
 @section('content')
 <div class="container-fluid">
-    <!-- Horizontal Tabs -->
-    <div class="addon-tabs">
+    <!-- Horizontal Filter Tabs -->
+    <div class="addon-tabs d-flex justify-content-between align-items-center">
         <ul class="nav nav-pills justify-content-start" role="tablist">
             <li class="nav-item" role="presentation">
                 <a class="nav-link {{ $tab == 'all' ? 'active' : '' }}" 
-                   href="{{ route('module.index', ['tab' => 'all']) }}" 
-                   role="tab">
+                   href="{{ route('module.index', ['tab' => 'all']) }}">
                     <i class="ti ti-apps me-1"></i> {{ __('All Modules') }}
                     <span class="badge bg-secondary ms-2">{{ count($modules) }}</span>
                 </a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link {{ $tab == 'enabled' ? 'active' : '' }}" 
-                   href="{{ route('module.index', ['tab' => 'enabled']) }}" 
-                   role="tab">
-                    <i class="ti ti-check-circle me-1"></i> {{ __('Enabled') }}
+                   href="{{ route('module.index', ['tab' => 'enabled']) }}">
+                    <i class="ti ti-check me-1"></i> {{ __('Enabled') }}
                     <span class="badge bg-success ms-2">{{ $enabledCount }}</span>
                 </a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link {{ $tab == 'disabled' ? 'active' : '' }}" 
-                   href="{{ route('module.index', ['tab' => 'disabled']) }}" 
-                   role="tab">
-                    <i class="ti ti-x-circle me-1"></i> {{ __('Disabled') }}
+                   href="{{ route('module.index', ['tab' => 'disabled']) }}">
+                    <i class="ti ti-x me-1"></i> {{ __('Disabled') }}
                     <span class="badge bg-danger ms-2">{{ $disabledCount }}</span>
                 </a>
             </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link {{ $tab == 'local' ? 'active' : '' }}" 
-                   href="{{ route('module.index', ['tab' => 'local']) }}" 
-                   role="tab">
-                    <i class="ti ti-device-desktop me-1"></i> {{ __('Local Only') }}
-                    <span class="badge bg-info ms-2">{{ $localCount }}</span>
-                </a>
-            </li>
         </ul>
-    </div>
-
-    <!-- Search -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h4 class="mb-0">{{ __('Installed Add-ons') }}</h4>
-        </div>
-        <div class="col-md-6">
-            <div class="input-group">
-                <span class="input-group-text bg-transparent border-end-0"><i class="ti ti-search"></i></span>
-                <input type="text" id="moduleSearch" class="form-control border-start-0" placeholder="{{ __('Search Add-ons...') }}">
-            </div>
+        
+        <div class="search-box">
+            <input type="text" id="moduleSearch" class="form-control" style="width: 250px;" 
+                   placeholder="{{ __('Search Add-ons...') }}">
         </div>
     </div>
 
-    <!-- Modules Grid -->
-    <div class="row event-cards px-0" id="modulesContainer">
-        @if(count($modules) > 0)
+    <!-- Modules Grid (Only our system's active native & custom addons) -->
+    <div class="row" id="modulesGrid">
+        @if (!empty($modules) && count($modules) > 0)
             @foreach ($modules as $module)
                 @php
-                    $module_name = $module->name;
-                    $id = strtolower(preg_replace('/\s+/', '_', $module_name));
+                    $id = strtolower(preg_replace('/\s+/', '_', $module->name));
                 @endphp
-                @if (
-                    (!isset($module->display) || $module->display == true || $module_name == 'GoogleCaptcha') &&
-                    $module_name != 'LandingPage')
-                    <div class="col-xl-3 col-md-4 col-sm-6 product-card h-auto module-card" data-name="{{ strtolower($module->alias) }}">
-                        <div class="card {{ $module->isEnabled() ? 'enable_module' : 'disable_module' }} mb-0 h-100 justify-content-between">
-                            <div class="product-img">
-                                <div class="theme-main">
-                                    <div class="theme-avtar">
-                                        <img src="{{ $module->image ?? '' }}" alt="{{ $module->name }}" class="img-user" style="max-width: 100%">
-                                    </div>
-                                    <div class="center-text">
-                                        <h5 class="mb-1">{{ $module->alias ?? $module->name }}</h5>
-                                        <small class="text-muted">
-                                            @if ($module->isEnabled())
-                                                <span class="badge bg-success">{{ __('Enabled') }}</span>
-                                            @else
-                                                <span class="badge bg-danger">{{ __('Disabled') }}</span>
-                                            @endif
-                                        </small>
-                                    </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4 module-card" data-name="{{ strtolower($module->alias ?? $module->name) }}">
+                    <div class="card w-100 shadow-sm border rounded-3 {{ $module->isEnabled() ? 'border-success' : 'border-light' }}">
+                        <div class="card-body p-3 d-flex flex-column justify-content-between">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <div class="theme-avtar p-2 rounded bg-light border">
+                                    <img src="{{ $module->image ? asset($module->image) : asset('assets/images/user-avatar.png') }}"
+                                         alt="{{ $module->name }}" onerror="this.src='{{ asset('assets/images/user-avatar.png') }}'">
                                 </div>
-                                <div class="theme-version">
-                                    <small class="text-muted">{{ __('Version') }}: {{ $module->version ?? '1.0' }}</small>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <h5 class="mb-1 text-truncate font-weight-bold" title="{{ $module->alias ?? $module->name }}">
+                                        {{ $module->alias ?? $module->name }}
+                                    </h5>
+                                    <span class="badge {{ $module->isEnabled() ? 'bg-success' : 'bg-danger' }}">
+                                        {{ $module->isEnabled() ? __('Active') : __('Inactive') }}
+                                    </span>
                                 </div>
                             </div>
-                            <div class="card-body pt-0 pb-3">
-                                <p class="text-muted small mb-2">{{ $module->description ?? '' }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    @if ($module->monthly_price > 0 || $module->yearly_price > 0)
-                                        <div class="text-muted small">
-                                            @if ($module->monthly_price > 0)
-                                                <span class="text-primary">{{ $module->monthly_price }}/{{ __('month') }}</span>
-                                            @endif
-                                            @if ($module->yearly_price > 0)
-                                                <span class="text-success ms-2">{{ $module->yearly_price }}/{{ __('year') }}</span>
-                                            @endif
-                                        </div>
-                                    @endif
-                                    <form action="{{ route('module.status', $module->alias) }}" id="form_{{ $id }}" method="POST">
-                                        @csrf
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input module_change" type="checkbox" 
-                                                   role="switch" name="is_enable" data-id="{{ $id }}"
-                                                   @if ($module->isEnabled()) checked @endif
-                                                   onclick="document.getElementById('form_{{ $id }}').submit()">
-                                        </div>
-                                    </form>
-                                </div>
+                            
+                            <p class="text-muted small mb-3 text-truncate-2" style="min-height: 38px;">
+                                {{ $module->description ?? __('Integrated system extension module.') }}
+                            </p>
+
+                            <div class="d-flex align-items-center justify-content-between pt-2 border-top mt-auto">
+                                <span class="small text-muted font-monospace">v{{ $module->version ?? '1.0.0' }}</span>
+                                <form action="{{ route('module.enable') }}" method="POST" id="form_{{ $module->name }}">
+                                    @csrf
+                                    <input type="hidden" name="name" value="{{ $module->name }}">
+                                    <div class="form-check form-switch m-0">
+                                        <input class="form-check-input module_toggle_switch" type="checkbox" role="switch"
+                                               {{ $module->isEnabled() ? 'checked' : '' }}
+                                               onchange="document.getElementById('form_{{ $module->name }}').submit()">
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
             @endforeach
         @else
             <div class="col-12 empty-state">
-                <i class="ti ti-box"></i>
-                <h5>{{ __('No modules found') }}</h5>
-                <p class="text-muted">{{ __('No modules match the current filter.') }}</p>
+                <i class="ti ti-box" style="font-size: 3rem;"></i>
+                <h5 class="mt-2">{{ __('No add-ons found') }}</h5>
+                <p class="text-muted">{{ __('No add-on matches the current filter.') }}</p>
             </div>
         @endif
     </div>
@@ -269,20 +157,21 @@
 @push('scripts')
     <script>
         window.onTurboLoad(function () {
-            // Search functionality
-            document.getElementById('moduleSearch').addEventListener('keyup', function() {
-                let query = this.value.toLowerCase();
-                let modules = document.querySelectorAll('.module-card');
-
-                modules.forEach(function(module) {
-                    let moduleName = module.getAttribute('data-name');
-                    if (moduleName.includes(query)) {
-                        module.style.display = 'block';
-                    } else {
-                        module.style.display = 'none';
-                    }
+            var searchInput = document.getElementById('moduleSearch');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function() {
+                    let query = this.value.toLowerCase();
+                    let cards = document.querySelectorAll('.module-card');
+                    cards.forEach(function(card) {
+                        let name = card.getAttribute('data-name');
+                        if (name.includes(query)) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
                 });
-            });
+            }
         });
     </script>
 @endpush
