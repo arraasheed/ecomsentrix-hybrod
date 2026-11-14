@@ -276,7 +276,7 @@ class HomeController extends Controller
             'return_order' => (clone $orderQuery)->where('delivered_status', 3)->count(),
             'total_order' => (clone $orderQuery)->count(),
             'total_product' => Product::where('store_id', getCurrentStore())->count(),
-            'total_cost_price' => Product::where('store_id', getCurrentStore())->sum(\DB::raw('purchase_price * product_stock')),
+            'total_cost_price' => Product::disableCache()->where('store_id', getCurrentStore())->get()->sum(function($p) { return ($p->purchase_price ?? 0) * ($p->product_stock ?? 0); }),
             'total_sales_value' => (clone $orderQuery)->where('delivered_status', 1)->sum('final_price'),
             'total_expense' => 0, 
             'total_profit' => (clone $orderQuery)->where('delivered_status', 1)->sum('final_price') - (clone $orderQuery)->where('delivered_status', 1)->sum('purchase_price'),
