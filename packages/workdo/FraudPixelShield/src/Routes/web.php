@@ -13,6 +13,7 @@ Route::middleware(['web'])->group(function () {
     // Funnel Landing Page
     Route::get('{storeSlug}/offer/{slug}', [FunnelController::class, 'show'])->name('funnel.landing');
     Route::post('{storeSlug}/offer/order', [FunnelController::class, 'orderSubmit'])->name('funnel.order.submit');
+    Route::get('{storeSlug}/offer/success/{order}', [FunnelController::class, 'orderSuccess'])->name('funnel.order.success');
 });
 
 // 2. Store Admin Panel Routes - Fraud Shield
@@ -21,6 +22,17 @@ Route::middleware(['web', 'auth', 'setlocate'])->group(function () {
         Route::get('manual-checker', [FraudShieldController::class, 'manualChecker'])->name('manual.checker');
         Route::post('query', [FraudShieldController::class, 'manualNumberQuery'])->name('query');
         Route::get('leads', [FraudShieldController::class, 'leads'])->name('leads');
+    });
+
+    // Funnel Offers CRUD
+    Route::prefix('funnel-offers')->name('fraud.funnel.')->group(function () {
+        Route::get('/', [FunnelController::class, 'index'])->name('index');
+        Route::get('create', [FunnelController::class, 'create'])->name('create');
+        Route::post('/', [FunnelController::class, 'store'])->name('store');
+        Route::get('{funnel}/edit', [FunnelController::class, 'edit'])->name('edit');
+        Route::put('{funnel}', [FunnelController::class, 'update'])->name('update');
+        Route::delete('{funnel}', [FunnelController::class, 'destroy'])->name('destroy');
+        Route::post('upload-review', [FunnelController::class, 'uploadReviewImage'])->name('upload.review');
     });
 
     // 3. Store Admin Panel Routes - Meta Pixel Isolation & Delayed CAPI
