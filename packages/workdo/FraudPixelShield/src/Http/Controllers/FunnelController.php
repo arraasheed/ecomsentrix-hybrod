@@ -250,7 +250,8 @@ class FunnelController extends Controller
             }
         }
 
-        return view('fraud-pixel-shield::funnels.order-success', compact('store', 'funnel', 'order' => $orderModel));
+        $order = $orderModel;
+        return view('fraud-pixel-shield::funnels.order-success', compact('store', 'funnel', 'order'));
     }
 
     // ==================== UPLOAD REVIEW IMAGE ====================
